@@ -79,9 +79,9 @@ const HomePage = ({navigation}) => {
 
       <ScrollView contentContainerStyle={{marginHorizontal: responsiveWidth(3),}} showsVerticalScrollIndicator={false}>
         {/* Logo Card */}
-        <View style={[styles.card, {padding:0,overflow: 'hidden'}]}>
+        <View style={[{paddingTop: responsiveHeight(1.5),overflow: 'hidden'}]}>
           <Image
-            source={{ uri: 'https://storage.pixteller.com/designs/designs-images/2019-05-15/11/customizable-hospital-banner-ad-1-5cdbd3f3e2c28.png' }}
+            source={{ uri: 'https://i.pinimg.com/736x/2e/02/bf/2e02bf2de46b5cbddf3cfbc16e83e822.jpg' }} // Replace with your image URL:   https://storage.pixteller.com/designs/designs-images/2019-05-15/11/customizable-hospital-banner-ad-1-5cdbd3f3e2c28.png    https://i.pinimg.com/736x/2e/02/bf/2e02bf2de46b5cbddf3cfbc16e83e822.jpg
             style={styles.logo}
             resizeMode='stretch'
           />

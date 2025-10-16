@@ -24,10 +24,17 @@ const Colors = {
     orange: '#fd9644',
     gray: '#888888',
     background: '#f7f7f7',
+    lightBackground: '#f7f7f7',
+
+    deleteButton: '#ff0000',
+
 };
 
 Colors.primaryWithOpacity = hexToRgba(Colors.primary, 0.3);
 Colors.secondaryWithOpacity = hexToRgba(Colors.secondary, 0.3);
 Colors.successWithOpacity = hexToRgba(Colors.success, 0.3);
+Colors.blackWithOpacity = hexToRgba(Colors.black, 0.7);
+
+Colors.primaryDropDownOpacity= hexToRgba(Colors.primary, 0.8)
 
 export default Colors;
