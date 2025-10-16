@@ -28,7 +28,7 @@ const CustomInput = ({ label, value, onChangeText, icon, editable = true, keyboa
             left={
               icon
                 ? <TextInput.Icon icon={({ size, color }) => (
-                    <MaterialIcons name={icon} size={responsiveFontSize(2.5)} color={Colors.primaryDropDownOpacity} />
+                    <MaterialIcons name={icon} size={responsiveFontSize(2.5)} color={Colors.blackWithOpacity} />
                   )} />
                 : null
             }

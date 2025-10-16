@@ -40,7 +40,7 @@ const CustomDropDown = ({title, uprLabel, value, setValue, gap, search= false, i
       <MaterialIcons
         name={iconName}
         size={responsiveFontSize(2.5)}
-        color={Colors.primaryDropDownOpacity}
+        color={Colors.blackWithOpacity}
         style={styles.icon}
       />
     );
