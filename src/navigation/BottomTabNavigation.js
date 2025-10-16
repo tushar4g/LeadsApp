@@ -8,6 +8,7 @@ import Leads from '../pages/leads/Leads'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import  MaterialIcons  from '@react-native-vector-icons/material-icons';
 import { StyleSheet, View } from 'react-native';
+import Colors from '../style/Colors';
 
 const Tab = createBottomTabNavigator();
 
@@ -33,11 +34,11 @@ const BottomTabNavigation = () => {
     } else if (route.name === 'HomePage') {
       iconName = 'home';
     } else if (route.name === 'Leads') {
-      iconName = 'opacity';
+      iconName = 'link';
     } else if (route.name === 'Transaction') {
       iconName = 'account-balance-wallet';
     } else if (route.name === 'Profile') {
-      iconName = 'account-circle';
+      iconName = 'person';
     }
 
     return iconName;
@@ -47,17 +48,17 @@ const BottomTabNavigation = () => {
     const getTabColor = (routeName) => {
     switch (routeName) {
         case 'Home':
-        return 'red';
+        return Colors.primary;
         case 'HomePage':
-            return 'blue';
+            return Colors.primary;
         case 'Leads':
-            return 'green';
+            return Colors.primary;
         case 'Transaction':
-            return 'orange';
+            return Colors.primary;
         case 'Profile':
-            return 'purple';
+            return Colors.primary;
         default:
-            return 'black';
+            return Colors.primary;
     }
     };
 
@@ -98,9 +99,9 @@ const BottomTabNavigation = () => {
       })}
     >
       {/* Add your Tab.Screen components here */}
+      <Tab.Screen name="Home" component={Home} />
       <Tab.Screen name="HomePage" component={HomePage} />
       <Tab.Screen name="Leads" component={Leads} />
-      {/* <Tab.Screen name="Home" component={Home} /> */}
       <Tab.Screen name="Profile" component={Profile} />
     </Tab.Navigator>
   );

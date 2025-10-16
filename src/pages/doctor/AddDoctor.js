@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Alert, Image, ToastAndroid, PermissionsAndroid, ActivityIndicator } from 'react-native'
+import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Alert, Image, ToastAndroid, PermissionsAndroid, ActivityIndicator, Linking } from 'react-native'
 import { responsiveFontSize, responsiveWidth, responsiveHeight } from 'react-native-responsive-dimensions'
 import  MaterialIcons  from '@react-native-vector-icons/material-icons';
 import Geolocation from '@react-native-community/geolocation';
