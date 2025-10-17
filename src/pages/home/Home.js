@@ -25,7 +25,7 @@ const KPI_CARDS = [
 
 const QUICK_ACTIONS = [
   { label: 'Add Doctor', icon: 'medical-services', screen: 'AddDoctor' },
-  { label: 'View Doctors', icon: 'people', screen: 'ViewDoctors' },
+  { label: 'View Doctors', icon: 'people', screen: 'ViewDoctor' },
   { label: 'Add Patient', icon: 'person-add', screen: 'AddPatient' },
   { label: 'Leads', icon: 'link', screen: 'Leads' },
   { label: 'Schedule Visit', icon: 'event', screen: 'Calendar' },
