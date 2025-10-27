@@ -1,4 +1,3 @@
-// ...existing code...
 import React, { useState, useEffect, useMemo } from 'react'
 import {
   View,
@@ -14,16 +13,14 @@ import {
 import { responsiveFontSize, responsiveWidth, responsiveHeight } from 'react-native-responsive-dimensions'
 import MaterialIcons from '@react-native-vector-icons/material-icons'
 import MyHeader from '../../components/MyHeader'
-import CustomInput from '../../components/CustomInput'
-import CustomDropDown from '../../components/CustomDropDown'
-import CustomButton from '../../components/CustomButton'
 import Colors from '../../style/Colors'
 import { Searchbar } from 'react-native-paper'
+
 
 const mockDoctors = [
   {
     id: 'd1',
-    name: 'Dr. Anil Mehta',
+    name: 'Dr. Anill Mehta',
     specialization: 'Cardiologist',
     hospital: 'City Heart Clinic',
     city: 'Raipur',
@@ -137,149 +134,154 @@ const sortOptions = [
   { label: 'Category', value: 'category' },
 ]
 
-const ViewDoctor = ({ navigation }) => {
-  const [doctors, setDoctors] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [refreshing, setRefreshing] = useState(false)
 
-  // search & filters
-  const [searchText, setSearchText] = useState('')
-  const [filterCity, setFilterCity] = useState('')
-  const [filterSpec, setFilterSpec] = useState('')
-  const [filterCategory, setFilterCategory] = useState('')
-  const [filterHospitalType, setFilterHospitalType] = useState('')
-  const [sortBy, setSortBy] = useState(sortOptions[0].value)
+const Doctors = ({ navigation }) => {
+    const [doctors, setDoctors] = useState([])
+    const [loading, setLoading] = useState(true)
+    const [refreshing, setRefreshing] = useState(false)
 
-  useEffect(() => {
-    // simulate api fetch
-    setLoading(true)
-    const t = setTimeout(() => {
-      setDoctors(mockDoctors)
-      setLoading(false)
-    }, 600)
-    return () => clearTimeout(t)
-  }, [])
+    // search & filters
+    const [searchText, setSearchText] = useState('')
+    const [filterCity, setFilterCity] = useState('')
+    const [filterSpec, setFilterSpec] = useState('')
+    const [filterCategory, setFilterCategory] = useState('')
+    const [filterHospitalType, setFilterHospitalType] = useState('')
+    const [sortBy, setSortBy] = useState(sortOptions[0].value)
 
-  const onRefresh = () => {
-    setRefreshing(true)
-    // simulate refresh
-    setTimeout(() => {
-      setDoctors(mockDoctors) // in real app re-fetch
-      setRefreshing(false)
-    }, 800)
-  }
-
-  const clearFilters = () => {
-    setSearchText('')
-    setFilterCity('')
-    setFilterSpec('')
-    setFilterCategory('')
-    setFilterHospitalType('')
-    setSortBy(sortOptions[0].value)
-  }
-
-  const handleDelete = (id) => {
-    Alert.alert('Delete', 'Are you sure you want to delete this doctor?', [
-      { text: 'Cancel', style: 'cancel' },
-      {
-        text: 'Delete',
-        style: 'destructive',
-        onPress: () => {
-          setDoctors((prev) => prev.filter((d) => d.id !== id))
-        },
-      },
-    ])
-  }
-
-  const handleViewDetails = (item) => {
-    console.log('View Details:', item)
-    if (navigation) navigation.navigate('ViewDoctorDetails', { doctor: item })
-  }
-
-  const handleEdit = (item) => {
-    if (navigation) navigation.navigate('EditDoctor', { doctor: item })
-  }
-
-  const filteredDoctors = useMemo(() => {
-    let list = [...doctors]
-    if (searchText.trim()) {
-      const q = searchText.toLowerCase()
-      list = list.filter(
-        (d) =>
-          d.name.toLowerCase().includes(q) ||
-          (d.contact && d.contact.includes(q)) ||
-          (d.hospital && d.hospital.toLowerCase().includes(q))
-      )
+    useEffect(() => {
+        // simulate api fetch
+        setLoading(true)
+        const t = setTimeout(() => {
+          setDoctors(mockDoctors)
+          setLoading(false)
+        }, 600)
+        return () => clearTimeout(t)
+    }, [])
+    
+    const onRefresh = () => {
+        setRefreshing(true)
+        // simulate refresh
+        setTimeout(() => {
+          setDoctors(mockDoctors) // in real app re-fetch
+          setRefreshing(false)
+        }, 800)
     }
-    if (filterCity) list = list.filter((d) => d.city === filterCity)
-    if (filterSpec) list = list.filter((d) => d.specialization === filterSpec)
-    if (filterCategory) list = list.filter((d) => d.category === filterCategory)
-    if (filterHospitalType) list = list.filter((d) => d.hospitalType === filterHospitalType)
-
-    if (sortBy === 'name_asc') {
-      list.sort((a, b) => a.name.localeCompare(b.name))
-    } else if (sortBy === 'date_desc') {
-      list.sort((a, b) => new Date(b.dateAdded) - new Date(a.dateAdded))
-    } else if (sortBy === 'category') {
-      list.sort((a, b) => a.category.localeCompare(b.category))
+    
+    const clearFilters = () => {
+        setSearchText('')
+        setFilterCity('')
+        setFilterSpec('')
+        setFilterCategory('')
+        setFilterHospitalType('')
+        setSortBy(sortOptions[0].value)
     }
-    return list
-  }, [doctors, searchText, filterCity, filterSpec, filterCategory, filterHospitalType, sortBy])
+    
+    const handleDelete = (id) => {
+        Alert.alert('Delete', 'Are you sure you want to delete this doctor?', [
+          { text: 'Cancel', style: 'cancel' },
+          {
+            text: 'Delete',
+            style: 'destructive',
+            onPress: () => {
+              setDoctors((prev) => prev.filter((d) => d.id !== id))
+            },
+          },
+        ])
+    }
+    
+    const handleViewDetails = (item) => {
+        console.log('View Details:', item)
+        if (navigation) navigation.navigate('ViewDoctorDetails', { doctor: item })
+    }
+    
+    const handleEdit = (item) => {
+        if (navigation) navigation.navigate('EditDoctor', { doctor: item })
+    }
+    
+    const filteredDoctors = useMemo(() => {
+        let list = [...doctors]
+        if (searchText.trim()) {
+          const q = searchText.toLowerCase()
+          list = list.filter(
+            (d) =>
+              d.name.toLowerCase().includes(q) ||
+              (d.contact && d.contact.includes(q)) ||
+              (d.hospital && d.hospital.toLowerCase().includes(q))
+          )
+        }
+        if (filterCity) list = list.filter((d) => d.city === filterCity)
+        if (filterSpec) list = list.filter((d) => d.specialization === filterSpec)
+        if (filterCategory) list = list.filter((d) => d.category === filterCategory)
+        if (filterHospitalType) list = list.filter((d) => d.hospitalType === filterHospitalType)
+    
+        if (sortBy === 'name_asc') {
+          list.sort((a, b) => a.name.localeCompare(b.name))
+        } else if (sortBy === 'date_desc') {
+          list.sort((a, b) => new Date(b.dateAdded) - new Date(a.dateAdded))
+        } else if (sortBy === 'category') {
+          list.sort((a, b) => a.category.localeCompare(b.category))
+        }
+        return list
+    }, [doctors, searchText, filterCity, filterSpec, filterCategory, filterHospitalType, sortBy])
 
-  const renderDoctorCard = ({ item }) =>{
-    return (
-    <View style={styles.card}>
-      <View style={styles.cardLeft}>
-        <Image source={{ uri: item.avatar }} style={styles.avatar} />
-      </View>
-      <View style={styles.cardBody}>
-        <View style={styles.row}>
-          <Text style={styles.name}>{item.name}</Text>
-          <View style={[styles.badge, item.category === 'A' ? styles.badgeA : item.category === 'B' ? styles.badgeB : styles.badgeC]}>
-            <Text style={styles.badgeText}>{item.category}</Text>
+    const renderDoctorCard = ({ item }) =>{
+        return (
+        <View style={styles.card}>
+          <View style={styles.cardLeft}>
+            <Image source={{ uri: item.avatar }} style={styles.avatar} />
+          </View>
+          <View style={styles.cardBody}>
+            <View style={styles.row}>
+              <Text style={styles.name}>{item.name}</Text>
+              <View style={[styles.badge, item.category === 'A' ? styles.badgeA : item.category === 'B' ? styles.badgeB : styles.badgeC]}>
+                <Text style={styles.badgeText}>{item.category}</Text>
+              </View>
+            </View>
+            <Text style={styles.subText}>{item.specialization} • {item.hospital}</Text>
+            <Text style={styles.metaText}>{item.city} • {item.hospitalType}</Text>
+            <Text style={styles.contactText}>📞 {item.contact}</Text>
+            <View style={styles.actionRow}>
+              <TouchableOpacity style={styles.actionBtn} onPress={() => handleViewDetails(item)}>
+                <MaterialIcons name="visibility" size={18} color={Colors.primary} />
+                <Text style={styles.actionLabel}>View</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.actionBtn} onPress={() => handleEdit(item)}>
+                <MaterialIcons name="edit" size={18} color={Colors.primary} />
+                <Text style={styles.actionLabel}>Edit</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.actionBtn} onPress={() => handleDelete(item.id)}>
+                <MaterialIcons name="delete" size={18} color={Colors.secondary} />
+                <Text style={[styles.actionLabel, { color: Colors.secondary }]}>Delete</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.actionBtn} onPress={() => console.log('Open map for', item.name)}>
+                <MaterialIcons name="my-location" size={18} color={Colors.info} />
+                <Text style={styles.actionLabel}>Map</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
-        <Text style={styles.subText}>{item.specialization} • {item.hospital}</Text>
-        <Text style={styles.metaText}>{item.city} • {item.hospitalType}</Text>
-        <Text style={styles.contactText}>📞 {item.contact}</Text>
-        <View style={styles.actionRow}>
-          <TouchableOpacity style={styles.actionBtn} onPress={() => handleViewDetails(item)}>
-            <MaterialIcons name="visibility" size={18} color={Colors.primary} />
-            <Text style={styles.actionLabel}>View</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.actionBtn} onPress={() => handleEdit(item)}>
-            <MaterialIcons name="edit" size={18} color={Colors.primary} />
-            <Text style={styles.actionLabel}>Edit</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.actionBtn} onPress={() => handleDelete(item.id)}>
-            <MaterialIcons name="delete" size={18} color={Colors.secondary} />
-            <Text style={[styles.actionLabel, { color: Colors.secondary }]}>Delete</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.actionBtn} onPress={() => console.log('Open map for', item.name)}>
-            <MaterialIcons name="my-location" size={18} color={Colors.info} />
-            <Text style={styles.actionLabel}>Map</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-    </View>
-  )}
+    )}
+    
+    if (loading) {
+        return (
+          <View style={styles.centered}>
+            <ActivityIndicator size="small" color={Colors.primary} />
+          </View>
+        )
+    }
 
-  if (loading) {
-    return (
-      <View style={styles.centered}>
-        <ActivityIndicator size="small" color={Colors.primary} />
-      </View>
-    )
-  }
 
   return (
     <View style={styles.container}>
-      <MyHeader
-        title={`View Doctor (${filteredDoctors.length})`}
-        onBackPress={()=> navigation.goBack()}
-        onFabPress={() => navigation && navigation.navigate('AddDoctor')}
-        fabTitle="Add"
-      />
+      {/* <MyHeader
+        title={`Doctor List (${filteredDoctors.length})`}
+        // onBackPress={()=> navigation.goBack()}
+        // onFabPress={() => navigation && navigation.navigate('AddDoctor')}
+        // fabTitle="Add"
+      /> */}
+      <View style={{alignItems: 'center', justifyContent: 'center', backgroundColor: Colors.white, paddingVertical: responsiveHeight(1)}}>
+        <Text style={{fontWeight: 'bold', fontSize: responsiveFontSize(2), color: Colors.primary}}>Doctors List</Text>
+      </View>
       <View style={styles.content}>
         {/* Search & Filters */}
         <View style={styles.searchRow}>
@@ -342,13 +344,14 @@ const ViewDoctor = ({ navigation }) => {
   )
 }
 
-export default ViewDoctor
+export default Doctors
+
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: Colors.background },
   content: { flex: 1, paddingHorizontal: responsiveWidth(3), paddingTop: responsiveHeight(1) },
   centered: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: Colors.background },
-  searchRow: { marginBottom: responsiveHeight(1) },
+  searchRow: { marginBottom: responsiveHeight(1), marginHorizontal: responsiveWidth(1) },
   searchBar: {
     backgroundColor: Colors.white,
     borderRadius: responsiveWidth(3),

@@ -182,6 +182,11 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#000',
   },
+  logo: {
+    height: responsiveHeight(20),
+    width: '100%',
+    alignSelf: 'center',
+  },
   card: {
     backgroundColor: '#fff',
     borderRadius: responsiveWidth(3),
@@ -194,11 +199,7 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 2,
   },
-  logo: {
-    height: responsiveHeight(20),
-    width: '100%',
-    alignSelf: 'center',
-  },
+  
   tabRow: {
     flexDirection: 'row',
     justifyContent: 'space-around',
