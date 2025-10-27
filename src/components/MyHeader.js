@@ -19,7 +19,7 @@ const MyHeader = ({ title, onBackPress, onFabPress, fabTitle, rightComponent, re
         <Appbar.Content title={title} titleStyle={[styles.title,{paddingLeft: onBackPress ? responsiveWidth(0) : responsiveWidth(1)}]} />
         {onFabPress && (
           <TouchableOpacity onPress={onFabPress} style={styles.fabButton}>
-            {/* <Icon name="plus" size={responsiveFontSize(2.4)} color={Colors.white} /> */}
+            <MaterialIcons name="add" size={responsiveFontSize(2.4)} color={Colors.white} />
             <Text style={styles.fabText}>{fabTitle}</Text>
           </TouchableOpacity>
         )}
@@ -48,17 +48,16 @@ const styles = StyleSheet.create({
     fontSize: responsiveFontSize(2),
     color: Colors.black,
     fontWeight: 'bold',
-    
   },
   fabButton: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: Colors.primary,
-    paddingHorizontal: responsiveWidth(2),
+    paddingHorizontal: responsiveWidth(2.5),
     paddingVertical: responsiveHeight(0.6),
     borderRadius: responsiveWidth(12),
-    marginRight: responsiveWidth(3.5),
+    marginRight: responsiveWidth(3),
     gap: responsiveWidth(1),
   },
   fabText:{

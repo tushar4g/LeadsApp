@@ -8,7 +8,7 @@ const hexToRgba = (hex, opacity) => {
 };
 
 const Colors = {
-    primary: '#4e8cff',
+    primary: '#6366F1',
     secondary: '#ff5252',
     
     textPrimary: '#222222',
@@ -27,6 +27,7 @@ const Colors = {
     lightBackground: '#f7f7f7',
 
     deleteButton: '#ff0000',
+    lightPrimary: '#E9EAFE',
 
 };
 

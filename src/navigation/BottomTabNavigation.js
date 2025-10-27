@@ -5,9 +5,10 @@ import Home from '../pages/home/Home'
 import HomePage from '../pages/home/HomePage'
 import Profile from '../pages/profile/Profile'
 import Leads from '../pages/leads/Leads'
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import  MaterialIcons  from '@react-native-vector-icons/material-icons';
 import { StyleSheet, View } from 'react-native';
+import Colors from '../style/Colors';
+import Doctors from '../pages/doctor/Doctors';
 
 const Tab = createBottomTabNavigator();
 
@@ -30,14 +31,16 @@ const BottomTabNavigation = () => {
 
     if (route.name === 'Home') {
       iconName = 'home';
+    } else if (route.name === 'Doctors') {
+      iconName = 'people';
     } else if (route.name === 'HomePage') {
       iconName = 'home';
     } else if (route.name === 'Leads') {
-      iconName = 'opacity';
+      iconName = 'link';
     } else if (route.name === 'Transaction') {
       iconName = 'account-balance-wallet';
     } else if (route.name === 'Profile') {
-      iconName = 'account-circle';
+      iconName = 'person';
     }
 
     return iconName;
@@ -47,17 +50,19 @@ const BottomTabNavigation = () => {
     const getTabColor = (routeName) => {
     switch (routeName) {
         case 'Home':
-        return 'red';
+          return Colors.primary;
         case 'HomePage':
-            return 'blue';
+          return Colors.primary;
+        case 'Doctors':
+          return Colors.primary;
         case 'Leads':
-            return 'green';
+          return Colors.primary;
         case 'Transaction':
-            return 'orange';
+          return Colors.primary;
         case 'Profile':
-            return 'purple';
+          return Colors.primary;
         default:
-            return 'black';
+          return Colors.primary;
     }
     };
 
@@ -98,9 +103,10 @@ const BottomTabNavigation = () => {
       })}
     >
       {/* Add your Tab.Screen components here */}
-      <Tab.Screen name="HomePage" component={HomePage} />
+      <Tab.Screen name="Home" component={Home} />
+      <Tab.Screen name="Doctors" component={Doctors} />
       <Tab.Screen name="Leads" component={Leads} />
-      {/* <Tab.Screen name="Home" component={Home} /> */}
+      {/* <Tab.Screen name="HomePage" component={HomePage} /> */}
       <Tab.Screen name="Profile" component={Profile} />
     </Tab.Navigator>
   );
