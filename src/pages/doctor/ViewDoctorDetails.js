@@ -7,7 +7,6 @@ import {
   Image,
   TouchableOpacity,
   Alert,
-  SafeAreaView,
 } from 'react-native'
 import { responsiveFontSize, responsiveWidth, responsiveHeight } from 'react-native-responsive-dimensions'
 import MaterialIcons from '@react-native-vector-icons/material-icons'
@@ -32,7 +31,7 @@ const ViewDoctorDetails = ({ route, navigation }) => {
     notes: '',
     referralCode: '',
     avatar: 'https://i.pravatar.cc/150?img=12',
-    verified: false,
+    verified: true,
   }
 
   const handleEdit = () => {
@@ -60,14 +59,14 @@ const ViewDoctorDetails = ({ route, navigation }) => {
   }
 
   return (
-    <SafeAreaView style={styles.safe}>
+    <View style={styles.safe}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation && navigation.goBack()} style={styles.headerLeft}>
-          <MaterialIcons name="arrow-back" size={22} color={Colors.white} />
+          <MaterialIcons name="arrow-back" size={responsiveFontSize(2.5)} color={Colors.white} />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Doctor Details</Text>
         <TouchableOpacity onPress={handleEdit} style={styles.headerRight}>
-          <MaterialIcons name="edit" size={20} color={Colors.white} />
+          <MaterialIcons name="edit" size={responsiveFontSize(2.5)} color={Colors.white} />
         </TouchableOpacity>
       </View>
 
@@ -77,9 +76,9 @@ const ViewDoctorDetails = ({ route, navigation }) => {
           <Image source={{ uri: doctor.avatar }} style={styles.avatar} />
           <View style={styles.nameRow}>
             <Text style={styles.name}>{doctor.name}</Text>
-            {doctor.verified && (
+            {doctor?.verified && (
               <View style={styles.verified}>
-                <MaterialIcons name="verified" size={16} color={Colors.white} />
+                <MaterialIcons name="verified" size={responsiveFontSize(1.2)} color={Colors.white} />
                 <Text style={styles.verifiedText}>Verified</Text>
               </View>
             )}
@@ -89,14 +88,14 @@ const ViewDoctorDetails = ({ route, navigation }) => {
 
           <View style={styles.quickActions}>
             <TouchableOpacity style={styles.quickBtn} onPress={handleCall}>
-              <MaterialIcons name="phone" size={18} color={Colors.white} />
+              <MaterialIcons name="phone" size={responsiveFontSize(2)} color={Colors.white} />
               <Text style={styles.quickLabel}>Call</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={[styles.quickBtn, { backgroundColor: Colors.info }]}
               onPress={() => console.log('Open chat / whatsapp', doctor.contact)}
             >
-              <MaterialIcons name="chat" size={18} color={Colors.white} />
+              <MaterialIcons name="chat" size={responsiveFontSize(2)} color={Colors.white} />
               <Text style={styles.quickLabel}>Chat</Text>
             </TouchableOpacity>
           </View>
@@ -106,7 +105,7 @@ const ViewDoctorDetails = ({ route, navigation }) => {
         <View style={styles.card}>
           <Text style={styles.cardTitle}>Contact Information</Text>
           <View style={styles.row}>
-            <MaterialIcons name="phone" size={18} color={Colors.primary} />
+            <MaterialIcons name="phone" size={responsiveFontSize(2)} color={Colors.primary} />
             <View style={styles.col}>
               <Text style={styles.label}>Mobile</Text>
               <Text style={styles.value}>{doctor.contact || 'N/A'}</Text>
@@ -114,7 +113,7 @@ const ViewDoctorDetails = ({ route, navigation }) => {
           </View>
 
           <View style={styles.row}>
-            <MaterialIcons name="email" size={18} color={Colors.primary} />
+            <MaterialIcons name="email" size={responsiveFontSize(2)} color={Colors.primary} />
             <View style={styles.col}>
               <Text style={styles.label}>Email</Text>
               <Text style={styles.value}>{doctor.email || 'N/A'}</Text>
@@ -122,7 +121,7 @@ const ViewDoctorDetails = ({ route, navigation }) => {
           </View>
 
           <View style={styles.row}>
-            <MaterialIcons name="location-on" size={18} color={Colors.primary} />
+            <MaterialIcons name="location-on" size={responsiveFontSize(2)} color={Colors.primary} />
             <View style={styles.col}>
               <Text style={styles.label}>Clinic Address</Text>
               <Text style={styles.value}>{doctor.address || 'N/A'}</Text>
@@ -130,7 +129,7 @@ const ViewDoctorDetails = ({ route, navigation }) => {
           </View>
 
           <View style={styles.row}>
-            <MaterialIcons name="location-city" size={18} color={Colors.primary} />
+            <MaterialIcons name="location-city" size={responsiveFontSize(2)} color={Colors.primary} />
             <View style={styles.col}>
               <Text style={styles.label}>City</Text>
               <Text style={styles.value}>{doctor.city || 'N/A'}</Text>
@@ -138,7 +137,7 @@ const ViewDoctorDetails = ({ route, navigation }) => {
           </View>
 
           <View style={styles.row}>
-            <MaterialIcons name="pin" size={18} color={Colors.primary} />
+            <MaterialIcons name="pin" size={responsiveFontSize(2)} color={Colors.primary} />
             <View style={styles.col}>
               <Text style={styles.label}>Pincode</Text>
               <Text style={styles.value}>{doctor.pincode || 'N/A'}</Text>
@@ -151,7 +150,7 @@ const ViewDoctorDetails = ({ route, navigation }) => {
           <Text style={styles.cardTitle}>Professional Details</Text>
 
           <View style={styles.row}>
-            <MaterialIcons name="medical-services" size={18} color={Colors.primary} />
+            <MaterialIcons name="medical-services" size={responsiveFontSize(2)} color={Colors.primary} />
             <View style={styles.col}>
               <Text style={styles.label}>Specialization</Text>
               <Text style={styles.value}>{doctor.specialization || 'N/A'}</Text>
@@ -159,7 +158,7 @@ const ViewDoctorDetails = ({ route, navigation }) => {
           </View>
 
           <View style={styles.row}>
-            <MaterialIcons name="school" size={18} color={Colors.primary} />
+            <MaterialIcons name="school" size={responsiveFontSize(2)} color={Colors.primary} />
             <View style={styles.col}>
               <Text style={styles.label}>Qualification</Text>
               <Text style={styles.value}>{doctor.qualification || 'N/A'}</Text>
@@ -167,7 +166,7 @@ const ViewDoctorDetails = ({ route, navigation }) => {
           </View>
 
           <View style={styles.row}>
-            <MaterialIcons name="schedule" size={18} color={Colors.primary} />
+            <MaterialIcons name="schedule" size={responsiveFontSize(2)} color={Colors.primary} />
             <View style={styles.col}>
               <Text style={styles.label}>Experience</Text>
               <Text style={styles.value}>{doctor.experience ? `${doctor.experience} yrs` : 'N/A'}</Text>
@@ -175,7 +174,7 @@ const ViewDoctorDetails = ({ route, navigation }) => {
           </View>
 
           <View style={styles.row}>
-            <MaterialIcons name="local-hospital" size={18} color={Colors.primary} />
+            <MaterialIcons name="local-hospital" size={responsiveFontSize(2)} color={Colors.primary} />
             <View style={styles.col}>
               <Text style={styles.label}>Hospital / Clinic</Text>
               <Text style={styles.value}>{doctor.hospital || 'N/A'}</Text>
@@ -183,7 +182,7 @@ const ViewDoctorDetails = ({ route, navigation }) => {
           </View>
 
           <View style={styles.row}>
-            <MaterialIcons name="attach-money" size={18} color={Colors.primary} />
+            <MaterialIcons name="attach-money" size={responsiveFontSize(2)} color={Colors.primary} />
             <View style={styles.col}>
               <Text style={styles.label}>Consultation Fee</Text>
               <Text style={styles.value}>{doctor.fee ? `₹ ${doctor.fee}` : 'N/A'}</Text>
@@ -196,7 +195,7 @@ const ViewDoctorDetails = ({ route, navigation }) => {
           <Text style={styles.cardTitle}>Other Information</Text>
 
           <View style={styles.row}>
-            <MaterialIcons name="map" size={18} color={Colors.primary} />
+            <MaterialIcons name="map" size={responsiveFontSize(2)} color={Colors.primary} />
             <View style={styles.col}>
               <Text style={styles.label}>Area / Region</Text>
               <Text style={styles.value}>{doctor.area || 'N/A'}</Text>
@@ -204,7 +203,7 @@ const ViewDoctorDetails = ({ route, navigation }) => {
           </View>
 
           <View style={styles.row}>
-            <MaterialIcons name="note" size={18} color={Colors.primary} />
+            <MaterialIcons name="note" size={responsiveFontSize(2)} color={Colors.primary} />
             <View style={styles.col}>
               <Text style={styles.label}>Notes</Text>
               <Text style={styles.value}>{doctor.notes || 'N/A'}</Text>
@@ -212,7 +211,7 @@ const ViewDoctorDetails = ({ route, navigation }) => {
           </View>
 
           <View style={styles.row}>
-            <MaterialIcons name="label" size={18} color={Colors.primary} />
+            <MaterialIcons name="label" size={responsiveFontSize(2)} color={Colors.primary} />
             <View style={styles.col}>
               <Text style={styles.label}>Referral Code</Text>
               <Text style={styles.value}>{doctor.referralCode || 'N/A'}</Text>
@@ -223,10 +222,9 @@ const ViewDoctorDetails = ({ route, navigation }) => {
         {/* Bottom Action Buttons */}
         <View style={styles.actions}>
           <CustomButton title="Edit Doctor" onPress={handleEdit} bgColor={Colors.primary} color={Colors.white} />
-          <CustomButton title="Delete Doctor" onPress={handleDelete} bgColor={Colors.white} color={Colors.secondary} borderC={Colors.secondary} />
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   )
 }
 
@@ -242,8 +240,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: responsiveWidth(3),
     elevation: 2,
   },
-  headerLeft: { padding: 8 },
-  headerRight: { padding: 8 },
+  headerLeft: { padding: responsiveWidth(1) },
+  headerRight: { padding: responsiveWidth(1) },
   headerTitle: { flex: 1, textAlign: 'center', color: Colors.white, fontSize: responsiveFontSize(2), fontWeight: '700' },
 
   container: { padding: responsiveWidth(4), paddingBottom: responsiveHeight(6) },
@@ -251,7 +249,7 @@ const styles = StyleSheet.create({
   profileCard: {
     alignItems: 'center',
     backgroundColor: Colors.white,
-    borderRadius: 12,
+    borderRadius: responsiveWidth(2),
     paddingVertical: responsiveHeight(3),
     paddingHorizontal: responsiveWidth(3),
     marginBottom: responsiveHeight(2),
@@ -283,5 +281,5 @@ const styles = StyleSheet.create({
   label: { fontSize: responsiveFontSize(1.2), color: Colors.textSecondary },
   value: { fontSize: responsiveFontSize(1.4), color: Colors.textPrimary, marginTop: responsiveHeight(0.2) },
 
-  actions: { marginTop: responsiveHeight(2), flexDirection: 'row', justifyContent: 'space-between', gap: responsiveWidth(3) },
+  actions: { marginTop: responsiveHeight(2),},
 })
