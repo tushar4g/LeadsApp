@@ -22,79 +22,79 @@ const mockDoctors = [
     id: 'd1',
     name: 'Dr. Anill Mehta',
     specialization: 'Cardiologist',
-    hospital: 'City Heart Clinic',
+    hospitalName: 'City Heart Clinic',
     city: 'Raipur',
     state: 'Chhattisgarh',
     category: 'A',
     hospitalType: 'private',
-    contact: '9876543210',
+    mobile: '9876543210',
     avatar: 'https://i.pravatar.cc/120?img=2',
-    dateAdded: '2025-09-10',
+    dateAdded: '10-09-2025',
   },
   {
     id: 'd2',
     name: 'Dr. Shweta Sharma',
     specialization: 'Dermatologist',
-    hospital: 'Skin Care Center',
+    hospitalName: 'Skin Care Center',
     city: 'Bilaspur',
     state: 'Chhattisgarh',
     category: 'B',
     hospitalType: 'govt',
-    contact: '9123456780',
+    mobile: '9123456780',
     avatar: 'https://i.pravatar.cc/120?img=5',
-    dateAdded: '2025-09-18',
+    dateAdded: '18-09-2025',
   },
   {
     id: 'd3',
     name: 'Dr. Rajiv Patel',
     specialization: 'Neurologist',
-    hospital: 'Neuro Health',
+    hospitalName: 'Neuro Health',
     city: 'Durg',
     state: 'Chhattisgarh',
     category: 'A',
     hospitalType: 'corporate',
-    contact: '9012345678',
+    mobile: '9012345678',
     avatar: 'https://i.pravatar.cc/120?img=7',
-    dateAdded: '2025-10-01',
+    dateAdded: '01-10-2025',
   },
   {
     id: 'd4',
     name: 'Dr. Rajiv Dixhit',
     specialization: 'Neurologist',
-    hospital: 'Neuro Health',
+    hospitalName: 'Neuro Health',
     city: 'Durg',
     state: 'Chhattisgarh',
     category: 'C',
     hospitalType: 'corporate',
-    contact: '9012345678',
+    mobile: '9012345678',
     avatar: 'https://i.pravatar.cc/120?img=8',
-    dateAdded: '2025-10-01',
+    dateAdded: '25-10-2025',
   },
   {
     id: 'd5',
     name: 'Dr. Rakhi Patel',
     specialization: 'Neurologist',
-    hospital: 'Neuro Health',
+    hospitalName: 'Neuro Health',
     city: 'Durg',
     state: 'Chhattisgarh',
     category: 'A',
     hospitalType: 'corporate',
-    contact: '9012345678',
+    mobile: '9012345678',
     avatar: 'https://i.pravatar.cc/120?img=9',
-    dateAdded: '2025-10-01',
+    dateAdded: '01-10-2025',
   },
   {
     id: 'd6',
     name: 'Dr. Ravi Patel',
     specialization: 'Neurologist',
-    hospital: 'Neuro Health',
+    hospitalName: 'Neuro Health',
     city: 'Durg',
     state: 'Chhattisgarh',
     category: 'B',
     hospitalType: 'corporate',
-    contact: '9012345678',
+    mobile: '9012345678',
     avatar: 'https://i.pravatar.cc/120?img=10',
-    dateAdded: '2025-10-01',
+    dateAdded: '01-10-2025',
   }
   // add more mock items as needed
 ]
@@ -205,8 +205,8 @@ const Doctors = ({ navigation }) => {
           list = list.filter(
             (d) =>
               d.name.toLowerCase().includes(q) ||
-              (d.contact && d.contact.includes(q)) ||
-              (d.hospital && d.hospital.toLowerCase().includes(q))
+              (d.mobile && d.mobile.includes(q)) ||
+              (d.hospitalName && d.hospitalName.toLowerCase().includes(q))
           )
         }
         if (filterCity) list = list.filter((d) => d.city === filterCity)
@@ -237,9 +237,9 @@ const Doctors = ({ navigation }) => {
                 <Text style={styles.badgeText}>{item.category}</Text>
               </View>
             </View>
-            <Text style={styles.subText}>{item.specialization} • {item.hospital}</Text>
+            <Text style={styles.subText}>{item.specialization} • {item.hospitalName}</Text>
             <Text style={styles.metaText}>{item.city} • {item.hospitalType}</Text>
-            <Text style={styles.contactText}>📞 {item.contact}</Text>
+            <Text style={styles.mobileText}>📞 {item.mobile}</Text>
             <View style={styles.actionRow}>
               <TouchableOpacity style={styles.actionBtn} onPress={() => handleViewDetails(item)}>
                 <MaterialIcons name="visibility" size={18} color={Colors.primary} />
@@ -391,7 +391,7 @@ const styles = StyleSheet.create({
   name: { fontSize: responsiveFontSize(1.9), fontWeight: '700', color: Colors.textPrimary, flex: 1 },
   subText: { color: Colors.textSecondary, fontSize: responsiveFontSize(1.4), marginBottom: responsiveHeight(0.3) },
   metaText: { color: Colors.textTertiary, fontSize: responsiveFontSize(1.3), marginBottom: responsiveHeight(0.6) },
-  contactText: { color: Colors.textSecondary, fontSize: responsiveFontSize(1.4), marginBottom: responsiveHeight(0.6) },
+  mobileText: { color: Colors.textSecondary, fontSize: responsiveFontSize(1.4), marginBottom: responsiveHeight(0.6) },
   badge: { paddingHorizontal: 8, paddingVertical: 4, borderRadius: 8 },
   badgeText: { color: Colors.white, fontWeight: '700' },
   badgeA: { backgroundColor: '#16a34a' },

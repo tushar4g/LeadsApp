@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Alert, Image, ToastAndroid, PermissionsAndroid, ActivityIndicator, Linking } from 'react-native'
 import { responsiveFontSize, responsiveWidth, responsiveHeight } from 'react-native-responsive-dimensions'
 import  MaterialIcons  from '@react-native-vector-icons/material-icons';
@@ -24,9 +24,9 @@ const stateOptions = [
 ]
 
 const cityOptions = [
-  { label: 'Raipur', value: 'raipur' },
-  { label: 'Bilaspur', value: 'bilaspur' },
-  { label: 'Durg', value: 'durg' },
+  { label: 'Raipur', value: 'Raipur' },
+  { label: 'Bilaspur', value: 'Bilaspur' },
+  { label: 'Durg', value: 'Durg' },
 ]
 
 const specializationOptions = [
@@ -73,7 +73,12 @@ const visitingDaysOptions = [
   { label: 'Sunday', value: 'sunday' },
 ]
 
-const AddDoctor = ({ navigation }) => {
+const AddDoctor = ({ navigation, route }) => {
+  const doctor = route?.params?.doctor ?? {}
+  const isEditMode = !!route.params?.doctor;
+  console.log('Doctor:', doctor)
+
+
   // Basic Info
   const [profileImage, setProfileImage] = useState(null)
   const [fullName, setFullName] = useState('')
@@ -119,25 +124,77 @@ const AddDoctor = ({ navigation }) => {
   const [registrationProof, setRegistrationProof] = useState(null)
   const [clinicPhotos, setClinicPhotos] = useState([])
 
+  useEffect(() => {
+    if (isEditMode && doctor) {
+      const data = route.params.doctor;
+      setProfileImage(data.avatar || null);
+      setFullName(data.name || '');
+      setGender(data.gender || '');
+      setDob(data.dob || '');
+      setMobile(data.mobile || '');
+      setAltMobile(data.altMobile || '');
+      setEmail(data.email || '');
+      setAddress(data.address || '');
+      setCity(data.city || '');
+      setState(data.state || '');
+      setPincode(data.pincode || '');
+
+      setQualification(data.qualification || '');
+      setSpecialization(data.specialization || '');
+      setRegistrationNo(data.registrationNo || '');
+      setExperience(data.experience || '');
+      setDesignation(data.designation || '');
+      setHospitalName(data.hospitalName || '');
+      setHospitalType(data.hospitalType || '');
+      setConsultationHours(data.consultationHours || '');
+      setVisitingDays(data.visitingDays || []);
+
+      setClinicAddress(data.clinic || '');
+      setLocation(data.location || null);
+      setContactPerson(data.contactPerson || '');
+      setContactNumber(data.contactNumber || '');
+      setClinicEmail(data.clinicEmail || '');
+
+      setSourceType(data.sourceType || '');
+      setReferenceName(data.referenceName || '');
+      setLeadSource(data.leadSource || '');
+      setDoctorCategory(data.doctorCategory || '');
+      setRemarks(data.notes || '');
+
+      setVisitingCard(data.visitingCard || null);
+      setRegistrationProof(data.registrationProof || null);
+      setClinicPhotos(data.clinicPhotos || []);
+    }
+  }, [doctor, isEditMode]);
+
   // Pickers
-  const handlePickProfileImage = async () => {
+  const handleProfileImage = async () => {
     const img = await PickImageComponent()
-    if (img) setProfileImage(img)
+    console.log('Profile Image:', img)
+    if (img) setProfileImage(img.uri)
   }
-  const handlePickVisitingCard = async () => {
+  const handleVisitingCard = async () => {
     const img = await PickImageComponent()
+    console.log('Visiting Card:', img)
     if (img) {
-      setVisitingCard(img)
-      console.log('Visiting Card:', img)
+      setVisitingCard(img.uri)
     } 
   }
-  const handlePickRegistrationProof = async () => {
+  const handleRegistrationProof = async () => {
     const img = await PickImageComponent()
-    if (img) setRegistrationProof(img)
+    if (img) setRegistrationProof(img.uri)
   }
-  const handlePickClinicPhotos = async () => {
-    const img = await PickImageComponent()
-    if (img) setClinicPhotos([...clinicPhotos, img])
+  const handleClinicPhotos = async () => {
+    if (clinicPhotos.length >= 5) {
+      Alert.alert('Limit Reached', 'You can upload a maximum of 5 clinic photos.');
+      return;
+    }
+    const img = await PickImageComponent();
+    console.log('Clinic Photos:', img);
+
+    if (img) {
+      setClinicPhotos(prev => [...prev, img.uri].slice(0, 5)); // just a safety limit
+    }
   }
 
   // Validation
@@ -170,7 +227,7 @@ const AddDoctor = ({ navigation }) => {
   }
 
   // Save Handler
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!validate()) return
     const formData = {
       profileImage, fullName, gender, dob, mobile, altMobile, email, address, city, state, pincode,
@@ -179,11 +236,24 @@ const AddDoctor = ({ navigation }) => {
       sourceType, referenceName, leadSource, doctorCategory, remarks,
       visitingCard, registrationProof, clinicPhotos
     }
-    console.log('Doctor Form Data:', formData)
-    Alert.alert('Success', 'Doctor data logged to console!')
-    // You can dispatch to redux or API here
-  }
+    console.log('Form Data:', formData)
 
+
+    try {
+      if (isEditMode) {
+        console.log('Editing Doctor:', formData);
+        Alert.alert('Success', 'Doctor details updated successfully!');
+        // TODO: call updateDoctor API
+      } else {
+        console.log('Adding New Doctor:', formData);
+        Alert.alert('Success', 'Doctor added successfully!');
+        // TODO: call createDoctor API
+      }
+    } catch (error) {
+      console.error('Error saving doctor:', error);
+      Alert.alert('Error', 'Failed to save doctor details.');
+    }
+  }
   // Location permission
     const requestLocationPermission = async () => {
         console.log('Requesting location permission...');
@@ -299,15 +369,15 @@ const AddDoctor = ({ navigation }) => {
 
   return (
     <View style={{ flex: 1, backgroundColor: Colors.background }}>
-      <MyHeader title="Add Doctor" onBackPress={() => navigation.goBack()} />
+      <MyHeader  title={isEditMode ? "Edit Doctor" : "Add Doctor"}  onBackPress={() => navigation.goBack()} />
       <ScrollView contentContainerStyle={{ padding: responsiveWidth(4), paddingBottom: 80 }}>
         {/* Basic Information */}
         <Text style={styles.sectionHeaderText}>Basic Information</Text>
         <View style={styles.section}>
           {/* Profile Image Picker */}
-          <TouchableOpacity onPress={handlePickProfileImage} style={styles.imageProfile}>
+          <TouchableOpacity onPress={handleProfileImage} style={styles.imageProfile}>
             {profileImage ? 
-              <Image source={{uri: profileImage.uri}} style={styles.profileImage}/>
+              <Image source={{uri: profileImage}} style={styles.profileImage}/>
             : 
               <View style={[styles.profileImage, {justifyContent: 'center',alignItems: 'center',}]}>
                 <MaterialIcons
@@ -385,13 +455,13 @@ const AddDoctor = ({ navigation }) => {
         <Text style={styles.sectionHeaderText}>Documents</Text>
         <View style={[styles.section, {gap: responsiveHeight(2),}]}>
           <View style={{}}>
-            <TouchableOpacity style={styles.uploadBox1} onPress={handlePickVisitingCard}>
+            <TouchableOpacity style={styles.uploadBox1} onPress={handleVisitingCard}>
               {visitingCard ? (
                   <View style={[{position: 'relative',}]}>
-                      <Image source={{ uri: visitingCard.uri ? visitingCard.uri : 'http'}} style={styles.image} resizeMode='cover' />
+                      <Image source={{ uri: visitingCard ? visitingCard : 'http'}} style={styles.image} resizeMode='cover' />
                       <TouchableOpacity
                       style={styles.removeImageButton}
-                      onPress={() => setRegistrationProof(null)}
+                      onPress={() => setVisitingCard(null)}
                       >
                       <MaterialIcons name="close" size={responsiveFontSize(2)} color={Colors.deleteButton} />
                       <Text style={styles.removeImageText}>Remove</Text>
@@ -406,10 +476,10 @@ const AddDoctor = ({ navigation }) => {
             </TouchableOpacity>
           </View>
           <View style={{}}>
-            <TouchableOpacity style={styles.uploadBox1} onPress={handlePickRegistrationProof}>
+            <TouchableOpacity style={styles.uploadBox1} onPress={handleRegistrationProof}>
               {registrationProof ? (
                   <View style={[{position: 'relative',}]}>
-                      <Image source={{ uri: registrationProof.uri ? registrationProof.uri : 'http'}} style={styles.image} resizeMode='cover' />
+                      <Image source={{ uri: registrationProof ? registrationProof : 'http'}} style={styles.image} resizeMode='cover' />
                       <TouchableOpacity
                       style={styles.removeImageButton}
                       onPress={() => setRegistrationProof(null)}
@@ -435,7 +505,7 @@ const AddDoctor = ({ navigation }) => {
             {clinicPhotos.map((photo, index) => (
               <View key={index} style={styles.imageWrapper}>
                 <Image
-                  source={{ uri: photo.uri }}
+                  source={{ uri: photo }}
                   style={styles.uploadedImage}
                   resizeMode="cover"
                 />
@@ -456,8 +526,9 @@ const AddDoctor = ({ navigation }) => {
 
             {/* Add more photos button */}
             <TouchableOpacity
-              style={styles.addPhotoBox}
-              onPress={handlePickClinicPhotos}
+              style={[styles.addPhotoBox, clinicPhotos.length >= 4 && { opacity: 0.5 },]}
+              onPress={handleClinicPhotos}
+              disabled={clinicPhotos.length >= 4}
             >
               <MaterialIcons
                 name="file-upload"
@@ -465,7 +536,7 @@ const AddDoctor = ({ navigation }) => {
                 color={Colors.primary}
               />
               <Text style={styles.addPhotoText}>
-                {clinicPhotos.length > 0 ? 'Add More' : 'Upload Clinic Photos'}
+                {clinicPhotos.length > 0 ? clinicPhotos.length >= 4 ? 'Maximum Reached' : 'Add More' : 'Upload Clinic Photos'}
               </Text>
             </TouchableOpacity>
           </View>
@@ -476,7 +547,7 @@ const AddDoctor = ({ navigation }) => {
         {/* Buttons */}
         <View style={{ marginTop: responsiveHeight(3), }}>
           <CustomButton
-            title="Save"
+            title={isEditMode ? "Update" : "Save"}
             onPress={handleSave}
             bgColor={Colors.primary}
             color={Colors.white}
