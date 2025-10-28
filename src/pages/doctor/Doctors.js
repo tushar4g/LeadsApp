@@ -12,6 +12,7 @@ import {
 } from 'react-native'
 import { responsiveFontSize, responsiveWidth, responsiveHeight } from 'react-native-responsive-dimensions'
 import MaterialIcons from '@react-native-vector-icons/material-icons'
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import MyHeader from '../../components/MyHeader'
 import Colors from '../../style/Colors'
 import { Searchbar } from 'react-native-paper'
@@ -279,9 +280,20 @@ const Doctors = ({ navigation }) => {
         // onFabPress={() => navigation && navigation.navigate('AddDoctor')}
         // fabTitle="Add"
       /> */}
-      <View style={{alignItems: 'center', justifyContent: 'center', backgroundColor: Colors.white, paddingVertical: responsiveHeight(1)}}>
-        <Text style={{fontWeight: 'bold', fontSize: responsiveFontSize(2), color: Colors.primary}}>Doctors List</Text>
+      <View style={styles.header}>
+        <Text style={{color: Colors.white, fontSize: responsiveFontSize(2.2), fontWeight: '700'}}>Doctors</Text>
+        <View style={{flexDirection: 'row', alignItems: 'center' }}>
+          <TouchableOpacity onPress={() => {}} style={[{padding: responsiveWidth(2)}]}>
+            <MaterialCommunityIcons name="magnify" size={responsiveFontSize(2.5)} color={Colors.white} />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => setFilterModalVisible(true)} style={[{ marginLeft: responsiveWidth(1), padding: responsiveWidth(2) }]}>
+            <MaterialCommunityIcons name="filter-variant" size={responsiveFontSize(2.5)} color={Colors.white} />
+          </TouchableOpacity>
+        </View>
       </View>
+      {/* <View style={{alignItems: 'center', justifyContent: 'center', backgroundColor: Colors.white, paddingVertical: responsiveHeight(1)}}>
+        <Text style={{fontWeight: 'bold', fontSize: responsiveFontSize(2), color: Colors.primary}}>Doctors List</Text>
+      </View> */}
       <View style={styles.content}>
         {/* Search & Filters */}
         <View style={styles.searchRow}>
@@ -349,6 +361,15 @@ export default Doctors
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: Colors.background },
+  header: {
+    height: responsiveHeight(8),
+    backgroundColor: Colors.primary,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: responsiveWidth(4),
+    elevation: 2,
+  },
   content: { flex: 1, paddingHorizontal: responsiveWidth(3), paddingTop: responsiveHeight(1) },
   centered: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: Colors.background },
   searchRow: { marginBottom: responsiveHeight(1), marginHorizontal: responsiveWidth(1) },
