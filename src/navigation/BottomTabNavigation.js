@@ -100,6 +100,7 @@ const BottomTabNavigation = () => {
             shadowOpacity: 0.1,
             shadowRadius: 3,
         },
+        animation:'shift',
       })}
     >
       {/* Add your Tab.Screen components here */}

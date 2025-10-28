@@ -12,14 +12,15 @@ import { responsiveFontSize, responsiveWidth, responsiveHeight } from 'react-nat
 import MaterialIcons from '@react-native-vector-icons/material-icons'
 import CustomButton from '../../components/CustomButton'
 import Colors from '../../style/Colors'
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const ViewDoctorDetails = ({ route, navigation }) => {
   const doctor = route?.params?.doctor ?? {
     id: 'd0',
     name: 'Dr. Unknown',
     specialization: 'N/A',
-    hospital: 'N/A',
-    contact: '',
+    hospitalName: 'N/A',
+    mobile: '',
     email: '',
     address: '',
     city: '',
@@ -35,7 +36,7 @@ const ViewDoctorDetails = ({ route, navigation }) => {
   }
 
   const handleEdit = () => {
-    if (navigation) navigation.navigate('EditDoctor', { doctor })
+    if (navigation) navigation.navigate('AddDoctor', { doctor })
   }
 
   const handleDelete = () => {
@@ -54,7 +55,7 @@ const ViewDoctorDetails = ({ route, navigation }) => {
   }
 
   const handleCall = () => {
-    console.log('Call:', doctor.contact)
+    console.log('Call:', doctor.mobile)
     // integrate react-native-phone-call or Linking.openURL(`tel:${doctor.contact}`)
   }
 
@@ -62,11 +63,12 @@ const ViewDoctorDetails = ({ route, navigation }) => {
     <View style={styles.safe}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation && navigation.goBack()} style={styles.headerLeft}>
-          <MaterialIcons name="arrow-back" size={responsiveFontSize(2.5)} color={Colors.white} />
+          {/* <MaterialIcons name="arrow-back" size={responsiveFontSize(2.5)} color={Colors.white} /> */}
+          <MaterialCommunityIcons name="arrow-left" size={responsiveFontSize(2.5)} color={Colors.white} />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Doctor Details</Text>
         <TouchableOpacity onPress={handleEdit} style={styles.headerRight}>
-          <MaterialIcons name="edit" size={responsiveFontSize(2.5)} color={Colors.white} />
+          <MaterialCommunityIcons name="pencil" size={responsiveFontSize(2.5)} color={Colors.white} />
         </TouchableOpacity>
       </View>
 
@@ -93,7 +95,7 @@ const ViewDoctorDetails = ({ route, navigation }) => {
             </TouchableOpacity>
             <TouchableOpacity
               style={[styles.quickBtn, { backgroundColor: Colors.info }]}
-              onPress={() => console.log('Open chat / whatsapp', doctor.contact)}
+              onPress={() => console.log('Open chat / whatsapp', doctor.mobile)}
             >
               <MaterialIcons name="chat" size={responsiveFontSize(2)} color={Colors.white} />
               <Text style={styles.quickLabel}>Chat</Text>
@@ -108,7 +110,7 @@ const ViewDoctorDetails = ({ route, navigation }) => {
             <MaterialIcons name="phone" size={responsiveFontSize(2)} color={Colors.primary} />
             <View style={styles.col}>
               <Text style={styles.label}>Mobile</Text>
-              <Text style={styles.value}>{doctor.contact || 'N/A'}</Text>
+              <Text style={styles.value}>{doctor.mobile || 'N/A'}</Text>
             </View>
           </View>
 
@@ -177,7 +179,7 @@ const ViewDoctorDetails = ({ route, navigation }) => {
             <MaterialIcons name="local-hospital" size={responsiveFontSize(2)} color={Colors.primary} />
             <View style={styles.col}>
               <Text style={styles.label}>Hospital / Clinic</Text>
-              <Text style={styles.value}>{doctor.hospital || 'N/A'}</Text>
+              <Text style={styles.value}>{doctor.hospitalName || 'N/A'}</Text>
             </View>
           </View>
 

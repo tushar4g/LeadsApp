@@ -29,6 +29,17 @@ const Colors = {
     deleteButton: '#ff0000',
     lightPrimary: '#E9EAFE',
 
+    card1:'#CEE8F1',
+    card2:'#FBECDD',
+    card3:'#D1F9E7',
+    card4:'#FFE7F7',
+    card5: '#F4E6FF',
+    card6: '#E6E6FA',
+    card7: '#DDFFFC',
+    card8: '#8fe4f1',
+    card9: '#7eff9cff',
+    card11:'#e2f3f9ff',
+
 };
 
 Colors.primaryWithOpacity = hexToRgba(Colors.primary, 0.3);
