@@ -181,7 +181,7 @@ const Leads = ({ navigation }) => {
       </View>
 
       <View style={styles.leadActions}>
-        <TouchableOpacity onPress={() => navigation && navigation.navigate('LeadDetails', { lead: item })} style={styles.actionBtn}>
+        <TouchableOpacity onPress={() => navigation && navigation.navigate('ViewLeadDetails', { lead: item })} style={styles.actionBtn}>
           <MaterialCommunityIcons name="eye-outline" size={18} color={Colors.primary} />
           <Text style={styles.actionLabel}>View</Text>
         </TouchableOpacity>
