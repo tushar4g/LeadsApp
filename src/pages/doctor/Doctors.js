@@ -9,6 +9,8 @@ import {
   ActivityIndicator,
   RefreshControl,
   Alert,
+  Modal,
+  Pressable,
 } from 'react-native'
 import { responsiveFontSize, responsiveWidth, responsiveHeight } from 'react-native-responsive-dimensions'
 import MaterialIcons from '@react-native-vector-icons/material-icons'
@@ -16,6 +18,8 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import MyHeader from '../../components/MyHeader'
 import Colors from '../../style/Colors'
 import { Searchbar } from 'react-native-paper'
+import CustomDropDown from '../../components/CustomDropDown'
+import CustomButton from '../../components/CustomButton'
 
 
 const mockDoctors = [
@@ -61,7 +65,7 @@ const mockDoctors = [
   {
     id: 'd4',
     name: 'Dr. Rajiv Dixhit',
-    specialization: 'Neurologist',
+    specialization: 'General Physician',
     hospitalName: 'Neuro Health',
     city: 'Durg',
     state: 'Chhattisgarh',
@@ -87,7 +91,7 @@ const mockDoctors = [
   {
     id: 'd6',
     name: 'Dr. Ravi Patel',
-    specialization: 'Neurologist',
+    specialization: 'Cardiologist',
     hospitalName: 'Neuro Health',
     city: 'Durg',
     state: 'Chhattisgarh',
@@ -101,6 +105,28 @@ const mockDoctors = [
 ]
 
 const cityOptions = [
+  { label: 'All', value: '' },
+  { label: 'Raipur', value: 'Raipur' },
+  { label: 'Bilaspur', value: 'Bilaspur' },
+  { label: 'Durg', value: 'Durg' },
+]
+
+const SPECIALIZATION_OPTIONS = [
+  { label: 'All', value: '' },
+  { label: 'Cardiologist', value: 'Cardiologist' },
+  { label: 'Dermatologist', value: 'Dermatologist' },
+  { label: 'Neurologist', value: 'Neurologist' },
+  { label: 'Pediatrician', value: 'Pediatrician' },
+]
+
+const HOSPITAL_TYPE_OPTIONS = [
+  { label: 'All', value: '' },
+  { label: 'Private', value: 'private' },
+  { label: 'Govt', value: 'govt' },
+  { label: 'Corporate', value: 'corporate' },
+]
+
+const CITY_OPTIONS = [
   { label: 'All', value: '' },
   { label: 'Raipur', value: 'Raipur' },
   { label: 'Bilaspur', value: 'Bilaspur' },
@@ -142,6 +168,10 @@ const Doctors = ({ navigation }) => {
     const [refreshing, setRefreshing] = useState(false)
 
     // search & filters
+    const [filterModalVisible, setFilterModalVisible] = useState(false)
+    const [filterSpecialization, setFilterSpecialization] = useState('')
+    const [filterStatus, setFilterStatus] = useState('')
+    const [filterSource, setFilterSource] = useState('')
     const [searchText, setSearchText] = useState('')
     const [filterCity, setFilterCity] = useState('')
     const [filterSpec, setFilterSpec] = useState('')
@@ -305,8 +335,8 @@ const Doctors = ({ navigation }) => {
                 inputStyle={styles.searchInput}
                 iconColor={Colors.textSecondary}
                 placeholderTextColor={Colors.textSecondary}
-                icon={() => <MaterialIcons name="search" size={22} color={Colors.textSecondary} />}
-                clearIcon={searchText ? () => <MaterialIcons name="close" size={22} color={Colors.textSecondary} /> : null}
+                icon={() => <MaterialIcons name="search" size={responsiveFontSize(2.2)} color={Colors.textSecondary} />}
+                clearIcon={searchText ? () => <MaterialIcons name="close" size={responsiveFontSize(2.2)} color={Colors.textSecondary} /> : null}
             />
         </View>
 
@@ -352,6 +382,32 @@ const Doctors = ({ navigation }) => {
           <MaterialIcons name="add" size={28} color={Colors.white} />
         </TouchableOpacity>
       </View>
+
+      {/* Filter Modal */}
+      <Modal visible={filterModalVisible} transparent animationType="slide">
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Filters</Text>
+
+            <CustomDropDown iconName="medical-services"  uprLabel="Specialization" value={filterSpecialization} setValue={setFilterSpecialization} data={SPECIALIZATION_OPTIONS} />
+            <CustomDropDown iconName="business"  uprLabel="Hospital Type" value={filterHospitalType} setValue={setFilterHospitalType} data={HOSPITAL_TYPE_OPTIONS} />
+            <CustomDropDown iconName="location-city"  uprLabel="City" value={filterCity} setValue={setFilterCity} data={CITY_OPTIONS} />
+
+            <View style={[styles.modalActions, {gap: responsiveWidth(2)}]}>
+              <View style={{flex:1}}>
+                <CustomButton title="Clear" onPress={() => { setFilterSpecialization(''); setFilterHospitalType(''); setFilterCity('') }} bgColor={Colors.white} color={Colors.primary} borderC={Colors.primary} />
+              </View>
+              <View style={{flex:1}}>
+                <CustomButton title="Apply" onPress={() => setFilterModalVisible(false)} bgColor={Colors.primary} color={Colors.white} />
+              </View>
+            </View>
+
+            <Pressable style={styles.modalClose} onPress={() => setFilterModalVisible(false)}>
+              <MaterialCommunityIcons name="close" size={responsiveFontSize(2.2)} color={Colors.textSecondary} />
+            </Pressable>
+          </View>
+        </View>
+      </Modal>
     </View>
   )
 }
@@ -436,4 +492,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     elevation: 6,
   },
+
+   modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.4)', justifyContent: 'flex-end' },
+    modalContent: { backgroundColor: Colors.white, padding: responsiveWidth(4), borderTopLeftRadius: 12, borderTopRightRadius: responsiveWidth(2), minHeight: responsiveHeight(40) },
+    modalTitle: { fontSize: responsiveFontSize(1.8), fontWeight: '700', marginBottom: responsiveHeight(1.5) },
+    modalActions: { flexDirection: 'row', justifyContent: 'space-between', marginTop: responsiveHeight(2) },
+    modalClose: { position: 'absolute', right: responsiveWidth(4), top: responsiveHeight(1.5) },
 })
