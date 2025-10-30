@@ -140,7 +140,7 @@ const styles = StyleSheet.create({
     borderWidth: responsiveWidth(0.3),
     borderRadius: responsiveFontSize(1),
     paddingHorizontal: responsiveWidth(3),
-    backgroundColor: Colors.surfaceColor,
+    backgroundColor: Colors.white,
   },
   placeholderStyle: {
     fontSize: responsiveFontSize(1.6),

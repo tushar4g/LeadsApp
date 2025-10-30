@@ -316,8 +316,8 @@ const styles = StyleSheet.create({
   },
   container: { padding: responsiveWidth(3), paddingBottom: responsiveHeight(16) },
 
-  summaryWrap: { flexDirection: 'row', flexWrap: 'wrap', marginTop: responsiveHeight(2), marginHorizontal: responsiveWidth(1) },
-  summaryCol: { width: '50%', padding: responsiveWidth(1) },
+  summaryWrap: { flexDirection: 'row', flexWrap: 'wrap', marginTop: responsiveHeight(1), marginHorizontal: responsiveWidth(1), gap: responsiveHeight(1) },
+  summaryCol: { width: '23%', padding: responsiveWidth(0),},
   summaryCard: {
     borderRadius: 10,
     padding: responsiveWidth(3),
