@@ -53,7 +53,7 @@ const mockLeads = [
     id: 'l1',
     name: 'Dr. Rohan Mehta',
     source: 'Hospital: Apollo Delhi',
-    contact: '9876543210',
+    mobile: '9876543210',
     status: 'Follow-up',
     score: 85,
     createdAt: '12 Oct 2025',
@@ -64,7 +64,7 @@ const mockLeads = [
     id: 'l2',
     name: 'Ms. Priya Singh',
     source: 'Corporate: HealthCorp',
-    contact: '9123456780',
+    mobile: '9123456780',
     status: 'New',
     score: 70,
     createdAt: '15 Oct 2025',
@@ -75,7 +75,7 @@ const mockLeads = [
     id: 'l3',
     name: 'Dr. Neha Sharma',
     source: 'Event: MedExpo',
-    contact: '9987654321',
+    mobile: '9987654321',
     status: 'Converted',
     score: 92,
     createdAt: '01 Oct 2025',
@@ -138,7 +138,7 @@ const Leads = ({ navigation }) => {
         (l) =>
           l.name.toLowerCase().includes(q) ||
           l.source.toLowerCase().includes(q) ||
-          (l.contact && l.contact.includes(q))
+          (l.mobile && l.mobile.includes(q))
       )
     }
     if (filterStatus) list = list.filter((l) => l.status === filterStatus)
@@ -171,7 +171,7 @@ const Leads = ({ navigation }) => {
       <Text style={styles.leadSource}>{item.source}</Text>
 
       <View style={styles.leadMetaRow}>
-        <Text style={styles.leadMeta}>📞 {item.contact}</Text>
+        <Text style={styles.leadMeta}>📞 {item.mobile}</Text>
         <Text style={styles.leadMeta}>⭐ {item.score}%</Text>
       </View>
 
@@ -181,11 +181,11 @@ const Leads = ({ navigation }) => {
       </View>
 
       <View style={styles.leadActions}>
-        <TouchableOpacity onPress={() => navigation && navigation.navigate('LeadDetails', { lead: item })} style={styles.actionBtn}>
+        <TouchableOpacity onPress={() => navigation && navigation.navigate('ViewLeadDetails', { lead: item })} style={styles.actionBtn}>
           <MaterialCommunityIcons name="eye-outline" size={18} color={Colors.primary} />
           <Text style={styles.actionLabel}>View</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation && navigation.navigate('EditLead', { lead: item })} style={styles.actionBtn}>
+        <TouchableOpacity onPress={() => navigation && navigation.navigate('AddLead', { lead: item })} style={styles.actionBtn}>
           <MaterialCommunityIcons name="pencil" size={18} color={Colors.primary} />
           <Text style={styles.actionLabel}>Edit</Text>
         </TouchableOpacity>
@@ -228,7 +228,7 @@ const Leads = ({ navigation }) => {
             <View style={styles.searchWrap}>
               <View style={{ flex: 1,  }}>
                 <Searchbar
-                  placeholder="Search leads by name, source, or contact…"
+                  placeholder="Search leads by name, source, or mobile…"
                   onChangeText={setSearchText}
                   value={searchText}
                   style={styles.searchbar}
