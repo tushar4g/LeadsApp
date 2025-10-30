@@ -1,5 +1,5 @@
 // ...existing code...
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   View,
   Text,
@@ -63,7 +63,11 @@ const ASSIGN_OPTIONS = [
   { label: 'Kiran', value: 'Kiran' },
 ]
 
-const AddLead = ({ navigation }) => {
+const AddLead = ({ navigation, route }) => {
+  const lead = route?.params?.lead ?? {}
+  const isEditMode = !!route.params?.lead;
+  console.log('Lead:', lead, isEditMode)
+
   const [name, setName] = useState('')
   const [mobile, setMobile] = useState('')
   const [email, setEmail] = useState('')
@@ -80,6 +84,24 @@ const AddLead = ({ navigation }) => {
 
   const [notes, setNotes] = useState('')
   const [loading, setLoading] = useState(false)
+
+  useEffect(() => {
+      if (isEditMode && lead) {
+        setName(lead.name || '')
+        setMobile(lead.mobile || '')
+        setEmail(lead.email || '')
+        setSource(lead.source || '')
+        setLeadType(lead.leadType || '')
+        setCity(lead.city || '')
+        setState(lead.state || '')
+        setAddress(lead.address || '')
+        setStatus(lead.status || '')
+        setScore(lead.score || '')
+        setAssignedTo(lead.assignedTo || '')
+        setFollowUpDate(lead.followUpDate || null)
+        setNotes(lead.notes || '')
+      }
+    }, [lead, isEditMode]);
 
   const validate = () => {
     if (!name.trim()) {
@@ -138,7 +160,7 @@ const AddLead = ({ navigation }) => {
           <MaterialCommunityIcons name="arrow-left" size={22} color={Colors.white} />
         </TouchableOpacity>
 
-        <Text style={styles.headerTitle}>Add New Lead</Text>
+        <Text style={styles.headerTitle}>{isEditMode ? 'Edit Lead' : 'Add New Lead'}</Text>
 
         <TouchableOpacity onPress={handleSaveLead} style={styles.headerRight}>
           <MaterialCommunityIcons name="content-save" size={20} color={Colors.white} />
@@ -226,7 +248,7 @@ const AddLead = ({ navigation }) => {
 
           {/* Buttons */}
           <View style={styles.buttonRow}>
-            <CustomButton title={loading ? 'Saving...' : 'Add Lead'} onPress={handleSaveLead} isLoading={loading} />
+            <CustomButton title={isEditMode ? 'Save Changes' : 'Add Lead'} onPress={handleSaveLead} isLoading={loading} />
             {/* <TouchableOpacity style={styles.cancelBtn} onPress={() => navigation && navigation.goBack()}>
               <Text style={styles.cancelText}>Cancel</Text>
             </TouchableOpacity> */}

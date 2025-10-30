@@ -9,6 +9,7 @@ import AddDoctor from '../pages/doctor/AddDoctor'
 import ViewDoctorDetails from '../pages/doctor/ViewDoctorDetails'
 import AddLead from '../pages/leads/AddLead'
 import ViewLeadDetails from '../pages/leads/ViewLeadDetails'
+import AddActivity from '../pages/leads/AddActivity'
 
 const StackNavigation = () => {
   const Stack = createNativeStackNavigator()
@@ -23,6 +24,7 @@ const StackNavigation = () => {
         <Stack.Screen name="EditProfile" component={EditProfile} />
         <Stack.Screen name="AddLead" component={AddLead} />
         <Stack.Screen name="ViewLeadDetails" component={ViewLeadDetails} />
+        <Stack.Screen name="AddActivity" component={AddActivity} />
       </Stack.Navigator>
     </NavigationContainer>
   )

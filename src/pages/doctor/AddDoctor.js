@@ -73,6 +73,14 @@ const visitingDaysOptions = [
   { label: 'Sunday', value: 'sunday' },
 ]
 
+const formatDateForAPI = (date) => {
+    const d = new Date(date);
+    const day = String(d.getDate()).padStart(2, '0');
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const year = d.getFullYear();
+    return `${day}-${month}-${year}`;
+};
+
 const AddDoctor = ({ navigation, route }) => {
   const doctor = route?.params?.doctor ?? {}
   const isEditMode = !!route.params?.doctor;
@@ -230,7 +238,7 @@ const AddDoctor = ({ navigation, route }) => {
   const handleSave = async () => {
     if (!validate()) return
     const formData = {
-      profileImage, fullName, gender, dob, mobile, altMobile, email, address, city, state, pincode,
+      profileImage, fullName, gender, dob:formatDateForAPI(dob), mobile, altMobile, email, address, city, state, pincode,
       qualification, specialization, registrationNo, experience, designation, hospitalName, hospitalType, consultationHours, visitingDays,
       clinicAddress, googleLocation, contactPerson, contactNumber, clinicEmail,
       sourceType, referenceName, leadSource, doctorCategory, remarks,
