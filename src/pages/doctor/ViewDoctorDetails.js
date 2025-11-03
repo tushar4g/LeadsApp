@@ -9,30 +9,36 @@ import {
   Alert,
 } from 'react-native'
 import { responsiveFontSize, responsiveWidth, responsiveHeight } from 'react-native-responsive-dimensions'
-import MaterialIcons from '@react-native-vector-icons/material-icons'
-import CustomButton from '../../components/CustomButton'
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import Colors from '../../style/Colors'
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import CustomButton from '../../components/CustomButton'
 
 const ViewDoctorDetails = ({ route, navigation }) => {
   const doctor = route?.params?.doctor ?? {
     id: 'd0',
     name: 'Dr. Unknown',
-    specialization: 'N/A',
-    hospitalName: 'N/A',
-    mobile: '',
-    email: '',
-    address: '',
-    city: '',
-    pincode: '',
-    qualification: '',
-    experience: '',
-    fee: '',
-    area: '',
-    notes: '',
-    referralCode: '',
-    avatar: 'https://i.pravatar.cc/150?img=12',
+    gender: 'Male',
+    specialization: 'General Physician',
+    department: 'Medicine',
+    hospitalName: 'City Hospital',
+    mobile: '9876543210',
+    email: 'dr.unknown@example.com',
+    address: '123 Main Street, Green Park',
+    city: 'Mumbai',
+    pincode: '400001',
+    qualification: 'MBBS, MD',
+    experience: '10',
+    fee: '500',
+    area: 'South Mumbai',
+    notes: 'Available only on weekdays',
+    referralCode: 'DR2025',
+    registrationNumber: 'MH123456',
+    availability: 'Mon-Fri, 10AM - 6PM',
+    languages: 'English, Hindi, Marathi',
+    specializationDetails: 'Internal Medicine and Preventive Care',
     verified: true,
+    avatar: 'https://i.pravatar.cc/150?img=12',
   }
 
   const handleEdit = () => {
@@ -47,7 +53,6 @@ const ViewDoctorDetails = ({ route, navigation }) => {
         style: 'destructive',
         onPress: () => {
           console.log('Deleted doctor:', doctor.id)
-          // TODO: dispatch delete or call API
           if (navigation) navigation.goBack()
         },
       },
@@ -55,15 +60,14 @@ const ViewDoctorDetails = ({ route, navigation }) => {
   }
 
   const handleCall = () => {
-    console.log('Call:', doctor.mobile)
-    // integrate react-native-phone-call or Linking.openURL(`tel:${doctor.contact}`)
+    console.log('Calling:', doctor.mobile)
   }
 
   return (
     <View style={styles.safe}>
+      {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation && navigation.goBack()} style={styles.headerLeft}>
-          {/* <MaterialIcons name="arrow-back" size={responsiveFontSize(2.5)} color={Colors.white} /> */}
           <MaterialCommunityIcons name="arrow-left" size={responsiveFontSize(2.5)} color={Colors.white} />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Doctor Details</Text>
@@ -72,31 +76,28 @@ const ViewDoctorDetails = ({ route, navigation }) => {
         </TouchableOpacity>
       </View>
 
-      <ScrollView contentContainerStyle={styles.container}>
-        {/* Profile Card */}
+      <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
+        {/* Profile */}
         <View style={styles.profileCard}>
           <Image source={{ uri: doctor.avatar }} style={styles.avatar} />
           <View style={styles.nameRow}>
             <Text style={styles.name}>{doctor.name}</Text>
             {doctor?.verified && (
               <View style={styles.verified}>
-                <MaterialIcons name="verified" size={responsiveFontSize(1.2)} color={Colors.white} />
+                <MaterialIcons name="verified" size={responsiveFontSize(1.3)} color={Colors.white} />
                 <Text style={styles.verifiedText}>Verified</Text>
               </View>
             )}
           </View>
           <Text style={styles.specialty}>{doctor.specialization}</Text>
-          <Text style={styles.hospital}>{doctor.hospital}</Text>
+          <Text style={styles.hospital}>{doctor.hospitalName}</Text>
 
           <View style={styles.quickActions}>
             <TouchableOpacity style={styles.quickBtn} onPress={handleCall}>
               <MaterialIcons name="phone" size={responsiveFontSize(2)} color={Colors.white} />
               <Text style={styles.quickLabel}>Call</Text>
             </TouchableOpacity>
-            <TouchableOpacity
-              style={[styles.quickBtn, { backgroundColor: Colors.info }]}
-              onPress={() => console.log('Open chat / whatsapp', doctor.mobile)}
-            >
+            <TouchableOpacity style={[styles.quickBtn, { backgroundColor: Colors.info }]}>
               <MaterialIcons name="chat" size={responsiveFontSize(2)} color={Colors.white} />
               <Text style={styles.quickLabel}>Chat</Text>
             </TouchableOpacity>
@@ -106,122 +107,66 @@ const ViewDoctorDetails = ({ route, navigation }) => {
         {/* Contact Information */}
         <View style={styles.card}>
           <Text style={styles.cardTitle}>Contact Information</Text>
-          <View style={styles.row}>
-            <MaterialIcons name="phone" size={responsiveFontSize(2)} color={Colors.primary} />
-            <View style={styles.col}>
-              <Text style={styles.label}>Mobile</Text>
-              <Text style={styles.value}>{doctor.mobile || 'N/A'}</Text>
+          {[
+            { icon: 'phone', label: 'Mobile', value: doctor.mobile },
+            { icon: 'email', label: 'Email', value: doctor.email },
+            { icon: 'location-on', label: 'Clinic Address', value: doctor.address },
+            { icon: 'location-city', label: 'City', value: doctor.city },
+            { icon: 'pin', label: 'Pincode', value: doctor.pincode },
+          ].map((item, idx) => (
+            <View style={styles.row} key={idx}>
+              <MaterialIcons name={item.icon} size={responsiveFontSize(2)} color={Colors.primary} />
+              <View style={styles.col}>
+                <Text style={styles.label}>{item.label}</Text>
+                <Text style={styles.value}>{item.value || 'N/A'}</Text>
+              </View>
             </View>
-          </View>
-
-          <View style={styles.row}>
-            <MaterialIcons name="email" size={responsiveFontSize(2)} color={Colors.primary} />
-            <View style={styles.col}>
-              <Text style={styles.label}>Email</Text>
-              <Text style={styles.value}>{doctor.email || 'N/A'}</Text>
-            </View>
-          </View>
-
-          <View style={styles.row}>
-            <MaterialIcons name="location-on" size={responsiveFontSize(2)} color={Colors.primary} />
-            <View style={styles.col}>
-              <Text style={styles.label}>Clinic Address</Text>
-              <Text style={styles.value}>{doctor.address || 'N/A'}</Text>
-            </View>
-          </View>
-
-          <View style={styles.row}>
-            <MaterialIcons name="location-city" size={responsiveFontSize(2)} color={Colors.primary} />
-            <View style={styles.col}>
-              <Text style={styles.label}>City</Text>
-              <Text style={styles.value}>{doctor.city || 'N/A'}</Text>
-            </View>
-          </View>
-
-          <View style={styles.row}>
-            <MaterialIcons name="pin" size={responsiveFontSize(2)} color={Colors.primary} />
-            <View style={styles.col}>
-              <Text style={styles.label}>Pincode</Text>
-              <Text style={styles.value}>{doctor.pincode || 'N/A'}</Text>
-            </View>
-          </View>
+          ))}
         </View>
 
         {/* Professional Details */}
         <View style={styles.card}>
           <Text style={styles.cardTitle}>Professional Details</Text>
-
-          <View style={styles.row}>
-            <MaterialIcons name="medical-services" size={responsiveFontSize(2)} color={Colors.primary} />
-            <View style={styles.col}>
-              <Text style={styles.label}>Specialization</Text>
-              <Text style={styles.value}>{doctor.specialization || 'N/A'}</Text>
+          {[
+            { icon: 'medical-services', label: 'Department', value: doctor.department },
+            { icon: 'school', label: 'Qualification', value: doctor.qualification },
+            { icon: 'schedule', label: 'Experience', value: doctor.experience ? `${doctor.experience} yrs` : 'N/A' },
+            { icon: 'local-hospital', label: 'Hospital / Clinic', value: doctor.hospitalName },
+            { icon: 'attach-money', label: 'Consultation Fee', value: doctor.fee ? `₹ ${doctor.fee}` : 'N/A' },
+            { icon: 'badge', label: 'Registration Number', value: doctor.registrationNumber },
+            { icon: 'language', label: 'Languages Known', value: doctor.languages },
+            { icon: 'event', label: 'Availability', value: doctor.availability },
+          ].map((item, idx) => (
+            <View style={styles.row} key={idx}>
+              <MaterialIcons name={item.icon} size={responsiveFontSize(2)} color={Colors.primary} />
+              <View style={styles.col}>
+                <Text style={styles.label}>{item.label}</Text>
+                <Text style={styles.value}>{item.value || 'N/A'}</Text>
+              </View>
             </View>
-          </View>
-
-          <View style={styles.row}>
-            <MaterialIcons name="school" size={responsiveFontSize(2)} color={Colors.primary} />
-            <View style={styles.col}>
-              <Text style={styles.label}>Qualification</Text>
-              <Text style={styles.value}>{doctor.qualification || 'N/A'}</Text>
-            </View>
-          </View>
-
-          <View style={styles.row}>
-            <MaterialIcons name="schedule" size={responsiveFontSize(2)} color={Colors.primary} />
-            <View style={styles.col}>
-              <Text style={styles.label}>Experience</Text>
-              <Text style={styles.value}>{doctor.experience ? `${doctor.experience} yrs` : 'N/A'}</Text>
-            </View>
-          </View>
-
-          <View style={styles.row}>
-            <MaterialIcons name="local-hospital" size={responsiveFontSize(2)} color={Colors.primary} />
-            <View style={styles.col}>
-              <Text style={styles.label}>Hospital / Clinic</Text>
-              <Text style={styles.value}>{doctor.hospitalName || 'N/A'}</Text>
-            </View>
-          </View>
-
-          <View style={styles.row}>
-            <MaterialIcons name="attach-money" size={responsiveFontSize(2)} color={Colors.primary} />
-            <View style={styles.col}>
-              <Text style={styles.label}>Consultation Fee</Text>
-              <Text style={styles.value}>{doctor.fee ? `₹ ${doctor.fee}` : 'N/A'}</Text>
-            </View>
-          </View>
+          ))}
         </View>
 
-        {/* Other Information */}
+        {/* Additional Info */}
         <View style={styles.card}>
-          <Text style={styles.cardTitle}>Other Information</Text>
-
-          <View style={styles.row}>
-            <MaterialIcons name="map" size={responsiveFontSize(2)} color={Colors.primary} />
-            <View style={styles.col}>
-              <Text style={styles.label}>Area / Region</Text>
-              <Text style={styles.value}>{doctor.area || 'N/A'}</Text>
+          <Text style={styles.cardTitle}>Additional Information</Text>
+          {[
+            { icon: 'description', label: 'Specialization Details', value: doctor.specializationDetails },
+            { icon: 'map', label: 'Area / Region', value: doctor.area },
+            { icon: 'note', label: 'Notes', value: doctor.notes },
+            { icon: 'label', label: 'Referral Code', value: doctor.referralCode },
+          ].map((item, idx) => (
+            <View style={styles.row} key={idx}>
+              <MaterialIcons name={item.icon} size={responsiveFontSize(2)} color={Colors.primary} />
+              <View style={styles.col}>
+                <Text style={styles.label}>{item.label}</Text>
+                <Text style={styles.value}>{item.value || 'N/A'}</Text>
+              </View>
             </View>
-          </View>
-
-          <View style={styles.row}>
-            <MaterialIcons name="note" size={responsiveFontSize(2)} color={Colors.primary} />
-            <View style={styles.col}>
-              <Text style={styles.label}>Notes</Text>
-              <Text style={styles.value}>{doctor.notes || 'N/A'}</Text>
-            </View>
-          </View>
-
-          <View style={styles.row}>
-            <MaterialIcons name="label" size={responsiveFontSize(2)} color={Colors.primary} />
-            <View style={styles.col}>
-              <Text style={styles.label}>Referral Code</Text>
-              <Text style={styles.value}>{doctor.referralCode || 'N/A'}</Text>
-            </View>
-          </View>
+          ))}
         </View>
 
-        {/* Bottom Action Buttons */}
+        {/* Action Buttons */}
         <View style={styles.actions}>
           <CustomButton title="Edit Doctor" onPress={handleEdit} bgColor={Colors.primary} color={Colors.white} />
         </View>
@@ -246,7 +191,7 @@ const styles = StyleSheet.create({
   headerRight: { padding: responsiveWidth(1) },
   headerTitle: { flex: 1, textAlign: 'center', color: Colors.white, fontSize: responsiveFontSize(2), fontWeight: '700' },
 
-  container: { padding: responsiveWidth(4), paddingBottom: responsiveHeight(6) },
+  container: { padding: responsiveWidth(4), paddingBottom: responsiveHeight(8) },
 
   profileCard: {
     alignItems: 'center',
@@ -281,7 +226,7 @@ const styles = StyleSheet.create({
   row: { flexDirection: 'row', alignItems: 'flex-start', marginBottom: responsiveHeight(1) },
   col: { marginLeft: responsiveWidth(3), flex: 1 },
   label: { fontSize: responsiveFontSize(1.2), color: Colors.textSecondary },
-  value: { fontSize: responsiveFontSize(1.4), color: Colors.textPrimary, marginTop: responsiveHeight(0.2) },
+  value: { fontSize: responsiveFontSize(1.4), color: Colors.textPrimary, marginTop: responsiveHeight(0.2), fontWeight: '600' },
 
-  actions: { marginTop: responsiveHeight(2),},
+  actions: { marginTop: responsiveHeight(2) },
 })
