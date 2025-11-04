@@ -111,35 +111,21 @@ const AddDoctor = ({ navigation, route }) => {
   const [pincode, setPincode] = useState('')
 
   // Professional Details
-  const [qualification, setQualification] = useState('')
   const [specialization, setSpecialization] = useState('')
-  const [registrationNo, setRegistrationNo] = useState('')
-  const [experience, setExperience] = useState('')
-  const [designation, setDesignation] = useState('')
   const [hospitalName, setHospitalName] = useState('')
   const [hospitalType, setHospitalType] = useState('')
-  const [consultationHours, setConsultationHours] = useState('')
-  const [visitingDays, setVisitingDays] = useState([])
 
   // Clinic / Hospital Details
   const [clinicAddress, setClinicAddress] = useState('')
-  const [googleLocation, setGoogleLocation] = useState('')
-  const [contactPerson, setContactPerson] = useState('')
   const [contactNumber, setContactNumber] = useState('')
-  const [clinicEmail, setClinicEmail] = useState('')
   const [location, setLocation] = useState(null)
   const [loadLocation, setLoadLocation] = useState(false)
 
   // Reference & Relationship Info
-  const [sourceType, setSourceType] = useState('')
-  const [referenceName, setReferenceName] = useState('')
-  const [leadSource, setLeadSource] = useState('')
   const [doctorCategory, setDoctorCategory] = useState('')
   const [remarks, setRemarks] = useState('')
 
   // Documents
-  const [visitingCard, setVisitingCard] = useState(null)
-  const [registrationProof, setRegistrationProof] = useState(null)
   const [clinicPhotos, setClinicPhotos] = useState([])
 
   useEffect(() => {
@@ -158,30 +144,15 @@ const AddDoctor = ({ navigation, route }) => {
       setState(data.state || '');
       setPincode(data.pincode || '');
 
-      setQualification(data.qualification || '');
       setSpecialization(data.specialization || '');
-      setRegistrationNo(data.registrationNo || '');
-      setExperience(data.experience || '');
-      setDesignation(data.designation || '');
       setHospitalName(data.hospitalName || '');
       setHospitalType(data.hospitalType || '');
-      setConsultationHours(data.consultationHours || '');
-      setVisitingDays(data.visitingDays || []);
 
       setClinicAddress(data.clinic || '');
       setLocation(data.location || null);
-      setContactPerson(data.contactPerson || '');
       setContactNumber(data.contactNumber || '');
-      setClinicEmail(data.clinicEmail || '');
-
-      setSourceType(data.sourceType || '');
-      setReferenceName(data.referenceName || '');
-      setLeadSource(data.leadSource || '');
-      setDoctorCategory(data.doctorCategory || '');
       setRemarks(data.notes || '');
 
-      setVisitingCard(data.visitingCard || null);
-      setRegistrationProof(data.registrationProof || null);
       setClinicPhotos(data.clinicPhotos || []);
     }
   }, [doctor, isEditMode]);
@@ -192,17 +163,7 @@ const AddDoctor = ({ navigation, route }) => {
     console.log('Profile Image:', img)
     if (img) setProfileImage(img.uri)
   }
-  const handleVisitingCard = async () => {
-    const img = await PickImageComponent()
-    console.log('Visiting Card:', img)
-    if (img) {
-      setVisitingCard(img.uri)
-    } 
-  }
-  const handleRegistrationProof = async () => {
-    const img = await PickImageComponent()
-    if (img) setRegistrationProof(img.uri)
-  }
+
   const handleClinicPhotos = async () => {
     if (clinicPhotos.length >= 5) {
       Alert.alert('Limit Reached', 'You can upload a maximum of 5 clinic photos.');
@@ -249,11 +210,11 @@ const AddDoctor = ({ navigation, route }) => {
   const handleSave = async () => {
     if (!validate()) return
     const formData = {
-      profileImage, fullName, gender, dob:formatDateForAPI(dob), mobile, altMobile, email, address, city, state, pincode,
-      qualification, specialization, registrationNo, experience, designation, hospitalName, hospitalType, consultationHours, visitingDays,
-      clinicAddress, googleLocation, contactPerson, contactNumber, clinicEmail,
-      sourceType, referenceName, leadSource, doctorCategory, remarks,
-      visitingCard, registrationProof, clinicPhotos
+      profileImage, title, fullName, gender, dob:formatDateForAPI(dob), mobile, altMobile, email, address, city, state, pincode,
+      specialization, hospitalName, hospitalType,
+      clinicAddress, location,contactNumber,
+      doctorCategory, remarks,
+      clinicPhotos
     }
     console.log('Form Data:', formData)
 
@@ -500,53 +461,6 @@ const AddDoctor = ({ navigation, route }) => {
           <CustomDropDown uprLabel="Doctor Category" value={doctorCategory} setValue={setDoctorCategory} data={doctorCategoryOptions} iconName="category" placeholder="Select doctor category" />
           <CustomInput label="Remarks / Notes" value={remarks} onChangeText={setRemarks} icon="notes" placeholder="Enter remarks" multiline />
         </View>
-
-        {/* Documents */}
-        {/* <Text style={styles.sectionHeaderText}>Documents</Text>
-        <View style={[styles.section, {gap: responsiveHeight(2),}]}>
-          <View style={{}}>
-            <TouchableOpacity style={styles.uploadBox1} onPress={handleVisitingCard}>
-              {visitingCard ? (
-                  <View style={[{position: 'relative',}]}>
-                      <Image source={{ uri: visitingCard ? visitingCard : 'http'}} style={styles.image} resizeMode='cover' />
-                      <TouchableOpacity
-                      style={styles.removeImageButton}
-                      onPress={() => setVisitingCard(null)}
-                      >
-                      <MaterialIcons name="close" size={responsiveFontSize(2)} color={Colors.deleteButton} />
-                      <Text style={styles.removeImageText}>Remove</Text>
-                      </TouchableOpacity>
-                  </View>
-              ) : (
-                  <View style={styles.uploadPlaceholder}>
-                    <MaterialIcons name="file-upload" size={responsiveFontSize(2.5)} color={Colors.primary} />
-                    <Text style={styles.uploadText}>Tap to Upload Visiting Card</Text>
-                  </View>
-              )}
-            </TouchableOpacity>
-          </View>
-          <View style={{}}>
-            <TouchableOpacity style={styles.uploadBox1} onPress={handleRegistrationProof}>
-              {registrationProof ? (
-                  <View style={[{position: 'relative',}]}>
-                      <Image source={{ uri: registrationProof ? registrationProof : 'http'}} style={styles.image} resizeMode='cover' />
-                      <TouchableOpacity
-                      style={styles.removeImageButton}
-                      onPress={() => setRegistrationProof(null)}
-                      >
-                      <MaterialIcons name="close" size={responsiveFontSize(2)} color={Colors.deleteButton} />
-                      <Text style={styles.removeImageText}>Remove</Text>
-                      </TouchableOpacity>
-                  </View>
-              ) : (
-                  <View style={styles.uploadPlaceholder}>
-                    <MaterialIcons name="file-upload" size={responsiveFontSize(2.5)} color={Colors.primary} />
-                    <Text style={styles.uploadText}>Tap to Upload Registration</Text>
-                  </View>
-              )}
-            </TouchableOpacity>
-          </View>
-        </View> */}
 
         <View style={styles.uploadContainer}>
           <Text style={styles.sectionTitle}>Clinic Photos</Text>
