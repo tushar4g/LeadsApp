@@ -414,15 +414,15 @@ const AddDoctor = ({ navigation, route }) => {
         {/* Professional Details */}
         <Text style={styles.sectionHeaderText}>Professional Details</Text>
         <View style={styles.section}>
-          <CustomInput label="Qualification" value={qualification} onChangeText={setQualification} icon="school" placeholder="Enter qualification" />
+          {/* <CustomInput label="Qualification" value={qualification} onChangeText={setQualification} icon="school" placeholder="Enter qualification" /> */}
           <CustomDropDown uprLabel="Specialization *" value={specialization} setValue={setSpecialization} data={specializationOptions} iconName="medical-services" placeholder="Select specialization" />
-          <CustomInput label="Registration No" value={registrationNo} onChangeText={setRegistrationNo} icon="confirmation-number" placeholder="Enter registration no" />
+          {/* <CustomInput label="Registration No" value={registrationNo} onChangeText={setRegistrationNo} icon="confirmation-number" placeholder="Enter registration no" />
           <CustomInput label="Years of Experience" value={experience} onChangeText={setExperience} icon="history" keyboardType="number-pad" placeholder="Enter years of experience" />
-          <CustomInput label="Designation" value={designation} onChangeText={setDesignation} icon="work" placeholder="Enter designation" />
+          <CustomInput label="Designation" value={designation} onChangeText={setDesignation} icon="work" placeholder="Enter designation" /> */}
           <CustomInput label="Hospital/Clinic Name *" value={hospitalName} onChangeText={setHospitalName} icon="local-hospital" placeholder="Enter hospital/clinic name" />
           <CustomDropDown uprLabel="Hospital Type" value={hospitalType} setValue={setHospitalType} data={hospitalTypeOptions} iconName="business" placeholder="Select hospital type" />
-          <CustomInput label="Consultation Hours" value={consultationHours} onChangeText={setConsultationHours} icon="schedule" placeholder="e.g. 10am - 2pm" />
-          <CustomDropDown uprLabel="Visiting Days" value={visitingDays} setValue={setVisitingDays} data={visitingDaysOptions} iconName="calendar-today" placeholder="Select visiting days" multiple />
+          {/* <CustomInput label="Consultation Hours" value={consultationHours} onChangeText={setConsultationHours} icon="schedule" placeholder="e.g. 10am - 2pm" />
+          <CustomDropDown uprLabel="Visiting Days" value={visitingDays} setValue={setVisitingDays} data={visitingDaysOptions} iconName="calendar-today" placeholder="Select visiting days" multiple /> */}
         </View>
 
         {/* Clinic / Hospital Details */}
@@ -444,23 +444,23 @@ const AddDoctor = ({ navigation, route }) => {
                   </TouchableOpacity>
               }
           </View>
-          <CustomInput label="Contact Person" value={contactPerson} onChangeText={setContactPerson} icon="person" placeholder="Enter contact person" />
+          {/* <CustomInput label="Contact Person" value={contactPerson} onChangeText={setContactPerson} icon="person" placeholder="Enter contact person" /> */}
           <CustomInput label="Contact Number" value={contactNumber} onChangeText={setContactNumber} icon="phone" keyboardType="phone-pad" maxLength={10} placeholder="Enter contact number" />
-          <CustomInput label="Clinic Email" value={clinicEmail} onChangeText={setClinicEmail} icon="email" keyboardType="email-address" placeholder="Enter clinic email" />
+          {/* <CustomInput label="Clinic Email" value={clinicEmail} onChangeText={setClinicEmail} icon="email" keyboardType="email-address" placeholder="Enter clinic email" /> */}
         </View>
 
         {/* Reference & Relationship Info */}
         <Text style={styles.sectionHeaderText}>Reference & Relationship Info</Text>
         <View style={styles.section}>
-          <CustomDropDown uprLabel="Source Type" value={sourceType} setValue={setSourceType} data={sourceTypeOptions} iconName="source" placeholder="Select source type" />
+          {/* <CustomDropDown uprLabel="Source Type" value={sourceType} setValue={setSourceType} data={sourceTypeOptions} iconName="source" placeholder="Select source type" />
           <CustomInput label="Reference Name" value={referenceName} onChangeText={setReferenceName} icon="person" placeholder="Enter reference name" />
-          <CustomDropDown uprLabel="Lead Source" value={leadSource} setValue={setLeadSource} data={leadSourceOptions} iconName="campaign" placeholder="Select lead source" />
+          <CustomDropDown uprLabel="Lead Source" value={leadSource} setValue={setLeadSource} data={leadSourceOptions} iconName="campaign" placeholder="Select lead source" /> */}
           <CustomDropDown uprLabel="Doctor Category" value={doctorCategory} setValue={setDoctorCategory} data={doctorCategoryOptions} iconName="category" placeholder="Select doctor category" />
           <CustomInput label="Remarks / Notes" value={remarks} onChangeText={setRemarks} icon="notes" placeholder="Enter remarks" multiline />
         </View>
 
         {/* Documents */}
-        <Text style={styles.sectionHeaderText}>Documents</Text>
+        {/* <Text style={styles.sectionHeaderText}>Documents</Text>
         <View style={[styles.section, {gap: responsiveHeight(2),}]}>
           <View style={{}}>
             <TouchableOpacity style={styles.uploadBox1} onPress={handleVisitingCard}>
@@ -504,7 +504,7 @@ const AddDoctor = ({ navigation, route }) => {
               )}
             </TouchableOpacity>
           </View>
-        </View>
+        </View> */}
 
         <View style={styles.uploadContainer}>
           <Text style={styles.sectionTitle}>Clinic Photos</Text>
