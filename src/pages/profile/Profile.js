@@ -1,188 +1,268 @@
-import React from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
-import { useSelector, useDispatch } from 'react-redux';
-import { setUserName } from '../../redux/slices/userSlice';
+import React, { useEffect, useState } from 'react'
+import {
+  View,
+  Text,
+  Image,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
+  Alert,
+  Switch,
+  Share,
+} from 'react-native'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import { responsiveFontSize, responsiveWidth, responsiveHeight } from 'react-native-responsive-dimensions'
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
+import CustomDropDown from '../../components/CustomDropDown'
+import CustomButton from '../../components/CustomButton'
+import Colors from '../../style/Colors'
+
+// optional: replace with your real API service
+const getProfile = async () => {
+  try {
+    // return await apiService.getProfile()
+    // mock
+    return {
+      name: 'Tushar Sahu',
+      role: 'Admin',
+      avatar: 'https://i.pravatar.cc/150?img=3',
+      email: 'tushar.sahu@example.com',
+      phone: '9876543210',
+      organization: 'ItMingo Health',
+    }
+  } catch (e) {
+    return null
+  }
+}
+
+const LANG_OPTIONS = [
+  { label: 'English', value: 'en' },
+  { label: 'हिन्दी', value: 'hi' },
+]
 
 const Profile = ({ navigation }) => {
-  const dispatch = useDispatch();
-  const { name, tasks, avatar, email, phone} = useSelector((state) => state.user);
+  const [profile, setProfile] = useState(null)
+  const [notificationsEnabled, setNotificationsEnabled] = useState(true)
+  const [darkMode, setDarkMode] = useState(false)
+  const [language, setLanguage] = useState('en')
 
-  const handleEditName = () => {
-    // Example action to change the name temporarily
-    navigation.navigate('EditProfile');
-    // dispatch(setUserName('kamlesh'))
-  };
+  useEffect(() => {
+    let mounted = true
+    const load = async () => {
+      const p = await getProfile()
+      if (!mounted) return
+      setProfile(p)
+      // load saved prefs
+      try {
+        const n = await AsyncStorage.getItem('prefs_notifications')
+        const d = await AsyncStorage.getItem('prefs_darkmode')
+        const l = await AsyncStorage.getItem('prefs_language')
+        if (n !== null) setNotificationsEnabled(n === '1')
+        if (d !== null) setDarkMode(d === '1')
+        if (l) setLanguage(l)
+      } catch (e) {
+        // ignore
+      }
+    }
+    load()
+    return () => {
+      mounted = false
+    }
+  }, [])
+
+  const onToggleNotifications = async (val) => {
+    setNotificationsEnabled(val)
+    await AsyncStorage.setItem('prefs_notifications', val ? '1' : '0')
+  }
+  const onToggleDark = async (val) => {
+    setDarkMode(val)
+    await AsyncStorage.setItem('prefs_darkmode', val ? '1' : '0')
+    // optional: emit event to app theme manager
+  }
+  const onChangeLanguage = async (val) => {
+    setLanguage(val)
+    await AsyncStorage.setItem('prefs_language', val)
+    // optional: reload translations
+  }
+
+  const handleLogout = () => {
+    Alert.alert('Logout', 'Are you sure you want to logout?', [
+      { text: 'Cancel', style: 'cancel' },
+      {
+        text: 'Logout',
+        style: 'destructive',
+        onPress: async () => {
+          await AsyncStorage.clear()
+          navigation?.reset?.({
+            index: 0,
+            routes: [{ name: 'Login' }],
+          })
+        },
+      },
+    ])
+  }
+
+  const handleShare = async () => {
+    try {
+      await Share.share({
+        message: 'Check out the Healthcare CRM app - https://example.com',
+      })
+    } catch (err) {
+      Alert.alert('Share', 'Unable to open share dialog')
+    }
+  }
+
+  const Row = ({ icon, label, onPress, rightComponent }) => (
+    <TouchableOpacity activeOpacity={onPress ? 0.7 : 1} onPress={onPress} style={styles.row}>
+      <View style={styles.rowLeft}>
+        <MaterialCommunityIcons name={icon} size={20} color={Colors.primary} />
+      </View>
+      <View style={styles.rowBody}>
+        <Text style={styles.rowLabel}>{label}</Text>
+      </View>
+      {rightComponent ? rightComponent : <MaterialCommunityIcons name="chevron-right" size={20} color={Colors.textSecondary} />}
+    </TouchableOpacity>
+  )
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.headerBackground} />
-      <Image
-        source={{ uri: avatar }}
-        style={styles.avatar}
-      />
-      <Text style={styles.name}>{name}</Text>
-      <Text style={styles.email}>{email}</Text>
 
-      <View style={styles.infoContainer}>
-        <View style={styles.infoBox}>
-          <Text style={styles.infoNumber}>{tasks.total}</Text>
-          <Text style={styles.infoLabel}>Leads</Text>
-        </View>
-        <View style={styles.infoBox}>
-          <Text style={styles.infoNumber}>{tasks.completed}</Text>
-          <Text style={styles.infoLabel}>Clients</Text>
+      <View style={styles.top}>
+        <TouchableOpacity style={styles.avatarWrap} onPress={() => navigation?.navigate?.('EditProfile')}>
+          {profile?.avatar ? (
+            <Image source={{ uri: profile.avatar }} style={styles.avatar} />
+          ) : (
+            <View style={styles.avatarPlaceholder}>
+              <MaterialCommunityIcons name="account-circle" size={responsiveWidth(22)} color={Colors.profileOpacity} />
+            </View>
+          )}
+          <View style={styles.editAvatar}>
+            <MaterialCommunityIcons name="pencil" size={14} color={Colors.white} />
+          </View>
+        </TouchableOpacity>
+
+        <View style={styles.userInfo}>
+          <Text style={styles.name}>{profile?.name ?? 'User Name'}</Text>
+          <Text style={styles.role}>{profile?.role ?? 'Role'} • {profile?.organization ?? ''}</Text>
+          <Text style={styles.subText}>Healthcare CRM Account</Text>
         </View>
       </View>
 
-      <TouchableOpacity style={styles.button} onPress={handleEditName}>
-        <Text style={styles.buttonText}>Edit Profile</Text>
-      </TouchableOpacity>
-
+      {/* Account */}
       <View style={styles.section}>
-        <TouchableOpacity style={styles.menuItem}>
-          <Text style={styles.menuText}>Change Password</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.menuItem}>
-          <Text style={styles.menuText}>Language Setting</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.menuItem}>
-          <Text style={styles.menuText}>FAQ</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.menuItem}>
-          <Text style={styles.menuText}>Privacy Policy</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.menuItemLast}>
-          <Text style={styles.menuText}>Terms of Services</Text>
+        <Text style={styles.sectionTitle}>Account</Text>
+        <Row icon="account" label="My Profile" onPress={() => navigation?.navigate('EditProfile')} />
+        <Row icon="lock" label="Change Password" onPress={() => navigation?.navigate('ChangePassword')} />
+      </View>
+
+      {/* Organization */}
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Organization</Text>
+        <Row icon="file-document-multiple" label="My Leads" onPress={() => navigation?.navigate('Leads')} />
+        <Row icon="calendar" label="My Appointments" onPress={() => navigation?.navigate('Appointments')} />
+        <Row icon="gift" label="My Rewards" onPress={() => navigation?.navigate('Rewards')} />
+      </View>
+
+      {/* Preferences */}
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Preferences</Text>
+
+        <View style={styles.row}>
+          <View style={styles.rowLeft}>
+            <MaterialCommunityIcons name="bell" size={20} color={Colors.primary} />
+          </View>
+          <View style={styles.rowBody}>
+            <Text style={styles.rowLabel}>Notifications</Text>
+          </View>
+          {/* <Switch value={notificationsEnabled} onValueChange={onToggleNotifications} thumbColor={notificationsEnabled ? Colors.primary : Colors.white} /> */}
+        </View>
+
+        <View style={styles.row}>
+          <View style={styles.rowLeft}>
+            <MaterialCommunityIcons name="translate" size={20} color={Colors.primary} />
+          </View>
+          <View style={styles.rowBody}>
+            <Text style={styles.rowLabel}>Language</Text>
+          </View>
+          <View style={{ width: responsiveWidth(38) }}>
+            <CustomDropDown iconName="language" value={language} setValue={onChangeLanguage} data={LANG_OPTIONS} dropdownPosition="bottom" placeholder="Language" />
+          </View>
+        </View>
+
+        {/* <View style={styles.row}>
+          <View style={styles.rowLeft}>
+            <MaterialCommunityIcons name="theme-light-dark" size={20} color={Colors.primary} />
+          </View>
+          <View style={styles.rowBody}>
+            <Text style={styles.rowLabel}>Dark Mode</Text>
+          </View>
+          <Switch value={darkMode} onValueChange={onToggleDark} thumbColor={darkMode ? Colors.primary : Colors.white} />
+        </View> */}
+      </View>
+
+      {/* Support */}
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Support</Text>
+        <Row icon="message-text" label="Feedback & Suggestions" onPress={() => navigation?.navigate('Feedback')} />
+        <Row icon="help-circle" label="Help & Support" onPress={() => navigation?.navigate('Help')} />
+        <Row icon="file-document" label="Privacy Policy" onPress={() => navigation?.navigate('PrivacyPolicy')} />
+        <Row icon="file-word" label="Terms & Conditions" onPress={() => navigation?.navigate('Terms')} />
+      </View>
+
+      {/* Other */}
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Other</Text>
+        <Row icon="share-variant" label="Refer App" onPress={handleShare} />
+        <TouchableOpacity style={[styles.row, { justifyContent: 'center', paddingVertical: responsiveHeight(1.6) }]} onPress={handleLogout}>
+          <MaterialCommunityIcons name="logout" size={20} color={Colors.secondary} />
+          <Text style={[styles.rowLabel, { color: Colors.secondary, marginLeft: responsiveWidth(3) }]}>Logout</Text>
         </TouchableOpacity>
       </View>
+
+      <View style={styles.versionWrap}>
+        <Text style={styles.versionText}>App Version 1.0.0</Text>
+      </View>
+
+      <View style={{ height: responsiveHeight(6) }} />
     </ScrollView>
-  );
-};
+  )
+}
 
-export default Profile;
+export default Profile
 
-// --- Styles (same as your version) ---
 const styles = StyleSheet.create({
-  container: {
-    alignItems: 'center',
-    paddingTop: 0,
-    backgroundColor: '#f7f7f7',
-    paddingBottom: 40,
-    minHeight: '100%',
-    position: 'relative',
-  },
+  container: { paddingBottom: responsiveHeight(6), backgroundColor: Colors.background, minHeight: '100%' },
   headerBackground: {
     position: 'absolute',
     top: 0,
     left: 0,
-    width: '100%',
-    height: 180,
-    backgroundColor: '#4e8cff',
-    borderBottomLeftRadius: 40,
-    borderBottomRightRadius: 40,
+    right: 0,
+    height: responsiveHeight(22),
+    backgroundColor: Colors.primary,
+    borderBottomLeftRadius: 28,
+    borderBottomRightRadius: 28,
     zIndex: -1,
   },
-  avatar: {
-    width: 110,
-    height: 110,
-    borderRadius: 55,
-    marginTop: 60,
-    marginBottom: 18,
-    borderWidth: 4,
-    borderColor: '#fff',
-    backgroundColor: '#eee',
-    shadowColor: '#000',
-    shadowOpacity: 0.15,
-    shadowRadius: 8,
-    shadowOffset: { width: 0, height: 4 },
-    elevation: 6,
-  },
-  name: {
-    fontSize: 26,
-    fontWeight: 'bold',
-    marginBottom: 4,
-    color: '#222',
-    letterSpacing: 0.5,
-  },
-  email: {
-    fontSize: 16,
-    color: '#4e8cff',
-    marginBottom: 24,
-    fontWeight: '500',
-  },
-  infoContainer: {
-    flexDirection: 'row',
-    marginBottom: 32,
-    backgroundColor: '#fff',
-    borderRadius: 18,
-    paddingVertical: 18,
-    paddingHorizontal: 32,
-    shadowColor: '#000',
-    shadowOpacity: 0.06,
-    shadowRadius: 6,
-    shadowOffset: { width: 0, height: 2 },
-    elevation: 2,
-  },
-  infoBox: {
-    alignItems: 'center',
-    marginHorizontal: 24,
-  },
-  infoNumber: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    color: '#4e8cff',
-    marginBottom: 2,
-  },
-  infoLabel: {
-    fontSize: 14,
-    color: '#888',
-    fontWeight: '500',
-  },
-  button: {
-    backgroundColor: '#4e8cff',
-    paddingVertical: 14,
-    paddingHorizontal: 60,
-    borderRadius: 28,
-    marginBottom: 32,
-    shadowColor: '#4e8cff',
-    shadowOpacity: 0.15,
-    shadowRadius: 8,
-    shadowOffset: { width: 0, height: 4 },
-    elevation: 3,
-  },
-  buttonText: {
-    color: '#fff',
-    fontSize: 17,
-    fontWeight: 'bold',
-    letterSpacing: 0.5,
-  },
-  section: {
-    width: '92%',
-    backgroundColor: '#fff',
-    borderRadius: 20,
-    paddingVertical: 8,
-    paddingHorizontal: 8,
-    elevation: 3,
-    shadowColor: '#000',
-    shadowOpacity: 0.07,
-    shadowRadius: 8,
-    shadowOffset: { width: 0, height: 3 },
-    marginTop: 10,
-  },
-  menuItem: {
-    paddingVertical: 18,
-    borderBottomWidth: 1,
-    borderBottomColor: '#f0f0f0',
-    paddingHorizontal: 12,
-  },
-  menuItemLast: {
-    paddingVertical: 18,
-    paddingHorizontal: 12,
-  },
-  menuText: {
-    fontSize: 17,
-    color: '#4e8cff',
-    fontWeight: '600',
-    letterSpacing: 0.2,
-  },
-});
+  top: { flexDirection: 'row', paddingHorizontal: responsiveWidth(4), paddingTop: responsiveHeight(4), alignItems: 'center' },
+  avatarWrap: { marginRight: responsiveWidth(4) },
+  avatar: { width: responsiveWidth(22), height: responsiveWidth(22), borderRadius: responsiveWidth(11) },
+  avatarPlaceholder: { width: responsiveWidth(22), height: responsiveWidth(22), borderRadius: responsiveWidth(11), backgroundColor: Colors.white, alignItems: 'center', justifyContent: 'center' },
+  editAvatar: { position: 'absolute', right: 0, bottom: 0, backgroundColor: Colors.primary, padding: 6, borderRadius: 14, borderWidth: 2, borderColor: Colors.white },
+
+  userInfo: { flex: 1 },
+  name: { fontSize: responsiveFontSize(2.2), fontWeight: '800', color: Colors.white, marginBottom: 2 },
+  role: { fontSize: responsiveFontSize(1.1), color: Colors.white, opacity: 0.95 },
+  subText: { fontSize: responsiveFontSize(1), color: Colors.white, opacity: 0.9, marginTop: 6 },
+
+  section: { marginTop: responsiveHeight(2), marginHorizontal: responsiveWidth(3), backgroundColor: Colors.white, borderRadius: 12, paddingVertical: responsiveHeight(0.8), paddingHorizontal: responsiveWidth(2), elevation: 1 },
+  sectionTitle: { fontWeight: '700', fontSize: responsiveFontSize(1.2), color: Colors.textPrimary, marginBottom: responsiveHeight(0.6) },
+
+  row: { flexDirection: 'row', alignItems: 'center', paddingVertical: responsiveHeight(1.1) },
+  rowLeft: { width: responsiveWidth(10), alignItems: 'center' },
+  rowBody: { flex: 1 },
+  rowLabel: { fontSize: responsiveFontSize(1.4), color: Colors.textPrimary },
+
+  versionWrap: { alignItems: 'center', marginTop: responsiveHeight(2) },
+  versionText: { color: Colors.textSecondary, fontSize: responsiveFontSize(1) },
+})

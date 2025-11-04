@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react'
+import React, { useState, useEffect, useMemo, useRef } from 'react'
 import {
   View,
   Text,
@@ -178,6 +178,8 @@ const Doctors = ({ navigation }) => {
     const [filterCategory, setFilterCategory] = useState('')
     const [filterHospitalType, setFilterHospitalType] = useState('')
     const [sortBy, setSortBy] = useState(sortOptions[0].value)
+    const [showSearch, setShowSearch] = useState(false);
+    const searchRef = useRef(null);
 
     useEffect(() => {
         // simulate api fetch
@@ -257,7 +259,7 @@ const Doctors = ({ navigation }) => {
 
     const renderDoctorCard = ({ item }) =>{
         return (
-        <View style={styles.card}>
+        <Pressable onPress={() => handleViewDetails(item)} style={styles.card}>
           <View style={styles.cardLeft}>
             <Image source={{ uri: item.avatar }} style={styles.avatar} />
           </View>
@@ -273,24 +275,24 @@ const Doctors = ({ navigation }) => {
             <Text style={styles.mobileText}>📞 {item.mobile}</Text>
             <View style={styles.actionRow}>
               <TouchableOpacity style={styles.actionBtn} onPress={() => handleViewDetails(item)}>
-                <MaterialIcons name="visibility" size={18} color={Colors.primary} />
+                <MaterialIcons name="visibility" size={responsiveFontSize(1.8)} color={Colors.primary} />
                 <Text style={styles.actionLabel}>View</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.actionBtn} onPress={() => handleEdit(item)}>
-                <MaterialIcons name="edit" size={18} color={Colors.primary} />
+                <MaterialIcons name="edit" size={responsiveFontSize(1.8)} color={Colors.primary} />
                 <Text style={styles.actionLabel}>Edit</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.actionBtn} onPress={() => handleDelete(item.id)}>
-                <MaterialIcons name="delete" size={18} color={Colors.secondary} />
+                <MaterialIcons name="delete" size={responsiveFontSize(1.8)} color={Colors.secondary} />
                 <Text style={[styles.actionLabel, { color: Colors.secondary }]}>Delete</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.actionBtn} onPress={() => console.log('Open map for', item.name)}>
-                <MaterialIcons name="my-location" size={18} color={Colors.info} />
+                <MaterialIcons name="my-location" size={responsiveFontSize(1.8)} color={Colors.info} />
                 <Text style={styles.actionLabel}>Map</Text>
               </TouchableOpacity>
             </View>
           </View>
-        </View>
+        </Pressable>
     )}
     
     if (loading) {
@@ -304,16 +306,10 @@ const Doctors = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      {/* <MyHeader
-        title={`Doctor List (${filteredDoctors.length})`}
-        // onBackPress={()=> navigation.goBack()}
-        // onFabPress={() => navigation && navigation.navigate('AddDoctor')}
-        // fabTitle="Add"
-      /> */}
       <View style={styles.header}>
         <Text style={{color: Colors.white, fontSize: responsiveFontSize(2.2), fontWeight: '700'}}>Doctors</Text>
         <View style={{flexDirection: 'row', alignItems: 'center' }}>
-          <TouchableOpacity onPress={() => {}} style={[{padding: responsiveWidth(2)}]}>
+          <TouchableOpacity onPress={() => {setShowSearch(true); setTimeout(() => searchRef.current?.focus(), 100);}} style={[{padding: responsiveWidth(2)}]}>
             <MaterialCommunityIcons name="magnify" size={responsiveFontSize(2.5)} color={Colors.white} />
           </TouchableOpacity>
           <TouchableOpacity onPress={() => setFilterModalVisible(true)} style={[{ marginLeft: responsiveWidth(1), padding: responsiveWidth(2) }]}>
@@ -321,39 +317,24 @@ const Doctors = ({ navigation }) => {
           </TouchableOpacity>
         </View>
       </View>
-      {/* <View style={{alignItems: 'center', justifyContent: 'center', backgroundColor: Colors.white, paddingVertical: responsiveHeight(1)}}>
-        <Text style={{fontWeight: 'bold', fontSize: responsiveFontSize(2), color: Colors.primary}}>Doctors List</Text>
-      </View> */}
       <View style={styles.content}>
         {/* Search & Filters */}
-        <View style={styles.searchRow}>
+        {showSearch && (
+          <View style={styles.searchRow}>
             <Searchbar
-                placeholder="Search here..."
-                value={searchText}
-                onChangeText={setSearchText}
-                style={styles.searchBar}
-                inputStyle={styles.searchInput}
-                iconColor={Colors.textSecondary}
-                placeholderTextColor={Colors.textSecondary}
-                icon={() => <MaterialIcons name="search" size={responsiveFontSize(2.2)} color={Colors.textSecondary} />}
-                clearIcon={searchText ? () => <MaterialIcons name="close" size={responsiveFontSize(2.2)} color={Colors.textSecondary} /> : null}
+              ref={searchRef}
+              placeholder="Search here..."
+              value={searchText}
+              onChangeText={setSearchText}
+              style={styles.searchBar}
+              inputStyle={styles.searchInput}
+              iconColor={Colors.textSecondary}
+              placeholderTextColor={Colors.textSecondary}
+              icon={() => <MaterialIcons name="search" size={responsiveFontSize(2.2)} color={Colors.textSecondary} />}
+              clearIcon={searchText ? () => <MaterialIcons name="close" size={responsiveFontSize(2.2)} color={Colors.textSecondary} /> : null}
             />
-        </View>
-
-        {/* <View style={styles.filterRow}>
-          <CustomDropDown uprLabel="City" value={filterCity} setValue={setFilterCity} data={cityOptions} placeholder="City" />
-          <CustomDropDown uprLabel="Specialization" value={filterSpec} setValue={setFilterSpec} data={specializationOptions} placeholder="Specialization" />
-        </View>
-
-        <View style={styles.filterRow}>
-          <CustomDropDown uprLabel="Category" value={filterCategory} setValue={setFilterCategory} data={categoryOptions} placeholder="Category" />
-          <CustomDropDown uprLabel="Hospital Type" value={filterHospitalType} setValue={setFilterHospitalType} data={hospitalTypeOptions} placeholder="Hospital Type" />
-        </View>
-
-        <View style={styles.filterRow}>
-          <CustomDropDown uprLabel="Sort By" value={sortBy} setValue={setSortBy} data={sortOptions} placeholder="Sort" />
-          <CustomButton title="Clear Filters" onPress={clearFilters} bgColor={Colors.white} color={Colors.primary} borderC={Colors.primary} />
-        </View> */}
+          </View>
+        )}
 
         {/* Doctor List */}
         {filteredDoctors.length === 0 ? (
@@ -379,7 +360,7 @@ const Doctors = ({ navigation }) => {
           style={styles.fab}
           onPress={() => navigation && navigation.navigate('AddDoctor')}
         >
-          <MaterialIcons name="add" size={28} color={Colors.white} />
+          <MaterialIcons name="add" size={responsiveFontSize(3.5)} color={Colors.white} />
         </TouchableOpacity>
       </View>
 
@@ -456,7 +437,7 @@ const styles = StyleSheet.create({
   card: {
     flexDirection: 'row',
     backgroundColor: Colors.white,
-    borderRadius: 12,
+    borderRadius: responsiveWidth(3),
     padding: responsiveWidth(3),
     elevation: 2,
     alignItems: 'flex-start',
@@ -469,14 +450,14 @@ const styles = StyleSheet.create({
   subText: { color: Colors.textSecondary, fontSize: responsiveFontSize(1.4), marginBottom: responsiveHeight(0.3) },
   metaText: { color: Colors.textTertiary, fontSize: responsiveFontSize(1.3), marginBottom: responsiveHeight(0.6) },
   mobileText: { color: Colors.textSecondary, fontSize: responsiveFontSize(1.4), marginBottom: responsiveHeight(0.6) },
-  badge: { paddingHorizontal: 8, paddingVertical: 4, borderRadius: 8 },
+  badge: { paddingHorizontal: responsiveWidth(1.8), paddingVertical: responsiveHeight(0.5), borderRadius: responsiveWidth(2) },
   badgeText: { color: Colors.white, fontWeight: '700' },
   badgeA: { backgroundColor: '#16a34a' },
   badgeB: { backgroundColor: '#f59e0b' },
   badgeC: { backgroundColor: '#ef4444' },
   actionRow: { flexDirection: 'row', marginTop: responsiveHeight(0.5), gap: responsiveWidth(3) },
   actionBtn: { flexDirection: 'row', alignItems: 'center', marginRight: responsiveWidth(4) },
-  actionLabel: { marginLeft: 6, color: Colors.textSecondary, fontSize: responsiveFontSize(1.3) },
+  actionLabel: { marginLeft: responsiveWidth(1), color: Colors.textSecondary, fontSize: responsiveFontSize(1.3) },
   emptyState: { alignItems: 'center', marginTop: responsiveHeight(8) },
   emptyText: { marginTop: responsiveHeight(2), fontSize: responsiveFontSize(1.8), color: Colors.textSecondary, fontWeight: '600' },
   emptySub: { marginTop: responsiveHeight(0.6), color: Colors.textTertiary },

@@ -17,6 +17,15 @@ const genderOptions = [
   { label: 'Other', value: 'other' },
 ]
 
+const titleOptions = [
+  { label: 'Dr.', value: 'Dr.' },
+  { label: 'Mr.', value: 'Mr.' },
+  { label: 'Mrs.', value: 'Mrs.' },
+  { label: 'Ms.', value: 'Ms.' },
+  { label: 'Prof.', value: 'Prof.' },
+]
+
+
 const stateOptions = [
   { label: 'Chhattisgarh', value: 'chhattisgarh' },
   { label: 'Goa', value: 'goa' },
@@ -89,6 +98,7 @@ const AddDoctor = ({ navigation, route }) => {
 
   // Basic Info
   const [profileImage, setProfileImage] = useState(null)
+  const [title, setTitle] = useState('Dr.')
   const [fullName, setFullName] = useState('')
   const [gender, setGender] = useState('')
   const [dob, setDob] = useState('')
@@ -101,41 +111,28 @@ const AddDoctor = ({ navigation, route }) => {
   const [pincode, setPincode] = useState('')
 
   // Professional Details
-  const [qualification, setQualification] = useState('')
   const [specialization, setSpecialization] = useState('')
-  const [registrationNo, setRegistrationNo] = useState('')
-  const [experience, setExperience] = useState('')
-  const [designation, setDesignation] = useState('')
   const [hospitalName, setHospitalName] = useState('')
   const [hospitalType, setHospitalType] = useState('')
-  const [consultationHours, setConsultationHours] = useState('')
-  const [visitingDays, setVisitingDays] = useState([])
 
   // Clinic / Hospital Details
   const [clinicAddress, setClinicAddress] = useState('')
-  const [googleLocation, setGoogleLocation] = useState('')
-  const [contactPerson, setContactPerson] = useState('')
   const [contactNumber, setContactNumber] = useState('')
-  const [clinicEmail, setClinicEmail] = useState('')
   const [location, setLocation] = useState(null)
   const [loadLocation, setLoadLocation] = useState(false)
 
   // Reference & Relationship Info
-  const [sourceType, setSourceType] = useState('')
-  const [referenceName, setReferenceName] = useState('')
-  const [leadSource, setLeadSource] = useState('')
   const [doctorCategory, setDoctorCategory] = useState('')
   const [remarks, setRemarks] = useState('')
 
   // Documents
-  const [visitingCard, setVisitingCard] = useState(null)
-  const [registrationProof, setRegistrationProof] = useState(null)
   const [clinicPhotos, setClinicPhotos] = useState([])
 
   useEffect(() => {
     if (isEditMode && doctor) {
       const data = route.params.doctor;
       setProfileImage(data.avatar || null);
+      setTitle(data.title || '');
       setFullName(data.name || '');
       setGender(data.gender || '');
       setDob(data.dob || '');
@@ -147,30 +144,15 @@ const AddDoctor = ({ navigation, route }) => {
       setState(data.state || '');
       setPincode(data.pincode || '');
 
-      setQualification(data.qualification || '');
       setSpecialization(data.specialization || '');
-      setRegistrationNo(data.registrationNo || '');
-      setExperience(data.experience || '');
-      setDesignation(data.designation || '');
       setHospitalName(data.hospitalName || '');
       setHospitalType(data.hospitalType || '');
-      setConsultationHours(data.consultationHours || '');
-      setVisitingDays(data.visitingDays || []);
 
       setClinicAddress(data.clinic || '');
       setLocation(data.location || null);
-      setContactPerson(data.contactPerson || '');
       setContactNumber(data.contactNumber || '');
-      setClinicEmail(data.clinicEmail || '');
-
-      setSourceType(data.sourceType || '');
-      setReferenceName(data.referenceName || '');
-      setLeadSource(data.leadSource || '');
-      setDoctorCategory(data.doctorCategory || '');
       setRemarks(data.notes || '');
 
-      setVisitingCard(data.visitingCard || null);
-      setRegistrationProof(data.registrationProof || null);
       setClinicPhotos(data.clinicPhotos || []);
     }
   }, [doctor, isEditMode]);
@@ -181,17 +163,7 @@ const AddDoctor = ({ navigation, route }) => {
     console.log('Profile Image:', img)
     if (img) setProfileImage(img.uri)
   }
-  const handleVisitingCard = async () => {
-    const img = await PickImageComponent()
-    console.log('Visiting Card:', img)
-    if (img) {
-      setVisitingCard(img.uri)
-    } 
-  }
-  const handleRegistrationProof = async () => {
-    const img = await PickImageComponent()
-    if (img) setRegistrationProof(img.uri)
-  }
+
   const handleClinicPhotos = async () => {
     if (clinicPhotos.length >= 5) {
       Alert.alert('Limit Reached', 'You can upload a maximum of 5 clinic photos.');
@@ -238,11 +210,11 @@ const AddDoctor = ({ navigation, route }) => {
   const handleSave = async () => {
     if (!validate()) return
     const formData = {
-      profileImage, fullName, gender, dob:formatDateForAPI(dob), mobile, altMobile, email, address, city, state, pincode,
-      qualification, specialization, registrationNo, experience, designation, hospitalName, hospitalType, consultationHours, visitingDays,
-      clinicAddress, googleLocation, contactPerson, contactNumber, clinicEmail,
-      sourceType, referenceName, leadSource, doctorCategory, remarks,
-      visitingCard, registrationProof, clinicPhotos
+      profileImage, title, fullName, gender, dob:formatDateForAPI(dob), mobile, altMobile, email, address, city, state, pincode,
+      specialization, hospitalName, hospitalType,
+      clinicAddress, location,contactNumber,
+      doctorCategory, remarks,
+      clinicPhotos
     }
     console.log('Form Data:', formData)
 
@@ -378,7 +350,7 @@ const AddDoctor = ({ navigation, route }) => {
   return (
     <View style={{ flex: 1, backgroundColor: Colors.background }}>
       <MyHeader  title={isEditMode ? "Edit Doctor" : "Add Doctor"}  onBackPress={() => navigation.goBack()} />
-      <ScrollView contentContainerStyle={{ padding: responsiveWidth(4), paddingBottom: 80 }}>
+      <ScrollView contentContainerStyle={{ paddingHorizontal: responsiveWidth(4), paddingBottom: responsiveHeight(4) }}>
         {/* Basic Information */}
         <Text style={styles.sectionHeaderText}>Basic Information</Text>
         <View style={styles.section}>
@@ -399,30 +371,61 @@ const AddDoctor = ({ navigation, route }) => {
               <MaterialIcons name="camera" color={Colors.white} size={responsiveFontSize(2.5)} />
             </View>
           </TouchableOpacity>
-          <CustomInput label="Full Name *" value={fullName} onChangeText={setFullName} icon="person" placeholder="Enter full name" />
-          <CustomDropDown uprLabel="Gender *" value={gender} setValue={setGender} data={genderOptions} iconName="male" placeholder="Select gender" />
-          <CustomDateTimePicker title="Date of Birth" placeholder="Date of Birth" value={dob} setDate={setDob} iconName="calendar-today" />
-          <CustomInput label="Mobile Number *" value={mobile} onChangeText={setMobile} icon="phone" keyboardType="phone-pad" maxLength={10} placeholder="Enter mobile number" />
-          <CustomInput label="Alternate Number" value={altMobile} onChangeText={setAltMobile} icon="phone" keyboardType="phone-pad" maxLength={10} placeholder="Enter alternate number" />
+          <View style={styles.fieldCmn}>
+            <View style={[styles.fieldLeft, {flex: 1}]}>
+              <CustomDropDown uprLabel="Title" value={title} setValue={setTitle} data={titleOptions} iconName="badge" placeholder="Select title" />
+            </View>
+            <View style={styles.fieldRight}>
+              <CustomInput label="Full Name *" value={fullName} onChangeText={setFullName} icon="person" placeholder="Enter full name" />
+            </View>
+          </View>
+          <View style={styles.fieldCmn}>
+            <View style={styles.fieldLeft}>
+              <CustomDropDown uprLabel="Gender *" value={gender} setValue={setGender} data={genderOptions} iconName="male" placeholder="Select gender" />
+            </View>
+            <View style={styles.fieldRight}>
+              <CustomDateTimePicker title="Date of Birth" placeholder="Date of Birth" value={dob} setDate={setDob} iconName="calendar-today" />
+            </View>
+          </View>
+          <View style={styles.fieldCmn}>
+            <View style={styles.fieldLeft}>
+              <CustomInput label="Mobile Number *" value={mobile} onChangeText={setMobile} icon="phone" keyboardType="phone-pad" maxLength={10} placeholder="Enter mobile number" />
+            </View>
+            <View style={styles.fieldRight}>
+              <CustomInput label="Alternate Number" value={altMobile} onChangeText={setAltMobile} icon="phone" keyboardType="phone-pad" maxLength={10} placeholder="Enter alternate number" />
+            </View>
+          </View>
           <CustomInput label="Email ID" value={email} onChangeText={setEmail} icon="email" keyboardType="email-address" placeholder="Enter email" />
           <CustomInput label="Address" value={address} onChangeText={setAddress} icon="location-on" placeholder="Enter address" multiline />
-          <CustomDropDown uprLabel="State" value={state} setValue={setState} data={stateOptions} iconName="location-city" placeholder="Select state" />
-          <CustomDropDown uprLabel="City" value={city} setValue={setCity} data={cityOptions} iconName="location-city" placeholder="Select city" />
+          <View style={styles.fieldCmn}>
+            <View style={styles.fieldLeft}>
+              <CustomDropDown uprLabel="State" value={state} setValue={setState} data={stateOptions} iconName="location-city" placeholder="Select state" />
+            </View>
+            <View style={styles.fieldRight}>
+              <CustomDropDown uprLabel="City" value={city} setValue={setCity} data={cityOptions} iconName="location-city" placeholder="Select city" />
+            </View>
+          </View>
           <CustomInput label="Pincode" value={pincode} onChangeText={setPincode} icon="pin" keyboardType="number-pad" maxLength={6} placeholder="Enter pincode" />
         </View>
 
         {/* Professional Details */}
         <Text style={styles.sectionHeaderText}>Professional Details</Text>
         <View style={styles.section}>
-          <CustomInput label="Qualification" value={qualification} onChangeText={setQualification} icon="school" placeholder="Enter qualification" />
-          <CustomDropDown uprLabel="Specialization *" value={specialization} setValue={setSpecialization} data={specializationOptions} iconName="medical-services" placeholder="Select specialization" />
-          <CustomInput label="Registration No" value={registrationNo} onChangeText={setRegistrationNo} icon="confirmation-number" placeholder="Enter registration no" />
-          <CustomInput label="Years of Experience" value={experience} onChangeText={setExperience} icon="history" keyboardType="number-pad" placeholder="Enter years of experience" />
-          <CustomInput label="Designation" value={designation} onChangeText={setDesignation} icon="work" placeholder="Enter designation" />
+          {/* <CustomInput label="Qualification" value={qualification} onChangeText={setQualification} icon="school" placeholder="Enter qualification" /> */}
           <CustomInput label="Hospital/Clinic Name *" value={hospitalName} onChangeText={setHospitalName} icon="local-hospital" placeholder="Enter hospital/clinic name" />
-          <CustomDropDown uprLabel="Hospital Type" value={hospitalType} setValue={setHospitalType} data={hospitalTypeOptions} iconName="business" placeholder="Select hospital type" />
-          <CustomInput label="Consultation Hours" value={consultationHours} onChangeText={setConsultationHours} icon="schedule" placeholder="e.g. 10am - 2pm" />
-          <CustomDropDown uprLabel="Visiting Days" value={visitingDays} setValue={setVisitingDays} data={visitingDaysOptions} iconName="calendar-today" placeholder="Select visiting days" multiple />
+          <View style={styles.fieldCmn}>
+            <View style={styles.fieldLeft}>
+              <CustomDropDown uprLabel="Specialization *" value={specialization} setValue={setSpecialization} data={specializationOptions} iconName="medical-services" placeholder="Select specialization" />
+            </View>
+            <View style={styles.fieldRight}>
+              <CustomDropDown uprLabel="Hospital Type" value={hospitalType} setValue={setHospitalType} data={hospitalTypeOptions} iconName="business" placeholder="Select hospital type" />
+            </View>
+          </View>
+          {/* <CustomInput label="Registration No" value={registrationNo} onChangeText={setRegistrationNo} icon="confirmation-number" placeholder="Enter registration no" />
+          <CustomInput label="Years of Experience" value={experience} onChangeText={setExperience} icon="history" keyboardType="number-pad" placeholder="Enter years of experience" />
+          <CustomInput label="Designation" value={designation} onChangeText={setDesignation} icon="work" placeholder="Enter designation" /> */}
+          {/* <CustomInput label="Consultation Hours" value={consultationHours} onChangeText={setConsultationHours} icon="schedule" placeholder="e.g. 10am - 2pm" />
+          <CustomDropDown uprLabel="Visiting Days" value={visitingDays} setValue={setVisitingDays} data={visitingDaysOptions} iconName="calendar-today" placeholder="Select visiting days" multiple /> */}
         </View>
 
         {/* Clinic / Hospital Details */}
@@ -438,72 +441,25 @@ const AddDoctor = ({ navigation, route }) => {
                       <ActivityIndicator size={responsiveFontSize(2.2)} color={Colors.primary} />
                   </View>
               ) :
-                  <TouchableOpacity onPress={() => requestLocationPermission()} style={{ flexDirection: 'row', alignItems: 'center', gap: responsiveWidth(2), marginBottom: responsiveHeight(1.5), }}>
+                  <TouchableOpacity onPress={() => requestLocationPermission()} style={{ flexDirection: 'row', alignItems: 'center', gap: responsiveWidth(2), }}>
                       <MaterialIcons name="my-location" size={responsiveFontSize(2.2)} color={Colors.primary} />
                       <Text style={{ fontSize: responsiveFontSize(1.6), color: Colors.primary }}>Get Location</Text>
                   </TouchableOpacity>
               }
           </View>
-          <CustomInput label="Contact Person" value={contactPerson} onChangeText={setContactPerson} icon="person" placeholder="Enter contact person" />
+          {/* <CustomInput label="Contact Person" value={contactPerson} onChangeText={setContactPerson} icon="person" placeholder="Enter contact person" /> */}
           <CustomInput label="Contact Number" value={contactNumber} onChangeText={setContactNumber} icon="phone" keyboardType="phone-pad" maxLength={10} placeholder="Enter contact number" />
-          <CustomInput label="Clinic Email" value={clinicEmail} onChangeText={setClinicEmail} icon="email" keyboardType="email-address" placeholder="Enter clinic email" />
+          {/* <CustomInput label="Clinic Email" value={clinicEmail} onChangeText={setClinicEmail} icon="email" keyboardType="email-address" placeholder="Enter clinic email" /> */}
         </View>
 
         {/* Reference & Relationship Info */}
         <Text style={styles.sectionHeaderText}>Reference & Relationship Info</Text>
         <View style={styles.section}>
-          <CustomDropDown uprLabel="Source Type" value={sourceType} setValue={setSourceType} data={sourceTypeOptions} iconName="source" placeholder="Select source type" />
+          {/* <CustomDropDown uprLabel="Source Type" value={sourceType} setValue={setSourceType} data={sourceTypeOptions} iconName="source" placeholder="Select source type" />
           <CustomInput label="Reference Name" value={referenceName} onChangeText={setReferenceName} icon="person" placeholder="Enter reference name" />
-          <CustomDropDown uprLabel="Lead Source" value={leadSource} setValue={setLeadSource} data={leadSourceOptions} iconName="campaign" placeholder="Select lead source" />
+          <CustomDropDown uprLabel="Lead Source" value={leadSource} setValue={setLeadSource} data={leadSourceOptions} iconName="campaign" placeholder="Select lead source" /> */}
           <CustomDropDown uprLabel="Doctor Category" value={doctorCategory} setValue={setDoctorCategory} data={doctorCategoryOptions} iconName="category" placeholder="Select doctor category" />
           <CustomInput label="Remarks / Notes" value={remarks} onChangeText={setRemarks} icon="notes" placeholder="Enter remarks" multiline />
-        </View>
-
-        {/* Documents */}
-        <Text style={styles.sectionHeaderText}>Documents</Text>
-        <View style={[styles.section, {gap: responsiveHeight(2),}]}>
-          <View style={{}}>
-            <TouchableOpacity style={styles.uploadBox1} onPress={handleVisitingCard}>
-              {visitingCard ? (
-                  <View style={[{position: 'relative',}]}>
-                      <Image source={{ uri: visitingCard ? visitingCard : 'http'}} style={styles.image} resizeMode='cover' />
-                      <TouchableOpacity
-                      style={styles.removeImageButton}
-                      onPress={() => setVisitingCard(null)}
-                      >
-                      <MaterialIcons name="close" size={responsiveFontSize(2)} color={Colors.deleteButton} />
-                      <Text style={styles.removeImageText}>Remove</Text>
-                      </TouchableOpacity>
-                  </View>
-              ) : (
-                  <View style={styles.uploadPlaceholder}>
-                    <MaterialIcons name="file-upload" size={responsiveFontSize(2.5)} color={Colors.primary} />
-                    <Text style={styles.uploadText}>Tap to Upload Visiting Card</Text>
-                  </View>
-              )}
-            </TouchableOpacity>
-          </View>
-          <View style={{}}>
-            <TouchableOpacity style={styles.uploadBox1} onPress={handleRegistrationProof}>
-              {registrationProof ? (
-                  <View style={[{position: 'relative',}]}>
-                      <Image source={{ uri: registrationProof ? registrationProof : 'http'}} style={styles.image} resizeMode='cover' />
-                      <TouchableOpacity
-                      style={styles.removeImageButton}
-                      onPress={() => setRegistrationProof(null)}
-                      >
-                      <MaterialIcons name="close" size={responsiveFontSize(2)} color={Colors.deleteButton} />
-                      <Text style={styles.removeImageText}>Remove</Text>
-                      </TouchableOpacity>
-                  </View>
-              ) : (
-                  <View style={styles.uploadPlaceholder}>
-                    <MaterialIcons name="file-upload" size={responsiveFontSize(2.5)} color={Colors.primary} />
-                    <Text style={styles.uploadText}>Tap to Upload Registration</Text>
-                  </View>
-              )}
-            </TouchableOpacity>
-          </View>
         </View>
 
         <View style={styles.uploadContainer}>
@@ -587,9 +543,8 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.white,
     borderRadius: responsiveWidth(2),
     padding: responsiveWidth(3),
-    marginBottom: responsiveHeight(1),
     elevation: 1,
-    
+    gap: responsiveHeight(1.5),
   },
   fieldCmn:{
       flexDirection: 'row',
@@ -605,7 +560,7 @@ const styles = StyleSheet.create({
   },
   imageProfile: {
     alignSelf: 'center',
-    marginBottom: responsiveHeight(2),
+    // marginBottom: responsiveHeight(2),
     // position: 'relative',
     width: responsiveWidth(30),
     height: responsiveWidth(30),
@@ -626,8 +581,8 @@ const styles = StyleSheet.create({
     bottom: 0,
     right: 0,
     backgroundColor: Colors.primary,
-    borderRadius: 20,
-    padding: 6,
+    borderRadius: responsiveWidth(5),
+    padding: responsiveWidth(1),
     borderWidth: 2,
     borderColor: Colors.white,
   },
@@ -765,8 +720,8 @@ removeBtn: {
   top: 4,
   right: 4,
   backgroundColor: Colors.deleteButton,
-  borderRadius: 100,
-  padding: 3,
+  borderRadius: responsiveWidth(3),
+  padding: responsiveWidth(1),
 },
 
 addPhotoBox: {
