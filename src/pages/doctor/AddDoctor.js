@@ -626,8 +626,8 @@ const styles = StyleSheet.create({
     bottom: 0,
     right: 0,
     backgroundColor: Colors.primary,
-    borderRadius: 20,
-    padding: 6,
+    borderRadius: responsiveWidth(5),
+    padding: responsiveWidth(1),
     borderWidth: 2,
     borderColor: Colors.white,
   },
@@ -765,8 +765,8 @@ removeBtn: {
   top: 4,
   right: 4,
   backgroundColor: Colors.deleteButton,
-  borderRadius: 100,
-  padding: 3,
+  borderRadius: responsiveWidth(3),
+  padding: responsiveWidth(1),
 },
 
 addPhotoBox: {
