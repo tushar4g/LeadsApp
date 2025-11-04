@@ -178,7 +178,6 @@ const Doctors = ({ navigation }) => {
     const [filterCategory, setFilterCategory] = useState('')
     const [filterHospitalType, setFilterHospitalType] = useState('')
     const [sortBy, setSortBy] = useState(sortOptions[0].value)
-
     const [showSearch, setShowSearch] = useState(false);
     const searchRef = useRef(null);
 
@@ -260,7 +259,7 @@ const Doctors = ({ navigation }) => {
 
     const renderDoctorCard = ({ item }) =>{
         return (
-        <View style={styles.card}>
+        <Pressable onPress={() => handleViewDetails(item)} style={styles.card}>
           <View style={styles.cardLeft}>
             <Image source={{ uri: item.avatar }} style={styles.avatar} />
           </View>
@@ -293,7 +292,7 @@ const Doctors = ({ navigation }) => {
               </TouchableOpacity>
             </View>
           </View>
-        </View>
+        </Pressable>
     )}
     
     if (loading) {

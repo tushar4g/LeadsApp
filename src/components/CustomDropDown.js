@@ -68,8 +68,8 @@ const CustomDropDown = ({title, uprLabel, value, setValue, gap, search= false, i
           disabled={disabled}
           style={[styles.dropdown, isFocus && { borderColor: Colors.primary, borderWidth: responsiveWidth(0.5) }]}
           placeholderStyle={styles.placeholderStyle}
-          selectedTextStyle={[styles.selectedTextStyle, disabled && { color: '#a0a0a0' }]}
-          inputSearchStyle={styles.inputSearchStyle}
+          selectedTextStyle={[{fontSize: responsiveFontSize(1.6),}, disabled && { color: '#a0a0a0' }]}
+          inputSearchStyle={{fontSize: responsiveFontSize(1.6),}}
           iconStyle={styles.iconStyle}
           data={data}
           search={search} 
@@ -110,7 +110,7 @@ export default CustomDropDown
 
 const styles = StyleSheet.create({
   main: {
-    marginBottom: responsiveHeight(1.5),
+    // marginBottom: responsiveHeight(1.5),
   },
   label: {
     fontSize: responsiveFontSize(1.8),
@@ -146,14 +146,7 @@ const styles = StyleSheet.create({
     fontSize: responsiveFontSize(1.6),
     color: Colors.textSecondary,
   },
-  selectedTextStyle: {
-    fontSize: responsiveFontSize(1.6),
-    // color: Colors.black,
-    // fontWeight: '500',
-  },
-  inputSearchStyle:{
-     fontSize: responsiveFontSize(1.6),
-  },
+  
   iconStyle: {
     width: responsiveWidth(4),
     height: responsiveHeight(2.5),

@@ -69,7 +69,6 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         overflow: 'hidden',
-        marginBottom: responsiveHeight(1.5),
         backgroundColor: Colors.white,
     },
     title: {

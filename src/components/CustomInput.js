@@ -64,7 +64,7 @@ const styles = StyleSheet.create({
     gap: responsiveWidth(1),
   },
   input: {
-    marginBottom: responsiveHeight(1.5),
+    // marginBottom: responsiveHeight(1.5),
     backgroundColor: Colors.white,
     height: responsiveHeight(4.5), // Add or adjust this line for desired height
     fontSize: responsiveFontSize(1.6),

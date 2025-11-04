@@ -17,6 +17,15 @@ const genderOptions = [
   { label: 'Other', value: 'other' },
 ]
 
+const titleOptions = [
+  { label: 'Dr.', value: 'Dr.' },
+  { label: 'Mr.', value: 'Mr.' },
+  { label: 'Mrs.', value: 'Mrs.' },
+  { label: 'Ms.', value: 'Ms.' },
+  { label: 'Prof.', value: 'Prof.' },
+]
+
+
 const stateOptions = [
   { label: 'Chhattisgarh', value: 'chhattisgarh' },
   { label: 'Goa', value: 'goa' },
@@ -89,6 +98,7 @@ const AddDoctor = ({ navigation, route }) => {
 
   // Basic Info
   const [profileImage, setProfileImage] = useState(null)
+  const [title, setTitle] = useState('Dr.')
   const [fullName, setFullName] = useState('')
   const [gender, setGender] = useState('')
   const [dob, setDob] = useState('')
@@ -136,6 +146,7 @@ const AddDoctor = ({ navigation, route }) => {
     if (isEditMode && doctor) {
       const data = route.params.doctor;
       setProfileImage(data.avatar || null);
+      setTitle(data.title || '');
       setFullName(data.name || '');
       setGender(data.gender || '');
       setDob(data.dob || '');
@@ -378,7 +389,7 @@ const AddDoctor = ({ navigation, route }) => {
   return (
     <View style={{ flex: 1, backgroundColor: Colors.background }}>
       <MyHeader  title={isEditMode ? "Edit Doctor" : "Add Doctor"}  onBackPress={() => navigation.goBack()} />
-      <ScrollView contentContainerStyle={{ padding: responsiveWidth(4), paddingBottom: 80 }}>
+      <ScrollView contentContainerStyle={{ paddingHorizontal: responsiveWidth(4), paddingBottom: responsiveHeight(4) }}>
         {/* Basic Information */}
         <Text style={styles.sectionHeaderText}>Basic Information</Text>
         <View style={styles.section}>
@@ -399,15 +410,40 @@ const AddDoctor = ({ navigation, route }) => {
               <MaterialIcons name="camera" color={Colors.white} size={responsiveFontSize(2.5)} />
             </View>
           </TouchableOpacity>
-          <CustomInput label="Full Name *" value={fullName} onChangeText={setFullName} icon="person" placeholder="Enter full name" />
-          <CustomDropDown uprLabel="Gender *" value={gender} setValue={setGender} data={genderOptions} iconName="male" placeholder="Select gender" />
-          <CustomDateTimePicker title="Date of Birth" placeholder="Date of Birth" value={dob} setDate={setDob} iconName="calendar-today" />
-          <CustomInput label="Mobile Number *" value={mobile} onChangeText={setMobile} icon="phone" keyboardType="phone-pad" maxLength={10} placeholder="Enter mobile number" />
-          <CustomInput label="Alternate Number" value={altMobile} onChangeText={setAltMobile} icon="phone" keyboardType="phone-pad" maxLength={10} placeholder="Enter alternate number" />
+          <View style={styles.fieldCmn}>
+            <View style={[styles.fieldLeft, {flex: 1}]}>
+              <CustomDropDown uprLabel="Title" value={title} setValue={setTitle} data={titleOptions} iconName="badge" placeholder="Select title" />
+            </View>
+            <View style={styles.fieldRight}>
+              <CustomInput label="Full Name *" value={fullName} onChangeText={setFullName} icon="person" placeholder="Enter full name" />
+            </View>
+          </View>
+          <View style={styles.fieldCmn}>
+            <View style={styles.fieldLeft}>
+              <CustomDropDown uprLabel="Gender *" value={gender} setValue={setGender} data={genderOptions} iconName="male" placeholder="Select gender" />
+            </View>
+            <View style={styles.fieldRight}>
+              <CustomDateTimePicker title="Date of Birth" placeholder="Date of Birth" value={dob} setDate={setDob} iconName="calendar-today" />
+            </View>
+          </View>
+          <View style={styles.fieldCmn}>
+            <View style={styles.fieldLeft}>
+              <CustomInput label="Mobile Number *" value={mobile} onChangeText={setMobile} icon="phone" keyboardType="phone-pad" maxLength={10} placeholder="Enter mobile number" />
+            </View>
+            <View style={styles.fieldRight}>
+              <CustomInput label="Alternate Number" value={altMobile} onChangeText={setAltMobile} icon="phone" keyboardType="phone-pad" maxLength={10} placeholder="Enter alternate number" />
+            </View>
+          </View>
           <CustomInput label="Email ID" value={email} onChangeText={setEmail} icon="email" keyboardType="email-address" placeholder="Enter email" />
           <CustomInput label="Address" value={address} onChangeText={setAddress} icon="location-on" placeholder="Enter address" multiline />
-          <CustomDropDown uprLabel="State" value={state} setValue={setState} data={stateOptions} iconName="location-city" placeholder="Select state" />
-          <CustomDropDown uprLabel="City" value={city} setValue={setCity} data={cityOptions} iconName="location-city" placeholder="Select city" />
+          <View style={styles.fieldCmn}>
+            <View style={styles.fieldLeft}>
+              <CustomDropDown uprLabel="State" value={state} setValue={setState} data={stateOptions} iconName="location-city" placeholder="Select state" />
+            </View>
+            <View style={styles.fieldRight}>
+              <CustomDropDown uprLabel="City" value={city} setValue={setCity} data={cityOptions} iconName="location-city" placeholder="Select city" />
+            </View>
+          </View>
           <CustomInput label="Pincode" value={pincode} onChangeText={setPincode} icon="pin" keyboardType="number-pad" maxLength={6} placeholder="Enter pincode" />
         </View>
 
@@ -415,12 +451,18 @@ const AddDoctor = ({ navigation, route }) => {
         <Text style={styles.sectionHeaderText}>Professional Details</Text>
         <View style={styles.section}>
           {/* <CustomInput label="Qualification" value={qualification} onChangeText={setQualification} icon="school" placeholder="Enter qualification" /> */}
-          <CustomDropDown uprLabel="Specialization *" value={specialization} setValue={setSpecialization} data={specializationOptions} iconName="medical-services" placeholder="Select specialization" />
+          <CustomInput label="Hospital/Clinic Name *" value={hospitalName} onChangeText={setHospitalName} icon="local-hospital" placeholder="Enter hospital/clinic name" />
+          <View style={styles.fieldCmn}>
+            <View style={styles.fieldLeft}>
+              <CustomDropDown uprLabel="Specialization *" value={specialization} setValue={setSpecialization} data={specializationOptions} iconName="medical-services" placeholder="Select specialization" />
+            </View>
+            <View style={styles.fieldRight}>
+              <CustomDropDown uprLabel="Hospital Type" value={hospitalType} setValue={setHospitalType} data={hospitalTypeOptions} iconName="business" placeholder="Select hospital type" />
+            </View>
+          </View>
           {/* <CustomInput label="Registration No" value={registrationNo} onChangeText={setRegistrationNo} icon="confirmation-number" placeholder="Enter registration no" />
           <CustomInput label="Years of Experience" value={experience} onChangeText={setExperience} icon="history" keyboardType="number-pad" placeholder="Enter years of experience" />
           <CustomInput label="Designation" value={designation} onChangeText={setDesignation} icon="work" placeholder="Enter designation" /> */}
-          <CustomInput label="Hospital/Clinic Name *" value={hospitalName} onChangeText={setHospitalName} icon="local-hospital" placeholder="Enter hospital/clinic name" />
-          <CustomDropDown uprLabel="Hospital Type" value={hospitalType} setValue={setHospitalType} data={hospitalTypeOptions} iconName="business" placeholder="Select hospital type" />
           {/* <CustomInput label="Consultation Hours" value={consultationHours} onChangeText={setConsultationHours} icon="schedule" placeholder="e.g. 10am - 2pm" />
           <CustomDropDown uprLabel="Visiting Days" value={visitingDays} setValue={setVisitingDays} data={visitingDaysOptions} iconName="calendar-today" placeholder="Select visiting days" multiple /> */}
         </View>
@@ -438,7 +480,7 @@ const AddDoctor = ({ navigation, route }) => {
                       <ActivityIndicator size={responsiveFontSize(2.2)} color={Colors.primary} />
                   </View>
               ) :
-                  <TouchableOpacity onPress={() => requestLocationPermission()} style={{ flexDirection: 'row', alignItems: 'center', gap: responsiveWidth(2), marginBottom: responsiveHeight(1.5), }}>
+                  <TouchableOpacity onPress={() => requestLocationPermission()} style={{ flexDirection: 'row', alignItems: 'center', gap: responsiveWidth(2), }}>
                       <MaterialIcons name="my-location" size={responsiveFontSize(2.2)} color={Colors.primary} />
                       <Text style={{ fontSize: responsiveFontSize(1.6), color: Colors.primary }}>Get Location</Text>
                   </TouchableOpacity>
@@ -587,9 +629,8 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.white,
     borderRadius: responsiveWidth(2),
     padding: responsiveWidth(3),
-    marginBottom: responsiveHeight(1),
     elevation: 1,
-    
+    gap: responsiveHeight(1.5),
   },
   fieldCmn:{
       flexDirection: 'row',
@@ -605,7 +646,7 @@ const styles = StyleSheet.create({
   },
   imageProfile: {
     alignSelf: 'center',
-    marginBottom: responsiveHeight(2),
+    // marginBottom: responsiveHeight(2),
     // position: 'relative',
     width: responsiveWidth(30),
     height: responsiveWidth(30),
