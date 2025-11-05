@@ -11,6 +11,8 @@ import {
   Alert,
   Modal,
   Pressable,
+  Platform,
+  Linking,
 } from 'react-native'
 import { responsiveFontSize, responsiveWidth, responsiveHeight } from 'react-native-responsive-dimensions'
 import MaterialIcons from '@react-native-vector-icons/material-icons'
@@ -30,11 +32,14 @@ const mockDoctors = [
     hospitalName: 'City Heart Clinic',
     city: 'Raipur',
     state: 'Chhattisgarh',
+    address: '123 Main St, Raipur, Chhattisgarh',
     category: 'A',
     hospitalType: 'private',
     mobile: '9876543210',
     avatar: 'https://i.pravatar.cc/120?img=2',
     dateAdded: '10-09-2025',
+    latitude: 21.2514,
+    longitude: 81.6296,
   },
   {
     id: 'd2',
@@ -43,11 +48,14 @@ const mockDoctors = [
     hospitalName: 'Skin Care Center',
     city: 'Bilaspur',
     state: 'Chhattisgarh',
+    address: '456 Elm St, Bilaspur, Chhattisgarh',
     category: 'B',
     hospitalType: 'govt',
     mobile: '9123456780',
     avatar: 'https://i.pravatar.cc/120?img=5',
     dateAdded: '18-09-2025',
+    latitude:  22.0797,
+    longitude: 82.1391,
   },
   {
     id: 'd3',
@@ -56,11 +64,14 @@ const mockDoctors = [
     hospitalName: 'Neuro Health',
     city: 'Durg',
     state: 'Chhattisgarh',
+    address: '789 Oak St, Durg, Chhattisgarh',
     category: 'A',
     hospitalType: 'corporate',
     mobile: '9012345678',
     avatar: 'https://i.pravatar.cc/120?img=7',
     dateAdded: '01-10-2025',
+    latitude: 21.1910,
+    longitude: 81.2844,
   },
   {
     id: 'd4',
@@ -69,11 +80,14 @@ const mockDoctors = [
     hospitalName: 'Neuro Health',
     city: 'Durg',
     state: 'Chhattisgarh',
+    address: '789 Oak St, Durg, Chhattisgarh',
     category: 'C',
     hospitalType: 'corporate',
     mobile: '9012345678',
     avatar: 'https://i.pravatar.cc/120?img=8',
     dateAdded: '25-10-2025',
+    latitude: 21.1905,
+    longitude: 81.2840,
   },
   {
     id: 'd5',
@@ -82,11 +96,14 @@ const mockDoctors = [
     hospitalName: 'Neuro Health',
     city: 'Durg',
     state: 'Chhattisgarh',
+    address: '789 Oak St, Durg, Chhattisgarh',
     category: 'A',
     hospitalType: 'corporate',
     mobile: '9012345678',
     avatar: 'https://i.pravatar.cc/120?img=9',
     dateAdded: '01-10-2025',
+    latitude: 21.1915,
+    longitude: 81.2850,
   },
   {
     id: 'd6',
@@ -95,11 +112,14 @@ const mockDoctors = [
     hospitalName: 'Neuro Health',
     city: 'Durg',
     state: 'Chhattisgarh',
+    address: '789 Oak St, Durg, Chhattisgarh',
     category: 'B',
     hospitalType: 'corporate',
     mobile: '9012345678',
     avatar: 'https://i.pravatar.cc/120?img=10',
     dateAdded: '01-10-2025',
+    latitude: 21.1920,
+    longitude: 81.2860,
   }
   // add more mock items as needed
 ]
@@ -230,6 +250,54 @@ const Doctors = ({ navigation }) => {
     const handleEdit = (item) => {
         if (navigation) navigation.navigate('EditDoctor', { doctor: item })
     }
+
+    const handleNavigateToAddress = (address, latitude = null, longitude = null) => {
+      let url
+      console.log('Navigating to:', { address, latitude, longitude })
+
+      if (latitude && longitude) {
+        // Encode lat/long
+        const latLng = `${latitude},${longitude}`
+        if (Platform.OS === "ios") {
+          url = `maps://app?daddr=${latLng}`
+        } else {
+          url = `google.navigation:q=${latLng}`
+        }
+      } else if (address) {
+        // Encode address
+        const encodedAddress = encodeURIComponent(address)
+        if (Platform.OS === "ios") {
+          url = `maps://app?daddr=${encodedAddress}`
+        } else {
+          url = `google.navigation:q=${encodedAddress}`
+        }
+      } else {
+        Alert.alert("Error", "No address or location provided.")
+        return
+      }
+
+      Linking.canOpenURL(url)
+        .then((supported) => {
+          if (supported) {
+            return Linking.openURL(url)
+          } else {
+            // Fallback to web-based Google Maps
+            const fallbackUrl = latitude && longitude
+              ? `https://www.google.com/maps/dir/?api=1&destination=${latitude},${longitude}`
+              : `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(address)}`
+
+            return Linking.openURL(fallbackUrl)
+          }
+        })
+        .catch((err) => {
+          Alert.alert(
+            "Navigation Error",
+            "Unable to open navigation app. Please check if you have a maps application installed.",
+            [{ text: "OK" }]
+          )
+          console.error("Navigation error:", err)
+        })
+    }
     
     const filteredDoctors = useMemo(() => {
         let list = [...doctors]
@@ -286,7 +354,7 @@ const Doctors = ({ navigation }) => {
                 <MaterialIcons name="delete" size={responsiveFontSize(1.8)} color={Colors.secondary} />
                 <Text style={[styles.actionLabel, { color: Colors.secondary }]}>Delete</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.actionBtn} onPress={() => console.log('Open map for', item.name)}>
+              <TouchableOpacity style={styles.actionBtn} onPress={() => handleNavigateToAddress(item.address, item.latitude, item.longitude)}>
                 <MaterialIcons name="my-location" size={responsiveFontSize(1.8)} color={Colors.info} />
                 <Text style={styles.actionLabel}>Map</Text>
               </TouchableOpacity>

@@ -126,6 +126,7 @@ const AddDoctor = ({ navigation, route }) => {
   const [remarks, setRemarks] = useState('')
 
   // Documents
+  const [hospitalPhoto, setHospitalPhoto] = useState(null)
   const [clinicPhotos, setClinicPhotos] = useState([])
 
   useEffect(() => {
@@ -162,6 +163,14 @@ const AddDoctor = ({ navigation, route }) => {
     const img = await PickImageComponent()
     console.log('Profile Image:', img)
     if (img) setProfileImage(img.uri)
+  }
+
+  const handleHospitalPhoto = async () => {
+    const img = await PickImageComponent()
+    console.log('Hospital Photo:', img)
+    if (img) {
+      setHospitalPhoto(img.uri)
+    } 
   }
 
   const handleClinicPhotos = async () => {
@@ -462,7 +471,33 @@ const AddDoctor = ({ navigation, route }) => {
           <CustomInput label="Remarks / Notes" value={remarks} onChangeText={setRemarks} icon="notes" placeholder="Enter remarks" multiline />
         </View>
 
-        <View style={styles.uploadContainer}>
+        {/* Documents */}
+        <Text style={styles.sectionHeaderText}>Clinic Photo</Text>
+        <View style={[styles.section, {gap: responsiveHeight(2),}]}>
+          <View style={{}}>
+            <TouchableOpacity style={styles.uploadBox1} onPress={handleHospitalPhoto}>
+              {hospitalPhoto ? (
+                  <View style={[{position: 'relative',}]}>
+                      <Image source={{ uri: hospitalPhoto ? hospitalPhoto : 'http'}} style={styles.image} resizeMode='cover' />
+                      <TouchableOpacity
+                      style={styles.removeImageButton}
+                      onPress={() => setHospitalPhoto(null)}
+                      >
+                      <MaterialIcons name="close" size={responsiveFontSize(2)} color={Colors.deleteButton} />
+                      <Text style={styles.removeImageText}>Remove</Text>
+                      </TouchableOpacity>
+                  </View>
+              ) : (
+                  <View style={styles.uploadPlaceholder}>
+                    <MaterialIcons name="file-upload" size={responsiveFontSize(2.5)} color={Colors.primary} />
+                    <Text style={styles.uploadText}>Tap to Upload Clinic Photo</Text>
+                  </View>
+              )}
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        {/* <View style={styles.uploadContainer}>
           <Text style={styles.sectionTitle}>Clinic Photos</Text>
           <View style={[styles.section,{padding: responsiveWidth(1),}]}>
           <View style={styles.imageGrid}>
@@ -488,7 +523,6 @@ const AddDoctor = ({ navigation, route }) => {
               </View>
             ))}
 
-            {/* Add more photos button */}
             <TouchableOpacity
               style={[styles.addPhotoBox, clinicPhotos.length >= 4 && { opacity: 0.5 },]}
               onPress={handleClinicPhotos}
@@ -505,7 +539,7 @@ const AddDoctor = ({ navigation, route }) => {
             </TouchableOpacity>
           </View>
           </View>
-        </View>
+        </View> */}
 
 
         {/* Buttons */}
