@@ -438,10 +438,12 @@ const Doctors = ({ navigation }) => {
           <View style={styles.modalContent}>
             <Text style={styles.modalTitle}>Filters</Text>
 
-            <CustomDropDown iconName="medical-services"  uprLabel="Specialization" value={filterSpecialization} setValue={setFilterSpecialization} data={SPECIALIZATION_OPTIONS} />
-            <CustomDropDown iconName="business"  uprLabel="Hospital Type" value={filterHospitalType} setValue={setFilterHospitalType} data={HOSPITAL_TYPE_OPTIONS} />
-            <CustomDropDown iconName="location-city"  uprLabel="City" value={filterCity} setValue={setFilterCity} data={CITY_OPTIONS} />
-
+            <View style={{gap: responsiveHeight(1.5)}}>
+              <CustomDropDown iconName="medical-services"  uprLabel="Specialization" value={filterSpecialization} setValue={setFilterSpecialization} data={SPECIALIZATION_OPTIONS} />
+              <CustomDropDown iconName="business"  uprLabel="Hospital Type" value={filterHospitalType} setValue={setFilterHospitalType} data={HOSPITAL_TYPE_OPTIONS} />
+              <CustomDropDown iconName="location-city"  uprLabel="City" value={filterCity} setValue={setFilterCity} data={CITY_OPTIONS} />
+            </View>
+            
             <View style={[styles.modalActions, {gap: responsiveWidth(2)}]}>
               <View style={{flex:1}}>
                 <CustomButton title="Clear" onPress={() => { setFilterSpecialization(''); setFilterHospitalType(''); setFilterCity('') }} bgColor={Colors.white} color={Colors.primary} borderC={Colors.primary} />
