@@ -39,7 +39,7 @@ const QUICK_ACTIONS = [
  const quickLaunchItems = [
    { label: 'Add Doctor', icon: 'medical-services', screen: 'AddDoctor' },
   { label: 'View Doctors', icon: 'people', screen: 'Doctors' },
-  { label: 'Add Patient', icon: 'person-add', screen: 'AddPatient' },
+  { label: 'Add Patient', icon: 'person-add', screen: 'AddLead' },
   { label: 'Leads', icon: 'link', screen: 'Leads' },
   { label: 'Schedule Visit', icon: 'event', screen: 'Calendar' },
   // { label: 'Tasks', icon: 'check-circle-outline', screen: 'TaskList' },

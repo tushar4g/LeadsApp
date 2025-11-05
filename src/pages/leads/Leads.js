@@ -34,11 +34,11 @@ const STATUS_OPTIONS = [
 
 const SOURCE_OPTIONS = [
   { label: 'All', value: '' },
+  { label: 'Doctor', value: 'Doctor' },
   { label: 'Hospital', value: 'Hospital' },
   { label: 'Corporate', value: 'Corporate' },
-  { label: 'Doctor', value: 'Doctor' },
   { label: 'Event', value: 'Event' },
-  { label: 'Online', value: 'Online' },
+  { label: 'Other', value: 'Other' },
 ]
 
 const CITY_OPTIONS = [
@@ -212,46 +212,43 @@ const Leads = ({ navigation }) => {
         </View>
       </View>
 
+      {/* Summary Cards */}
+      <View style={[styles.summaryWrap,{padding: responsiveWidth(3)}]}>
+        {SUMMARY.map((s) => (
+          <View key={s.key} style={styles.summaryCol}>
+            {renderSummaryCard({ item: s })}
+          </View>
+        ))}
+      </View>
+
+      {/* Searchbar & quick filter indicators */}
+      <View style={[styles.searchWrap,{paddingTop: responsiveWidth(1)}]}>
+        <View style={{ flex: 1,  }}>
+          <Searchbar
+            placeholder="Search leads by name, source, or mobile…"
+            onChangeText={setSearchText}
+            value={searchText}
+            style={styles.searchbar}
+            inputStyle={styles.searchInput}
+            icon={() => <MaterialCommunityIcons name="magnify" size={responsiveFontSize(2.2)} color={Colors.textSecondary} />}
+          />
+        </View>
+        <TouchableOpacity style={[styles.filterShortBtn,]} onPress={() => setFilterModalVisible(true)}>
+          <MaterialCommunityIcons name="filter" size={responsiveFontSize(2.2)} color={Colors.primary} />
+        </TouchableOpacity>
+      </View>
+
+      {/* Active filters summary */}
+      <View style={[styles.activeFiltersRow, {paddingRight: responsiveWidth(4)}]}>
+        <Text style={styles.activeText}>{filterStatus ? `Status: ${filterStatus}` : ''} {filterSource ? ` • Source: ${filterSource}` : ''} {filterCity ? ` • City: ${filterCity}` : ''}</Text>
+        <TouchableOpacity onPress={clearAllFilters}>
+          <Text style={styles.clearText}>Clear</Text>
+        </TouchableOpacity>
+      </View>
+      
+
       <FlatList
-        ListHeaderComponent={
-          <>
-            {/* Summary Cards */}
-            <View style={styles.summaryWrap}>
-              {SUMMARY.map((s) => (
-                <View key={s.key} style={styles.summaryCol}>
-                  {renderSummaryCard({ item: s })}
-                </View>
-              ))}
-            </View>
-
-            {/* Searchbar & quick filter indicators */}
-            <View style={styles.searchWrap}>
-              <View style={{ flex: 1,  }}>
-                <Searchbar
-                  placeholder="Search leads by name, source, or mobile…"
-                  onChangeText={setSearchText}
-                  value={searchText}
-                  style={styles.searchbar}
-                  inputStyle={styles.searchInput}
-                  icon={() => <MaterialCommunityIcons name="magnify" size={responsiveFontSize(2.2)} color={Colors.textSecondary} />}
-                />
-              </View>
-              <TouchableOpacity style={styles.filterShortBtn} onPress={() => setFilterModalVisible(true)}>
-                <MaterialCommunityIcons name="filter" size={responsiveFontSize(2.2)} color={Colors.primary} />
-              </TouchableOpacity>
-            </View>
-
-            {/* Active filters summary */}
-            <View style={styles.activeFiltersRow}>
-              <Text style={styles.activeText}>{filterStatus ? `Status: ${filterStatus}` : ''} {filterSource ? ` • Source: ${filterSource}` : ''} {filterCity ? ` • City: ${filterCity}` : ''}</Text>
-              <TouchableOpacity onPress={clearAllFilters}>
-                <Text style={styles.clearText}>Clear</Text>
-              </TouchableOpacity>
-            </View>
-
-            <Text style={styles.sectionTitle}>All Leads</Text>
-          </>
-        }
+        ListHeaderComponent={<Text style={styles.sectionTitle}>All Leads</Text>}
         data={filteredLeads}
         keyExtractor={(item) => item.id}
         renderItem={renderLead}
@@ -272,9 +269,11 @@ const Leads = ({ navigation }) => {
           <View style={styles.modalContent}>
             <Text style={styles.modalTitle}>Filters</Text>
 
-            <CustomDropDown iconName="fact-check"  uprLabel="Status" value={filterStatus} setValue={setFilterStatus} data={STATUS_OPTIONS} />
-            <CustomDropDown iconName="source"  uprLabel="Source" value={filterSource} setValue={setFilterSource} data={SOURCE_OPTIONS} />
-            <CustomDropDown iconName="location-city"  uprLabel="City" value={filterCity} setValue={setFilterCity} data={CITY_OPTIONS} />
+            <View style={{gap: responsiveHeight(2)}}>
+              <CustomDropDown iconName="fact-check"  uprLabel="Status" value={filterStatus} setValue={setFilterStatus} data={STATUS_OPTIONS} />
+              <CustomDropDown iconName="source"  uprLabel="Source" value={filterSource} setValue={setFilterSource} data={SOURCE_OPTIONS} />
+              <CustomDropDown iconName="location-city"  uprLabel="City" value={filterCity} setValue={setFilterCity} data={CITY_OPTIONS} />
+            </View>
 
             <View style={[styles.modalActions, {gap: responsiveWidth(2)}]}>
               <View style={{flex:1}}>
@@ -314,7 +313,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: responsiveWidth(4),
     elevation: 2,
   },
-  container: { padding: responsiveWidth(3), paddingBottom: responsiveHeight(16) },
+  container: { paddingHorizontal: responsiveWidth(3), paddingBottom: responsiveHeight(16) },
 
   summaryWrap: { flexDirection: 'row', flexWrap: 'wrap', marginTop: responsiveHeight(1), marginHorizontal: responsiveWidth(1), gap: responsiveHeight(1) },
   summaryCol: { width: '23%', padding: responsiveWidth(0),},
@@ -328,7 +327,7 @@ const styles = StyleSheet.create({
   summaryCount: { fontSize: responsiveFontSize(2.2), fontWeight: '700', marginTop: responsiveHeight(0.5) },
   summaryLabel: { fontSize: responsiveFontSize(1.2), color: Colors.textSecondary, marginTop: responsiveHeight(0.5) },
 
-  searchWrap: { flex:1, flexDirection: 'row', alignItems: 'center', marginTop: responsiveHeight(2), marginBottom: responsiveHeight(1), paddingHorizontal: responsiveWidth(1) },
+  searchWrap: {  flexDirection: 'row', alignItems: 'center',marginBottom: responsiveHeight(1), paddingHorizontal: responsiveWidth(4) },
   searchbar: {
     borderRadius: responsiveWidth(8),
     elevation: 2,
@@ -353,7 +352,7 @@ const styles = StyleSheet.create({
   },
   filterShortBtn: { marginLeft: responsiveWidth(2), padding: responsiveWidth(2), backgroundColor: Colors.white, borderRadius: 8, elevation: 1 },
 
-  activeFiltersRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: responsiveHeight(1) },
+  activeFiltersRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',  },
   activeText: { color: Colors.textSecondary, fontSize: responsiveFontSize(1.2) },
   clearText: { color: Colors.primary, fontWeight: '700' },
 
