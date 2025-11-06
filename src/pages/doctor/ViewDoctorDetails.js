@@ -84,6 +84,17 @@ const ViewDoctorDetails = ({ route, navigation }) => {
     ]);
   };
 
+  const ReferPatient = () => {
+    navigation.navigate('AddLead', {
+        prefill: {
+          source: 'Doctor',
+          leadType: 'Patient',
+          referredBy: doctor.name,
+          doctorId: doctor.id,
+        },
+      })
+  }
+
   const handleCall = (num) => {
     if (!num) return;
     const tel = `tel:${num}`;
@@ -384,6 +395,12 @@ const ViewDoctorDetails = ({ route, navigation }) => {
               contentContainerStyle={{gap: responsiveHeight(1)}}
             />
           )}
+
+           {/* Floating Add FAB */}
+            <TouchableOpacity style={styles.fab} onPress={ReferPatient}>
+              <MaterialCommunityIcons name="plus" size={responsiveFontSize(2.4)} color={Colors.white} />
+              <Text style={styles.fabLabel}>Add Patient</Text>
+            </TouchableOpacity>
         </View>
       )}
     </View>
@@ -438,6 +455,19 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
   container: { padding: responsiveWidth(4), paddingBottom: responsiveHeight(8) },
+   fab: {
+      position: 'absolute',
+      right: responsiveWidth(4),
+      bottom: responsiveHeight(4),
+      backgroundColor: Colors.primary,
+      paddingHorizontal: responsiveWidth(4),
+      paddingVertical: responsiveHeight(1.2),
+      borderRadius: responsiveWidth(6),
+      flexDirection: 'row',
+      alignItems: 'center',
+      elevation: 6,
+    },
+    fabLabel: { color: Colors.white, marginLeft: responsiveWidth(1), fontWeight: '700', fontSize: responsiveFontSize(1.6) },
   profileCard: {
     alignItems: 'center',
     backgroundColor: Colors.white,
@@ -460,7 +490,7 @@ const styles = StyleSheet.create({
   },
   name: {
     fontSize: responsiveFontSize(2),
-    fontWeight: '800',
+    fontWeight: '700',
     color: Colors.textPrimary,
     marginRight: responsiveWidth(2),
   },
@@ -560,7 +590,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   refName: {
-    fontWeight: '800',
+    fontWeight: '700',
     color: Colors.textPrimary,
     fontSize: responsiveFontSize(1.1),
   },
