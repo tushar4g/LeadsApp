@@ -42,9 +42,9 @@ const QUICK_ACTIONS = [
   { label: 'Add Patient', icon: 'person-add', screen: 'AddLead' },
   { label: 'Leads', icon: 'link', screen: 'Leads' },
   { label: 'Schedule Visit', icon: 'event', screen: 'ScheduleVisit' },
-  // { label: 'Tasks', icon: 'check-circle-outline', screen: 'TaskList' },
+  { label: 'Tasks', icon: 'check-circle-outline', screen: 'Task' },
   // { label: 'Rewards', icon: 'card-giftcard', screen: 'Rewards' },
-  { label: 'Geo Tracking', icon: 'my-location', screen: 'Map' },         
+  // { label: 'Geo Tracking', icon: 'my-location', screen: 'Map' },         
 ];
 
 const ACTIVITY = [

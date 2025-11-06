@@ -7,7 +7,6 @@ import {
   ScrollView,
   FlatList,
   TouchableOpacity,
-  Modal,
   Alert,
   Linking,
   Platform,
@@ -21,27 +20,6 @@ import CustomButton from '../../components/CustomButton'
 import CustomDropDown from '../../components/CustomDropDown'
 import CustomInput from '../../components/CustomInput'
 import CustomDateTimePicker from '../../components/CustomDateTimePicker'
-
-/**
- * ScheduleVisit screen
- * - Calendar at top (react-native-calendars)
- * - Visit list for selected date
- * - Add Visit modal / form
- * - Mocked API calls (getVisits, createVisit, updateVisitStatus, getCalendarSummary)
- */
-
-const VISIT_TYPES = [
-  { label: 'Call', value: 'Call' },
-  { label: 'Meeting', value: 'Meeting' },
-  { label: 'Follow-up', value: 'Follow-up' },
-]
-
-const STATUS_COLORS = {
-  Planned: '#2B7CE9', // blue
-  Completed: Colors.success || '#28a745',
-  Cancelled: Colors.secondary || '#dc3545',
-  Overdue: '#FF8C00',
-}
 
 /* --- Mocked data & API (replace with real API hooks) --- */
 const mockVisits = [
@@ -88,7 +66,6 @@ const mockVisits = [
 
 const fakeApi = {
   getCalendarSummary: async () => {
-    // returns an object keyed by date with counts or dots
     return new Promise((res) =>
       setTimeout(() => {
         const summary = {}
@@ -129,7 +106,21 @@ const fakeApi = {
   },
 }
 
-/* --- Component --- */
+// ...existing code...
+const VISIT_TYPES = [
+  { label: 'Call', value: 'Call' },
+  { label: 'Meeting', value: 'Meeting' },
+  { label: 'Follow-up', value: 'Follow-up' },
+]
+
+const STATUS_COLORS = {
+  Planned: '#2B7CE9', // blue
+  Completed: Colors.success || '#28a745',
+  Cancelled: Colors.secondary || '#dc3545',
+  Overdue: '#FF8C00',
+}
+
+// ...existing code...
 const ScheduleVisit = ({ navigation }) => {
   const today = new Date().toISOString().split('T')[0]
   const [selectedDate, setSelectedDate] = useState(today)
@@ -137,20 +128,7 @@ const ScheduleVisit = ({ navigation }) => {
   const [visits, setVisits] = useState([])
   const [loading, setLoading] = useState(false)
 
-  const [addModalVisible, setAddModalVisible] = useState(false)
-  const [form, setForm] = useState({
-    visitType: 'Call',
-    personName: '',
-    datetime: new Date().toISOString(),
-    location: '',
-    city: '',
-    notes: '',
-    assignedTo: '',
-    status: 'Planned',
-    latitude: null,
-    longitude: null,
-  })
-
+  // modal/form removed — uses AddVisit screen instead
   useEffect(() => {
     refreshCalendar()
     loadVisitsForDate(selectedDate)
@@ -163,12 +141,10 @@ const ScheduleVisit = ({ navigation }) => {
   const refreshCalendar = async () => {
     setLoading(true)
     const summary = await fakeApi.getCalendarSummary()
-    // build markedDates structure for react-native-calendars
     const md = {}
     Object.keys(summary).forEach((d) => {
       md[d] = { marked: true, dots: summary[d].dots }
     })
-    // ensure selected date is highlighted
     md[selectedDate] = { ...(md[selectedDate] || {}), selected: true, selectedColor: Colors.primary }
     setMarkedDates(md)
     setLoading(false)
@@ -178,7 +154,6 @@ const ScheduleVisit = ({ navigation }) => {
     setLoading(true)
     const list = await fakeApi.getVisits(date)
     setVisits(list)
-    // ensure calendar shows selected
     setMarkedDates((prev) => ({ ...prev, [date]: { ...(prev[date] || {}), selected: true, selectedColor: Colors.primary } }))
     setLoading(false)
   }
@@ -222,33 +197,6 @@ const ScheduleVisit = ({ navigation }) => {
     ])
   }
 
-  const onSaveVisit = async () => {
-    if (!form.personName || !form.datetime) {
-      Alert.alert('Validation', 'Please enter a person/lead and date/time.')
-      return
-    }
-    const payload = { ...form }
-    // ensure datetime is ISO date-time string
-    if (typeof payload.datetime === 'object' && payload.datetime.toISOString) payload.datetime = payload.datetime.toISOString()
-    await fakeApi.createVisit(payload)
-    setAddModalVisible(false)
-    setForm({
-      visitType: 'Call',
-      personName: '',
-      datetime: new Date().toISOString(),
-      location: '',
-      city: '',
-      notes: '',
-      assignedTo: '',
-      status: 'Planned',
-      latitude: null,
-      longitude: null,
-    })
-    Alert.alert('Success', 'Visit scheduled successfully.')
-    refreshCalendar()
-    loadVisitsForDate(selectedDate)
-  }
-
   const renderVisit = ({ item }) => {
     const color = STATUS_COLORS[item.status] || STATUS_COLORS.Planned
     return (
@@ -271,21 +219,13 @@ const ScheduleVisit = ({ navigation }) => {
             <Text style={styles.actionLabel}>Complete</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.actionBtn} onPress={() => {
-            // open edit modal prefilled
-            setForm({
-              visitType: item.visitType,
-              personName: item.personName,
-              datetime: item.datetime,
-              location: item.location,
-              city: item.city,
-              notes: item.notes,
-              assignedTo: item.assignedTo,
-              status: item.status,
-              id: item.id,
-            })
-            setAddModalVisible(true)
-          }}>
+          <TouchableOpacity
+            style={styles.actionBtn}
+            onPress={() => {
+              // open AddVisit screen for editing — pass visit payload
+              navigation?.navigate('AddVisit', { visit: item, mode: 'edit' })
+            }}
+          >
             <MaterialIcons name="edit" size={20} color={Colors.info} />
             <Text style={styles.actionLabel}>Edit</Text>
           </TouchableOpacity>
@@ -310,15 +250,8 @@ const ScheduleVisit = ({ navigation }) => {
     <View style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity
-            onPress={() => navigation && navigation.goBack()}
-            // style={{padding: responsiveWidth(1)}}
-        >
-            <MaterialCommunityIcons
-            name="arrow-left"
-            size={responsiveFontSize(2.5)}
-            color={Colors.white}
-            />
+        <TouchableOpacity onPress={() => navigation && navigation.goBack()}>
+          <MaterialCommunityIcons name="arrow-left" size={responsiveFontSize(2.5)} color={Colors.white} />
         </TouchableOpacity>
         <Text style={styles.title}>Schedule Visit</Text>
         <View style={styles.headerActions}>
@@ -341,9 +274,9 @@ const ScheduleVisit = ({ navigation }) => {
               loadVisitsForDate(day.dateString)
             }}
             markedDates={{
-                [selectedDate]: { selected: true, selectedColor: Colors.primary },
-            //   ...markedDates,
-            //   [selectedDate]: { ...(markedDates[selectedDate] || {}), selected: true, selectedColor: Colors.primary },
+              [selectedDate]: { selected: true, selectedColor: Colors.primary },
+              // ...markedDates,
+              // [selectedDate]: { ...(markedDates[selectedDate] || {}), selected: true, selectedColor: Colors.primary },
             }}
             markingType={'multi-dot'}
             theme={{
@@ -356,10 +289,12 @@ const ScheduleVisit = ({ navigation }) => {
           <View style={styles.calendarActions}>
             <CustomButton title="Go to Today" onPress={onGoToToday} />
             <View style={{ width: responsiveWidth(2) }} />
-            <CustomButton title="Add Visit" onPress={() => {
-              setForm((s) => ({ ...s, datetime: `${selectedDate}T09:00:00.000Z` }))
-              setAddModalVisible(true)
-            }} bgColor={Colors.primary} color={Colors.white} />
+            <CustomButton
+              title="Add Visit"
+              onPress={() => navigation?.navigate('AddVisit', { date: selectedDate })}
+              bgColor={Colors.primary}
+              color={Colors.white}
+            />
           </View>
         </View>
 
@@ -379,37 +314,8 @@ const ScheduleVisit = ({ navigation }) => {
         </View>
       </ScrollView>
 
-      {/* Add Visit Modal */}
-      <Modal visible={addModalVisible} animationType="slide" transparent>
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalBox}>
-            <ScrollView showsVerticalScrollIndicator={false}>
-              <Text style={styles.modalTitle}>{form.id ? 'Edit Visit' : 'Add Visit'}</Text>
-
-              <CustomDropDown title="Visit Type" value={form.visitType} setValue={(v) => setForm((s) => ({ ...s, visitType: v }))} data={VISIT_TYPES} placeholder="Select type" />
-              <CustomInput label="Doctor / Lead" value={form.personName} onChangeText={(t) => setForm((s) => ({ ...s, personName: t }))} placeholder="Name" />
-              <CustomDateTimePicker label="Date & Time" value={form.datetime} onChange={(dt) => setForm((s) => ({ ...s, datetime: dt }))} />
-              <CustomInput label="Location" value={form.location} onChangeText={(t) => setForm((s) => ({ ...s, location: t }))} placeholder="Clinic / Address" />
-              <CustomInput label="City" value={form.city} onChangeText={(t) => setForm((s) => ({ ...s, city: t }))} placeholder="City" />
-              <CustomInput label="Notes" multiline value={form.notes} onChangeText={(t) => setForm((s) => ({ ...s, notes: t }))} placeholder="Notes / Remarks" />
-              <CustomInput label="Assigned To" value={form.assignedTo} onChangeText={(t) => setForm((s) => ({ ...s, assignedTo: t }))} placeholder="Assigned user" />
-
-              <View style={{ flexDirection: 'row', marginTop: responsiveHeight(1), marginBottom: responsiveHeight(1) }}>
-                <View style={{ flex: 1 }}>
-                  <CustomButton title="Save" onPress={onSaveVisit} />
-                </View>
-                <View style={{ width: responsiveWidth(2) }} />
-                <View style={{ flex: 1 }}>
-                  <CustomButton title="Cancel" onPress={() => setAddModalVisible(false)} bgColor={Colors.white} color={Colors.primary} borderC={Colors.primary} />
-                </View>
-              </View>
-            </ScrollView>
-          </View>
-        </View>
-      </Modal>
-
-      {/* FAB */}
-      <TouchableOpacity style={styles.fab} onPress={() => {navigation && navigation.navigate('AddVisit')}}>
+      {/* FAB navigates to AddVisit screen */}
+      <TouchableOpacity style={styles.fab} onPress={() => navigation?.navigate('AddVisit')}>
         <MaterialCommunityIcons name="calendar-plus" size={26} color={Colors.white} />
       </TouchableOpacity>
     </View>
@@ -445,16 +351,16 @@ const styles = StyleSheet.create({
   calendarActions: { flexDirection: 'row', marginTop: responsiveHeight(1), justifyContent: 'flex-end' },
 
   section: { marginHorizontal: responsiveWidth(3), marginTop: responsiveHeight(1) },
-  sectionTitle: { fontSize: responsiveFontSize(1.2), fontWeight: '800', color: Colors.textPrimary, marginBottom: responsiveHeight(1) },
+  sectionTitle: { fontSize: responsiveFontSize(1.6), fontWeight: '700', color: Colors.textPrimary, marginBottom: responsiveHeight(1) },
 
   card: { backgroundColor: Colors.white, padding: responsiveWidth(3), borderRadius: 12, marginBottom: responsiveHeight(1.2), elevation: 2 },
   cardHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  personName: { fontWeight: '800', fontSize: responsiveFontSize(1.2), color: Colors.textPrimary },
+  personName: { fontWeight: '700', fontSize: responsiveFontSize(1.6), color: Colors.textPrimary },
   statusChip: { paddingHorizontal: responsiveWidth(2), paddingVertical: responsiveHeight(0.3), borderRadius: 12 },
-  statusText: { color: Colors.white, fontWeight: '700' },
-  meta: { color: Colors.textSecondary, marginTop: responsiveHeight(0.5) },
-  metaSmall: { color: Colors.textSecondary, marginTop: responsiveHeight(0.3), fontSize: responsiveFontSize(0.95) },
-  notes: { color: Colors.textPrimary, marginTop: responsiveHeight(0.6) },
+  statusText: { color: Colors.white, fontWeight: '500', fontSize: responsiveFontSize(1.4)},
+  meta: { color: Colors.textSecondary, marginTop: responsiveHeight(0.5), fontSize: responsiveFontSize(1.5) },
+  metaSmall: { color: Colors.textSecondary, marginTop: responsiveHeight(0.3), fontSize: responsiveFontSize(1.2) },
+  notes: { color: Colors.textPrimary, marginTop: responsiveHeight(0.6), fontSize: responsiveFontSize(1.2), fontStyle: 'italic' },
 
   actionsRow: { flexDirection: 'row', marginTop: responsiveHeight(1), justifyContent: 'space-between' },
   actionBtn: { flexDirection: 'row', alignItems: 'center', gap: responsiveWidth(1) },
