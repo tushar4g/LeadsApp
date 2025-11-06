@@ -13,6 +13,8 @@ import AddActivity from '../pages/leads/AddActivity'
 import ChangePassword from '../pages/profile/pages/ChangePassword'
 import Feedback from '../pages/profile/pages/Feedback'
 import Rewards from '../pages/profile/pages/Rewards'
+import ScheduleVisit from '../pages/visit/ScheduleVisit'
+import AddVisit from '../pages/visit/AddVisit'
 
 const StackNavigation = () => {
   const Stack = createNativeStackNavigator()
@@ -31,6 +33,8 @@ const StackNavigation = () => {
         <Stack.Screen name="ChangePassword" component={ChangePassword} />
         <Stack.Screen name="Feedback" component={Feedback} />
         <Stack.Screen name="Rewards" component={Rewards} />
+        <Stack.Screen name="ScheduleVisit" component={ScheduleVisit} />
+        <Stack.Screen name="AddVisit" component={AddVisit} />
       </Stack.Navigator>
     </NavigationContainer>
   )
