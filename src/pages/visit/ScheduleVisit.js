@@ -20,6 +20,8 @@ import CustomButton from '../../components/CustomButton'
 import CustomDropDown from '../../components/CustomDropDown'
 import CustomInput from '../../components/CustomInput'
 import CustomDateTimePicker from '../../components/CustomDateTimePicker'
+import CalendarStrip from 'react-native-calendar-strip'
+import moment from 'moment'
 
 /* --- Mocked data & API (replace with real API hooks) --- */
 const mockVisits = [
@@ -31,7 +33,7 @@ const mockVisits = [
     status: 'Planned',
     location: 'City Heart Clinic, Raipur',
     city: 'Raipur',
-    assignedTo: 'Field Exec 1',
+    // assignedTo: 'Field Exec 1',
     notes: 'Bring ECG report',
     latitude: 21.2514,
     longitude: 81.6296,
@@ -44,7 +46,7 @@ const mockVisits = [
     status: 'Planned',
     location: 'Remote',
     city: 'Raipur',
-    assignedTo: 'Admin',
+    // assignedTo: 'Admin',
     notes: 'Intro call',
     latitude: null,
     longitude: null,
@@ -57,7 +59,7 @@ const mockVisits = [
     status: 'Completed',
     location: 'Neuro Health, Durg',
     city: 'Durg',
-    assignedTo: 'Field Exec 2',
+    // assignedTo: 'Field Exec 2',
     notes: '',
     latitude: 21.1910,
     longitude: 81.2844,
@@ -65,19 +67,6 @@ const mockVisits = [
 ]
 
 const fakeApi = {
-  getCalendarSummary: async () => {
-    return new Promise((res) =>
-      setTimeout(() => {
-        const summary = {}
-        mockVisits.forEach((v) => {
-          const d = v.datetime ? v.datetime.split('T')[0] : new Date().toISOString().split('T')[0]
-          summary[d] = summary[d] || { marked: true, dots: [] }
-          summary[d].dots.push({ color: STATUS_COLORS[v.status] || STATUS_COLORS.Planned })
-        })
-        res(summary)
-      }, 300)
-    )
-  },
   getVisits: async (date) => {
     return new Promise((res) =>
       setTimeout(() => {
@@ -124,13 +113,11 @@ const STATUS_COLORS = {
 const ScheduleVisit = ({ navigation }) => {
   const today = new Date().toISOString().split('T')[0]
   const [selectedDate, setSelectedDate] = useState(today)
-  const [markedDates, setMarkedDates] = useState({})
   const [visits, setVisits] = useState([])
   const [loading, setLoading] = useState(false)
 
   // modal/form removed — uses AddVisit screen instead
   useEffect(() => {
-    refreshCalendar()
     loadVisitsForDate(selectedDate)
   }, [])
 
@@ -138,23 +125,10 @@ const ScheduleVisit = ({ navigation }) => {
     loadVisitsForDate(selectedDate)
   }, [selectedDate])
 
-  const refreshCalendar = async () => {
-    setLoading(true)
-    const summary = await fakeApi.getCalendarSummary()
-    const md = {}
-    Object.keys(summary).forEach((d) => {
-      md[d] = { marked: true, dots: summary[d].dots }
-    })
-    md[selectedDate] = { ...(md[selectedDate] || {}), selected: true, selectedColor: Colors.primary }
-    setMarkedDates(md)
-    setLoading(false)
-  }
-
   const loadVisitsForDate = async (date) => {
     setLoading(true)
     const list = await fakeApi.getVisits(date)
     setVisits(list)
-    setMarkedDates((prev) => ({ ...prev, [date]: { ...(prev[date] || {}), selected: true, selectedColor: Colors.primary } }))
     setLoading(false)
   }
 
@@ -179,7 +153,7 @@ const ScheduleVisit = ({ navigation }) => {
   const onMarkCompleted = async (id) => {
     await fakeApi.updateVisitStatus(id, 'Completed')
     Alert.alert('Updated', 'Visit marked as completed.')
-    refreshCalendar()
+    
     loadVisitsForDate(selectedDate)
   }
 
@@ -190,7 +164,7 @@ const ScheduleVisit = ({ navigation }) => {
         text: 'Yes',
         onPress: async () => {
           await fakeApi.updateVisitStatus(id, 'Cancelled')
-          refreshCalendar()
+          
           loadVisitsForDate(selectedDate)
         },
       },
@@ -210,7 +184,7 @@ const ScheduleVisit = ({ navigation }) => {
 
         <Text style={styles.meta}>{item.visitType} • {new Date(item.datetime).toLocaleString()}</Text>
         <Text style={styles.meta}>{item.location} {item.city ? `• ${item.city}` : ''}</Text>
-        {item.assignedTo ? <Text style={styles.metaSmall}>Assigned to: {item.assignedTo}</Text> : null}
+        {/* {item.assignedTo ? <Text style={styles.metaSmall}>Assigned to: {item.assignedTo}</Text> : null} */}
         {item.notes ? <Text style={styles.notes}>Notes: {item.notes}</Text> : null}
 
         <View style={styles.actionsRow}>
@@ -265,39 +239,6 @@ const ScheduleVisit = ({ navigation }) => {
       </View>
 
       <ScrollView contentContainerStyle={{ paddingBottom: responsiveHeight(18) }}>
-        {/* Calendar */}
-        <View style={styles.calendarBox}>
-          <Calendar
-            current={selectedDate}
-            onDayPress={(day) => {
-              setSelectedDate(day.dateString)
-              loadVisitsForDate(day.dateString)
-            }}
-            markedDates={{
-              [selectedDate]: { selected: true, selectedColor: Colors.primary },
-              // ...markedDates,
-              // [selectedDate]: { ...(markedDates[selectedDate] || {}), selected: true, selectedColor: Colors.primary },
-            }}
-            markingType={'multi-dot'}
-            theme={{
-              selectedDayBackgroundColor: Colors.primary,
-              todayTextColor: Colors.primary,
-              arrowColor: Colors.primary,
-              monthTextColor: Colors.textPrimary,
-            }}
-          />
-          <View style={styles.calendarActions}>
-            <CustomButton title="Go to Today" onPress={onGoToToday} />
-            <View style={{ width: responsiveWidth(2) }} />
-            <CustomButton
-              title="Add Visit"
-              onPress={() => navigation?.navigate('AddVisit', { date: selectedDate })}
-              bgColor={Colors.primary}
-              color={Colors.white}
-            />
-          </View>
-        </View>
-
         {/* Visits List */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Visits on {selectedDate}</Text>
