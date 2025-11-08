@@ -203,9 +203,9 @@ const Leads = ({ navigation }) => {
       <View style={styles.header}>
         <Text style={{color: Colors.white, fontSize: responsiveFontSize(2.2), fontWeight: '700'}}>Leads</Text>
         <View style={{flexDirection: 'row', alignItems: 'center' }}>
-          <TouchableOpacity onPress={() => {}} style={[{padding: responsiveWidth(2)}]}>
+          {/* <TouchableOpacity onPress={() => {}} style={[{padding: responsiveWidth(2)}]}>
             <MaterialCommunityIcons name="magnify" size={responsiveFontSize(2.5)} color={Colors.white} />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
           <TouchableOpacity onPress={() => setFilterModalVisible(true)} style={[{ marginLeft: responsiveWidth(1), padding: responsiveWidth(2) }]}>
             <MaterialCommunityIcons name="filter-variant" size={responsiveFontSize(2.5)} color={Colors.white} />
           </TouchableOpacity>
@@ -353,7 +353,7 @@ const styles = StyleSheet.create({
   filterShortBtn: { marginLeft: responsiveWidth(2), padding: responsiveWidth(2), backgroundColor: Colors.white, borderRadius: 8, elevation: 1 },
 
   activeFiltersRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',  },
-  activeText: { color: Colors.textSecondary, fontSize: responsiveFontSize(1.2) },
+  activeText: { color: Colors.primary, fontSize: responsiveFontSize(1.2), paddingLeft: responsiveWidth(3) },
   clearText: { color: Colors.primary, fontWeight: '700' },
 
   sectionTitle: { marginTop: responsiveHeight(1), marginBottom: responsiveHeight(1), fontSize: responsiveFontSize(1.6), fontWeight: '700', color: Colors.textPrimary, paddingHorizontal: responsiveWidth(1) },
