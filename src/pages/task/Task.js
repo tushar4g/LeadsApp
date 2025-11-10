@@ -381,10 +381,10 @@ const Task = ({ navigation }) => {
                         <Text style={styles.metaText}>{new Date(item.due).toLocaleString()}</Text>
                     </View>
 
-                    <View style={styles.metaItem}>
+                    {/* <View style={styles.metaItem}>
                         <MaterialIcons name="account-circle" size={responsiveFontSize(1.6)} color={Colors.textSecondary} />
                         <Text style={styles.metaText}>{item.leadName}</Text>
-                    </View>
+                    </View> */}
 
                     {/* <View style={styles.metaItem}>
                         <View style={[styles.priorityBadge, { backgroundColor: prColor }]}>
@@ -399,19 +399,19 @@ const Task = ({ navigation }) => {
                         <Text style={styles.actionLabel}>Complete</Text>
                     </TouchableOpacity>
 
+                    <TouchableOpacity style={styles.actionBtn} onPress={() => openDetails(item)}>
+                        <MaterialIcons name="visibility" size={responsiveFontSize(1.8)} color={Colors.primary} />
+                        <Text style={styles.actionLabel}>View</Text>
+                    </TouchableOpacity>
+
                     <TouchableOpacity style={styles.actionBtn} onPress={() => navigation?.navigate('AddTask', { mode: 'edit', task: item })}>
                         <MaterialIcons name="edit" size={responsiveFontSize(1.8)} color={Colors.info} />
                         <Text style={styles.actionLabel}>Edit</Text>
                     </TouchableOpacity>
 
                     <TouchableOpacity style={styles.actionBtn} onPress={() => deleteTask(item.id)}>
-                        <MaterialIcons name="delete-outline" size={responsiveFontSize(1.8)} color={Colors.secondary} />
+                        <MaterialIcons name="delete" size={responsiveFontSize(1.8)} color={Colors.secondary} />
                         <Text style={[styles.actionLabel, { color: Colors.secondary }]}>Delete</Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity style={styles.actionBtn} onPress={() => openDetails(item)}>
-                        <MaterialIcons name="search" size={responsiveFontSize(1.8)} color={Colors.textSecondary} />
-                        <Text style={styles.actionLabel}>View</Text>
                     </TouchableOpacity>
                 </View>
             </View>
@@ -701,9 +701,9 @@ const styles = StyleSheet.create({
   badgeText: { color: Colors.white, fontWeight: '700', fontSize: responsiveFontSize(1.1) },
   priorityBadge: { paddingHorizontal: responsiveWidth(2), paddingVertical: responsiveHeight(0.3), borderRadius: responsiveWidth(2) },
   priorityText: { color: Colors.white, fontWeight: '700', fontSize: responsiveFontSize(1.1) },
-  actionRow: { flexDirection: 'row', marginTop: responsiveHeight(1), justifyContent: 'flex-start', gap: responsiveWidth(3) },
-  actionBtn: { flexDirection: 'row', alignItems: 'center' },
-  actionLabel: { marginLeft: responsiveWidth(1), color: Colors.textSecondary, fontSize: responsiveFontSize(1.2) },
+  actionRow: { flexDirection: 'row', marginTop: responsiveHeight(1), gap: responsiveWidth(3) },
+  actionBtn: { flexDirection: 'row', alignItems: 'center', marginRight: responsiveWidth(4)  },
+  actionLabel: { marginLeft: responsiveWidth(1), color: Colors.textSecondary, fontSize: responsiveFontSize(1.3) },
   emptyState: { alignItems: 'center', marginTop: responsiveHeight(8) },
   emptyText: { marginTop: responsiveHeight(2), fontSize: responsiveFontSize(1.8), color: Colors.textSecondary, fontWeight: '600' },
   emptySub: { marginTop: responsiveHeight(0.6), color: Colors.textTertiary, fontSize: responsiveFontSize(1.2) },

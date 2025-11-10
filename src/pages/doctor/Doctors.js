@@ -189,9 +189,6 @@ const Doctors = ({ navigation }) => {
 
     // search & filters
     const [filterModalVisible, setFilterModalVisible] = useState(false)
-    const [filterSpecialization, setFilterSpecialization] = useState('')
-    const [filterStatus, setFilterStatus] = useState('')
-    const [filterSource, setFilterSource] = useState('')
     const [searchText, setSearchText] = useState('')
     const [filterCity, setFilterCity] = useState('')
     const [filterSpec, setFilterSpec] = useState('')
@@ -200,6 +197,7 @@ const Doctors = ({ navigation }) => {
     const [sortBy, setSortBy] = useState(sortOptions[0].value)
     const [showSearch, setShowSearch] = useState(false);
     const searchRef = useRef(null);
+
 
     useEffect(() => {
         // simulate api fetch
@@ -227,6 +225,26 @@ const Doctors = ({ navigation }) => {
         setFilterCategory('')
         setFilterHospitalType('')
         setSortBy(sortOptions[0].value)
+    }
+
+    const clearAllFilters = () => {
+        setFilterCity('')
+        setFilterSpec('')
+        setFilterCategory('')
+        setFilterHospitalType('')
+        setSortBy(sortOptions[0].value)
+        setSearchText('')
+        setFilterModalVisible(false)
+    }
+
+    const activeFiltersLabel = () => {
+        const activeFilters = []
+        if (filterCity) activeFilters.push(filterCity)
+        if (filterSpec) activeFilters.push(filterSpec)
+        if (filterCategory) activeFilters.push(filterCategory)
+        if (filterHospitalType) activeFilters.push(filterHospitalType)
+        return activeFilters.join(', ') || 'No active filters'
+         
     }
     
     const handleDelete = (id) => {
@@ -404,6 +422,14 @@ const Doctors = ({ navigation }) => {
           </View>
         )}
 
+        {/* Active filters summary */}
+        <View style={[styles.activeFiltersRow, { paddingRight: responsiveWidth(4), marginBottom: responsiveHeight(1) }]}>
+          <Text style={styles.activeText}>{activeFiltersLabel()}</Text>
+          <TouchableOpacity onPress={clearAllFilters}>
+            <Text style={styles.clearText}>Clear</Text>
+          </TouchableOpacity>
+        </View>
+
         {/* Doctor List */}
         {filteredDoctors.length === 0 ? (
           <View style={styles.emptyState}>
@@ -439,14 +465,14 @@ const Doctors = ({ navigation }) => {
             <Text style={styles.modalTitle}>Filters</Text>
 
             <View style={{gap: responsiveHeight(1.5)}}>
-              <CustomDropDown iconName="medical-services"  uprLabel="Specialization" value={filterSpecialization} setValue={setFilterSpecialization} data={SPECIALIZATION_OPTIONS} />
+              <CustomDropDown iconName="medical-services"  uprLabel="Specialization" value={filterSpec} setValue={setFilterSpec} data={SPECIALIZATION_OPTIONS} />
               <CustomDropDown iconName="business"  uprLabel="Hospital Type" value={filterHospitalType} setValue={setFilterHospitalType} data={HOSPITAL_TYPE_OPTIONS} />
               <CustomDropDown iconName="location-city"  uprLabel="City" value={filterCity} setValue={setFilterCity} data={CITY_OPTIONS} />
             </View>
             
             <View style={[styles.modalActions, {gap: responsiveWidth(2)}]}>
               <View style={{flex:1}}>
-                <CustomButton title="Clear" onPress={() => { setFilterSpecialization(''); setFilterHospitalType(''); setFilterCity('') }} bgColor={Colors.white} color={Colors.primary} borderC={Colors.primary} />
+                <CustomButton title="Clear" onPress={() => { setFilterSpec(''); setFilterHospitalType(''); setFilterCity('') }} bgColor={Colors.white} color={Colors.primary} borderC={Colors.primary} />
               </View>
               <View style={{flex:1}}>
                 <CustomButton title="Apply" onPress={() => setFilterModalVisible(false)} bgColor={Colors.primary} color={Colors.white} />
@@ -503,6 +529,10 @@ const styles = StyleSheet.create({
     textAlignVertical: 'center', // 👈 centers text on Android
     minHeight: responsiveHeight(4), // 👈 ensure input doesn't grow too tall
   },
+   activeFiltersRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+    activeText: { color: Colors.primary, fontSize: responsiveFontSize(1.2), paddingLeft: responsiveWidth(3) },
+    clearText: { color: Colors.primary, fontWeight: '700' },
+
   filterRow: { flexDirection: 'row', justifyContent: 'space-between', gap: responsiveWidth(2), marginBottom: responsiveHeight(1) },
   card: {
     flexDirection: 'row',
