@@ -51,35 +51,48 @@ const CITY_OPTIONS = [
 const mockLeads = [
   {
     id: 'l1',
-    name: 'Dr. Rohan Mehta',
-    source: 'Hospital: Apollo Delhi',
-    mobile: '9876543210',
+    leadType: 'Patient',
+    name: 'Rohan Mehta',
+    source: 'Doctor',
+    referredBy: 'Dr. Anil Kumar',
     status: 'Follow-up',
+    mobile: '9876543210',
+    nextFollowUp: '08-11-2025',
+    notes: 'Interested in premium health checkup package.',
     score: 85,
     createdAt: '12 Oct 2025',
     city: 'Raipur',
+    address: '123, MG Road, Raipur',
     assignedTo: 'Tushar',
   },
   {
     id: 'l2',
     name: 'Ms. Priya Singh',
-    source: 'Corporate: HealthCorp',
+    source: 'Event',
+    referredBy: 'Dr. Suman Verma',
     mobile: '9123456780',
+    nextFollowUp: '20-10-2025',
+    notes: 'Follow-up on health checkup package.',
     status: 'New',
     score: 70,
     createdAt: '15 Oct 2025',
     city: 'Bilaspur',
+    address: '456, Park Avenue, Bilaspur',
     assignedTo: 'Amit',
   },
   {
     id: 'l3',
     name: 'Dr. Neha Sharma',
-    source: 'Event: MedExpo',
+    source: 'Hospital',
+    referredBy: 'Dr. Rakesh Gupta',
     mobile: '9987654321',
+    nextFollowUp: '05-11-2025',
+    notes: 'Interested in corporate health packages for staff.',
     status: 'Converted',
     score: 92,
     createdAt: '01 Oct 2025',
     city: 'Durg',
+    address: '789, Central Hospital, Durg',
     assignedTo: 'Kiran',
   },
   // ...add more mock items if needed
@@ -233,18 +246,20 @@ const Leads = ({ navigation }) => {
             icon={() => <MaterialCommunityIcons name="magnify" size={responsiveFontSize(2.2)} color={Colors.textSecondary} />}
           />
         </View>
-        <TouchableOpacity style={[styles.filterShortBtn,]} onPress={() => setFilterModalVisible(true)}>
+        {/* <TouchableOpacity style={[styles.filterShortBtn,]} onPress={() => setFilterModalVisible(true)}>
           <MaterialCommunityIcons name="filter" size={responsiveFontSize(2.2)} color={Colors.primary} />
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
 
       {/* Active filters summary */}
-      <View style={[styles.activeFiltersRow, {paddingRight: responsiveWidth(4)}]}>
-        <Text style={styles.activeText}>{filterStatus ? `Status: ${filterStatus}` : ''} {filterSource ? ` • Source: ${filterSource}` : ''} {filterCity ? ` • City: ${filterCity}` : ''}</Text>
-        <TouchableOpacity onPress={clearAllFilters}>
-          <Text style={styles.clearText}>Clear</Text>
-        </TouchableOpacity>
-      </View>
+      {(filterStatus || filterSource || filterCity) && (
+        <View style={[styles.activeFiltersRow, {paddingRight: responsiveWidth(4)}]}>
+          <Text style={styles.activeText}>{filterStatus ? `Status: ${filterStatus}` : ''} {filterSource ? ` • Source: ${filterSource}` : ''} {filterCity ? ` • City: ${filterCity}` : ''}</Text>
+          <TouchableOpacity onPress={clearAllFilters}>
+            <Text style={styles.clearText}>Clear</Text>
+          </TouchableOpacity>
+        </View>
+      )}
       
 
       <FlatList

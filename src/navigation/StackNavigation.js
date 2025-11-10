@@ -16,6 +16,8 @@ import Rewards from '../pages/profile/pages/Rewards'
 import ScheduleVisit from '../pages/visit/ScheduleVisit'
 import AddVisit from '../pages/visit/AddVisit'
 import Task from '../pages/task/Task'
+import Login from '../pages/login/Login'
+import ForgotPassword from '../pages/forgotPassword/ForgotPassword'
 
 const StackNavigation = () => {
   const Stack = createNativeStackNavigator()
@@ -23,6 +25,8 @@ const StackNavigation = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{headerShown:false, animation:'slide_from_right',}}>
+        <Stack.Screen name="Login" component={Login} />
+        <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
         <Stack.Screen name="Main" component={BottomTabNavigation} />
         <Stack.Screen name="Doctors" component={Doctors} />
         <Stack.Screen name="AddDoctor" component={AddDoctor} />
