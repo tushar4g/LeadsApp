@@ -18,6 +18,10 @@ import AddVisit from '../pages/visit/AddVisit'
 import Task from '../pages/task/Task'
 import Login from '../pages/login/Login'
 import ForgotPassword from '../pages/forgotPassword/ForgotPassword'
+import OTPVerification from '../pages/forgotPassword/OTPVerification'
+import ResetPassword from '../pages/forgotPassword/ResetPassword'
+import Splash from '../pages/splash/Splash'
+
 
 const StackNavigation = () => {
   const Stack = createNativeStackNavigator()
@@ -25,8 +29,11 @@ const StackNavigation = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{headerShown:false, animation:'slide_from_right',}}>
+        <Stack.Screen name="Splash" component={Splash} />
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
+        <Stack.Screen name="OTPVerification" component={OTPVerification} />
+        <Stack.Screen name="ResetPassword" component={ResetPassword} />
         <Stack.Screen name="Main" component={BottomTabNavigation} />
         <Stack.Screen name="Doctors" component={Doctors} />
         <Stack.Screen name="AddDoctor" component={AddDoctor} />

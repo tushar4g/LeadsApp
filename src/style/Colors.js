@@ -43,6 +43,7 @@ const Colors = {
 };
 
 Colors.primaryWithOpacity = hexToRgba(Colors.primary, 0.3);
+Colors.primaryWithExtraOpacity = hexToRgba(Colors.primary, 0.1);
 Colors.profileOpacity = hexToRgba(Colors.primary, 0.5);
 Colors.secondaryWithOpacity = hexToRgba(Colors.secondary, 0.3);
 Colors.successWithOpacity = hexToRgba(Colors.success, 0.3);

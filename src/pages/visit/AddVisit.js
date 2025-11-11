@@ -1,5 +1,5 @@
 // ...existing code...
-import React, { useEffect, useState } from 'react'
+import React, {useEffect, useState} from 'react'
 import {
   View,
   Text,
@@ -19,6 +19,7 @@ import CustomInput from '../../components/CustomInput'
 import CustomDropDown from '../../components/CustomDropDown'
 import CustomDateTimePicker from '../../components/CustomDateTimePicker'
 import CustomButton from '../../components/CustomButton'
+import CustomMultipleDropdown from '../../components/CustomMultipleDropdown'
 import Geolocation from '@react-native-community/geolocation'
 
 const VISIT_TYPES = [
@@ -219,7 +220,7 @@ const AddVisit = ({ navigation, route }) => {
   const onLeadChange = (val) => {
     setLead(val)
     clearError('lead')
-    const selected = leads.find((l) => l.value === val)
+    const selected = leads.filter((l) => val.includes(l.value));
     if (selected) {
       setSpecialty(selected.specialty || '')
       setMobile(selected.mobile || '')
@@ -354,16 +355,16 @@ const AddVisit = ({ navigation, route }) => {
         {/* Lead / Doctor Details */}
         <View style={styles.card}>
           <Text style={styles.cardTitle}>Lead / Doctor Details</Text>
-
-          <CustomDropDown
+          
+          <CustomMultipleDropdown
             uprLabel="Lead / Doctor *"
-            iconName="person"
+            iconName="doctor"
             value={lead}
             setValue={onLeadChange}
             data={leads}
-            placeholder="Search or select"
-            searchable
+            // placeholder="Search or select"
           />
+
           {errors.lead ? <Text style={styles.error}>{errors.lead}</Text> : null}
 
           <CustomDropDown uprLabel="Specialization *" value={specialty} setValue={setSpecialty} data={specializationOptions} iconName="medical-services" placeholder="Select specialization" />
