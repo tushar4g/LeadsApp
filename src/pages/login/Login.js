@@ -12,6 +12,7 @@ import {
   ActivityIndicator,
 } from 'react-native'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import LinearGradient from 'react-native-linear-gradient';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions'
 import Colors from '../../style/Colors'
@@ -101,17 +102,17 @@ const Login = ({ navigation }) => {
   return (
     <View style={styles.safe}>
       <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+      <LinearGradient colors={[Colors.lightPrimary, Colors.white]} style={{ flex: 1 }}>
         <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
           <View style={styles.top}>
-            {/* placeholder logo - replace with Image source if available */}
             <View style={styles.logoWrap}>
-              <MaterialIcons name="local-hospital" size={responsiveFontSize(6)} color={Colors.primary} />
+              <Image source={require('../../assets/images/img1.jpg')} style={styles.logo} />
             </View>
-            <Text style={styles.welcome}>Welcome</Text>
+            <Text style={styles.welcome}>Welcome Back!</Text>
             <Text style={styles.subtitle}>Login to continue managing your healthcare leads.</Text>
           </View>
 
-          <View style={styles.card}>
+          <View style={styles.formContainer}>
             <CustomInput
               label="Email or Mobile Number"
               value={username}
@@ -121,8 +122,7 @@ const Login = ({ navigation }) => {
               }}
               placeholder="Enter email or mobile number"
               icon="mail"
-              keyboardType="default"
-              maxLength={10}
+              keyboardType="email-address"
             />
             {errors.username ? <Text style={styles.err}>{errors.username}</Text> : null}
 
@@ -172,6 +172,7 @@ const Login = ({ navigation }) => {
 
           <View style={{ height: responsiveHeight(6) }} />
         </ScrollView>
+        </LinearGradient>
       </KeyboardAvoidingView>
     </View>
   )
@@ -194,20 +195,23 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.white,
     alignItems: 'center',
     justifyContent: 'center',
-    elevation: 3,
+    elevation: 8,
     marginBottom: responsiveHeight(1.5),
-  },
-  welcome: { fontSize: responsiveFontSize(2.2), fontWeight: '800', color: Colors.textPrimary },
-  subtitle: { fontSize: responsiveFontSize(1.4), color: Colors.textSecondary, marginTop: responsiveHeight(0.5), textAlign: 'center', paddingHorizontal: responsiveWidth(2) },
-
-  card: {
-    backgroundColor: Colors.white,
-    borderRadius: 12,
-    padding: responsiveWidth(4),
-    elevation: 4,
     shadowColor: '#000',
     shadowOpacity: 0.08,
-    shadowRadius: 6,
+    shadowRadius: 10,
+  },
+  logo: {
+    width: responsiveWidth(18),
+    height: responsiveWidth(18),
+    resizeMode: 'contain',
+  },
+  welcome: { fontSize: responsiveFontSize(2.8), fontWeight: 'bold', color: Colors.textPrimary },
+  subtitle: { fontSize: responsiveFontSize(1.6), color: Colors.textSecondary, marginTop: responsiveHeight(0.8), textAlign: 'center', paddingHorizontal: responsiveWidth(4) },
+
+  formContainer: {
+    marginTop: responsiveHeight(3),
+    // gap: responsiveHeight(1.5)
   },
 
   row: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: responsiveHeight(1) },
@@ -224,11 +228,11 @@ const styles = StyleSheet.create({
   },
   checkboxOn: { backgroundColor: Colors.primary, borderColor: Colors.primary },
   rememberText: { color: Colors.textSecondary },
-  forgot: { color: Colors.primary, fontWeight: '700' },
+  forgot: { color: Colors.primary, fontWeight: '700', fontSize: responsiveFontSize(1.5) },
 
-  err: { color: Colors.secondary, marginTop: responsiveHeight(0.4), fontSize: responsiveFontSize(1.1) },
+  err: { color: Colors.secondary, marginTop: responsiveHeight(0.5), fontSize: responsiveFontSize(1.3) },
 
   registerRow: { flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginTop: responsiveHeight(2) },
-  regText: { color: Colors.textSecondary },
-  regLink: { color: Colors.primary, fontWeight: '800' },
+  regText: { color: Colors.textSecondary, fontSize: responsiveFontSize(1.5) },
+  regLink: { color: Colors.primary, fontWeight: '800', fontSize: responsiveFontSize(1.5) },
 })
