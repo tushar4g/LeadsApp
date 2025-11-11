@@ -107,7 +107,7 @@ const Login = ({ navigation }) => {
             <View style={styles.logoWrap}>
               <MaterialIcons name="local-hospital" size={responsiveFontSize(6)} color={Colors.primary} />
             </View>
-            <Text style={styles.welcome}>Welcome Back</Text>
+            <Text style={styles.welcome}>Welcome</Text>
             <Text style={styles.subtitle}>Login to continue managing your healthcare leads.</Text>
           </View>
 
@@ -148,7 +148,7 @@ const Login = ({ navigation }) => {
                 activeOpacity={0.8}
               >
                 <View style={[styles.checkbox, remember ? styles.checkboxOn : null]}>
-                  {remember ? <MaterialIcons name="check" size={14} color={Colors.white} /> : null}
+                  {remember ? <MaterialIcons name="check" size={responsiveFontSize(2)} color={Colors.white} /> : null}
                 </View>
                 <Text style={styles.rememberText}>Remember me</Text>
               </TouchableOpacity>
@@ -197,8 +197,8 @@ const styles = StyleSheet.create({
     elevation: 3,
     marginBottom: responsiveHeight(1.5),
   },
-  welcome: { fontSize: responsiveFontSize(2.4), fontWeight: '800', color: Colors.textPrimary },
-  subtitle: { fontSize: responsiveFontSize(1.2), color: Colors.textSecondary, marginTop: responsiveHeight(0.5), textAlign: 'center', paddingHorizontal: responsiveWidth(2) },
+  welcome: { fontSize: responsiveFontSize(2.2), fontWeight: '800', color: Colors.textPrimary },
+  subtitle: { fontSize: responsiveFontSize(1.4), color: Colors.textSecondary, marginTop: responsiveHeight(0.5), textAlign: 'center', paddingHorizontal: responsiveWidth(2) },
 
   card: {
     backgroundColor: Colors.white,
