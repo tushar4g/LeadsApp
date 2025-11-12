@@ -3,22 +3,28 @@ import {
   View,
   Text,
   StyleSheet,
-  ScrollView,
   TouchableOpacity,
-  Image,
-  Alert,
   ActivityIndicator,
+  FlatList,
+  Modal,
+  ScrollView,
+  Alert,
   Platform,
   ToastAndroid,
+  Image,
 } from 'react-native'
-import { responsiveFontSize, responsiveWidth, responsiveHeight } from 'react-native-responsive-dimensions'
+import {
+  responsiveFontSize,
+  responsiveWidth,
+  responsiveHeight,
+} from 'react-native-responsive-dimensions'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import Colors from '../../../style/Colors'
 import CustomInput from '../../../components/CustomInput'
 import CustomDropDown from '../../../components/CustomDropDown'
 import CustomButton from '../../../components/CustomButton'
 import PickImageComponent from '../../../components/PickImageComponent'
-import Colors from '../../../style/Colors'
 
 const FEEDBACK_TYPES = [
   { label: 'Bug Report', value: 'Bug Report' },
@@ -27,28 +33,58 @@ const FEEDBACK_TYPES = [
   { label: 'Other', value: 'Other' },
 ]
 
+const mockPreviousFeedbacks = [
+  {
+    id: '1',
+    type: 'Bug Report',
+    subject: 'App crashes on profile edit',
+    createdAt: '2025-10-28T10:00:00Z',
+    status: 'Submitted',
+  },
+  {
+    id: '2',
+    type: 'Feature Request',
+    subject: 'Add dark mode theme',
+    createdAt: '2025-10-25T14:30:00Z',
+    status: 'Pending',
+  },
+]
+
 const Feedback = ({ navigation }) => {
+  const [loading, setLoading] = useState(true)
+  const [previous, setPrevious] = useState([])
+  const [modalVisible, setModalVisible] = useState(false)
+
+  // Form state
   const [type, setType] = useState('')
   const [subject, setSubject] = useState('')
   const [message, setMessage] = useState('')
   const [attachment, setAttachment] = useState(null)
-  const [loading, setLoading] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const [user, setUser] = useState({ name: '', email: '' })
-  const [previous, setPrevious] = useState([])
 
   useEffect(() => {
     let mounted = true
     const load = async () => {
+      setLoading(true)
       try {
-        const raw = await AsyncStorage.getItem('profile')
-        const p = raw ? JSON.parse(raw) : { name: '', email: '' }
-        if (!mounted) return
-        setUser({ name: p.name ?? '', email: p.email ?? '' })
+        const rawProfile = await AsyncStorage.getItem('profile')
+        const p = rawProfile ? JSON.parse(rawProfile) : { name: '', email: '' }
 
-        const prevRaw = await AsyncStorage.getItem('submitted_feedbacks')
-        if (prevRaw) setPrevious(JSON.parse(prevRaw))
+        // Using mock data for demonstration
+        const prevRaw = mockPreviousFeedbacks; 
+        // In a real app, you might fetch from storage:
+        // const prevRaw = await AsyncStorage.getItem('submitted_feedbacks')
+        
+        if (!mounted) return
+
+        setUser({ name: p.name ?? '', email: p.email ?? '' })
+        setPrevious(prevRaw || [])
+
       } catch (e) {
-        // ignore
+        console.warn('Failed to load feedback data', e)
+      } finally {
+        if (mounted) setLoading(false)
       }
     }
     load()
@@ -57,17 +93,29 @@ const Feedback = ({ navigation }) => {
     }
   }, [])
 
+  const resetForm = () => {
+    setType('')
+    setSubject('')
+    setMessage('')
+    setAttachment(null)
+  }
+
+  const handleOpenModal = () => {
+    resetForm()
+    setModalVisible(true)
+  }
+
   const validate = () => {
     if (!type) {
       Alert.alert('Validation', 'Please select feedback type.')
       return false
     }
     if (!subject.trim()) {
-      Alert.alert('Validation', 'Please enter subject.')
+      Alert.alert('Validation', 'Please enter a subject.')
       return false
     }
     if (!message.trim()) {
-      Alert.alert('Validation', 'Please enter description.')
+      Alert.alert('Validation', 'Please enter a description.')
       return false
     }
     return true
@@ -77,155 +125,208 @@ const Feedback = ({ navigation }) => {
     try {
       const asset = await PickImageComponent()
       if (!asset) return
-      // PickImageComponent returns asset with uri, fileName, type, etc.
-      setAttachment({ uri: asset.uri, name: asset.fileName || asset.fileName || 'attachment.jpg', type: asset.type || 'image/jpeg' })
+      setAttachment({ uri: asset.uri, name: asset.fileName || 'attachment.jpg', type: asset.type || 'image/jpeg' })
     } catch (err) {
-      console.warn('pickAttachment error', err)
       Alert.alert('Attachment Error', 'Unable to pick attachment.')
     }
   }
 
   const submitFeedbackApi = async (payload) => {
-    const url = 'https://api.example.com/feedback'
-    try {
-      const res = await fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      })
-      if (!res.ok) {
-        const j = await res.json().catch(() => ({}))
-        throw new Error(j?.message || 'Submission failed')
-      }
-      return true
-    } catch (e) {
-      throw e
-    }
+    // Mock API call
+    return new Promise(resolve => setTimeout(() => resolve({ success: true }), 1000));
   }
 
   const onSubmit = async () => {
     if (!validate()) return
-    setLoading(true)
+    setIsSubmitting(true)
 
     const payload = {
+      id: Date.now().toString(),
       type,
       subject,
       message,
       attachment,
       user,
       createdAt: new Date().toISOString(),
+      status: 'Submitted', // Default status
     }
 
     try {
       await submitFeedbackApi(payload)
 
-      const newPrev = [{ id: Date.now().toString(), ...payload, status: 'Submitted' }, ...previous]
+      const newPrev = [payload, ...previous]
       setPrevious(newPrev)
       await AsyncStorage.setItem('submitted_feedbacks', JSON.stringify(newPrev))
 
-      setType('')
-      setSubject('')
-      setMessage('')
-      setAttachment(null)
-      setLoading(false)
+      setIsSubmitting(false)
+      setModalVisible(false)
+
       if (Platform.OS === 'android') {
         ToastAndroid.show('Feedback submitted successfully', ToastAndroid.SHORT)
       } else {
         Alert.alert('Success', 'Feedback submitted successfully')
       }
-      navigation?.goBack?.()
+
     } catch (err) {
+      // Handle offline submission
       const pendingRaw = await AsyncStorage.getItem('pending_feedbacks')
       const pending = pendingRaw ? JSON.parse(pendingRaw) : []
-      await AsyncStorage.setItem('pending_feedbacks', JSON.stringify([{ id: Date.now().toString(), ...payload }, ...pending]))
+      const pendingPayload = { ...payload, status: 'Pending' };
+      
+      await AsyncStorage.setItem('pending_feedbacks', JSON.stringify([pendingPayload, ...pending]))
+      
+      // Also add to the current view with 'Pending' status
+      setPrevious(p => [pendingPayload, ...p]);
 
-      setLoading(false)
-      Alert.alert('Submission failed', err?.message || 'Saved locally and will sync when online.')
+      setIsSubmitting(false)
+      setModalVisible(false)
+      Alert.alert('Submission Failed', 'Saved locally and will sync when online.')
     }
+  }
+
+  const renderFeedbackItem = ({ item }) => (
+    <View style={styles.prevRow}>
+      <View style={{ flex: 1 }}>
+        <Text style={styles.prevType}>
+          {item.type} • {new Date(item.createdAt).toLocaleDateString()}
+        </Text>
+        <Text style={styles.prevSub}>{item.subject}</Text>
+      </View>
+      <Text
+        style={[
+          styles.prevStatus,
+          item.status === 'Submitted'
+            ? { color: Colors.success }
+            : { color: Colors.textSecondary },
+        ]}
+      >
+        {item.status ?? 'Pending'}
+      </Text>
+    </View>
+  )
+
+  if (loading) {
+    return (
+      <View style={styles.loadingOverlay}>
+        <ActivityIndicator size="large" color={Colors.primary} />
+      </View>
+    )
   }
 
   return (
     <View style={styles.safe}>
+      {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation?.goBack()} style={styles.back}>
-          <MaterialCommunityIcons name="arrow-left" size={responsiveFontSize(2.2)} color={Colors.white} />
+        <TouchableOpacity
+          onPress={() => navigation?.goBack()}
+          style={styles.back}
+        >
+          <MaterialCommunityIcons
+            name="arrow-left"
+            size={responsiveFontSize(2.2)}
+            color={Colors.white}
+          />
         </TouchableOpacity>
-        <Text style={styles.title}>Feedback & Suggestions</Text>
+        <Text style={styles.title}>My Feedback</Text>
         <View style={{ width: responsiveWidth(10) }} />
       </View>
 
-      <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
-        <View style={styles.introCard}>
-          <MaterialCommunityIcons name="message-text-outline" size={28} color={Colors.primary} />
-          <Text style={styles.introText}>
-            We value your feedback. Help us improve your experience by sharing your thoughts below.
-          </Text>
-        </View>
-
-        <View style={styles.card}>
-          <Text style={styles.sectionTitle}>Your Info</Text>
-          <View style={styles.infoRow}>
-            <MaterialCommunityIcons name="account" size={18} color={Colors.primary} />
-            <Text style={styles.infoText}>{user.name || '—'}</Text>
-          </View>
-          <View style={styles.infoRow}>
-            <MaterialCommunityIcons name="email" size={18} color={Colors.primary} />
-            <Text style={styles.infoText}>{user.email || '—'}</Text>
-          </View>
-        </View>
-
-        <View style={styles.card}>
-          <Text style={styles.sectionTitle}>Submit Feedback</Text>
-
-          <CustomDropDown uprLabel="Feedback Type" value={type} setValue={setType} data={FEEDBACK_TYPES} placeholder="Select type" />
-
-          <View style={{ marginTop: responsiveHeight(1) }}>
-            <CustomInput label="Subject" value={subject} onChangeText={setSubject} placeholder="Short title" />
-          </View>
-
-          <View style={{ marginTop: responsiveHeight(1) }}>
-            <CustomInput label="Description" value={message} onChangeText={setMessage} placeholder="Describe the issue or suggestion" multiline />
-          </View>
-
-          <View style={{ marginTop: responsiveHeight(1), flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-            <TouchableOpacity style={styles.attachBtn} onPress={pickAttachment}>
-              <MaterialCommunityIcons name="paperclip" size={18} color={Colors.primary} />
-              <Text style={styles.attachText}>{attachment ? 'Attachment added' : 'Add Attachment'}</Text>
-            </TouchableOpacity>
-
-            <CustomButton title="Submit Feedback" onPress={onSubmit} isLoading={loading} bgColor={Colors.primary} color={Colors.white} />
-          </View>
-
-          {attachment && (
-            <View style={{ marginTop: responsiveHeight(1) }}>
-              <Image source={{ uri: attachment.uri }} style={styles.preview} />
-            </View>
-          )}
-        </View>
-
-        {previous.length > 0 && (
-          <View style={styles.card}>
-            <Text style={styles.sectionTitle}>Previous Submissions</Text>
-            {previous.map((p) => (
-              <View key={p.id} style={styles.prevRow}>
-                <View style={{ flex: 1 }}>
-                  <Text style={styles.prevType}>{p.type} • {new Date(p.createdAt).toLocaleDateString()}</Text>
-                  <Text style={styles.prevSub}>{p.subject}</Text>
-                </View>
-                <Text style={[styles.prevStatus, p.status === 'Submitted' ? { color: Colors.success } : { color: Colors.textSecondary }]}>{p.status ?? 'Pending'}</Text>
-              </View>
-            ))}
+      {/* Feedback List or Empty State */}
+      <View style={styles.container}>
+        {previous.length > 0 ? (
+          <FlatList
+            data={previous}
+            keyExtractor={(item) => item.id}
+            renderItem={renderFeedbackItem}
+            contentContainerStyle={{
+              paddingBottom: responsiveHeight(12),
+            }}
+            ItemSeparatorComponent={() => (
+              <View style={{ height: responsiveHeight(1) }} />
+            )}
+          />
+        ) : (
+          <View style={styles.emptyState}>
+            <MaterialCommunityIcons
+              name="message-text-outline"
+              size={responsiveFontSize(5)}
+              color={Colors.primary}
+            />
+            <Text style={styles.emptyText}>No Feedback Submitted</Text>
+            <Text style={styles.emptySub}>
+              Click the button below to add your first feedback.
+            </Text>
           </View>
         )}
+      </View>
 
-        <View style={{ height: responsiveHeight(6) }} />
-      </ScrollView>
+      {/* Floating Add FAB */}
+      <TouchableOpacity
+        style={styles.fab}
+        onPress={handleOpenModal}
+      >
+        <MaterialCommunityIcons
+          name="plus"
+          size={responsiveFontSize(3.5)}
+          color={Colors.white}
+        />
+      </TouchableOpacity>
 
-      {loading && (
-        <View style={styles.loadingOverlay}>
-          <ActivityIndicator size="large" color={Colors.primary} />
+      {/* Add Feedback Modal */}
+      <Modal
+        visible={modalVisible}
+        transparent
+        animationType="slide"
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>Submit New Feedback</Text>
+              <TouchableOpacity onPress={() => setModalVisible(false)}>
+                <MaterialCommunityIcons name="close" size={responsiveFontSize(2.5)} color={Colors.textSecondary} />
+              </TouchableOpacity>
+            </View>
+            
+            <ScrollView showsVerticalScrollIndicator={false}>
+              <View style={{gap: responsiveHeight(1.5)}}>
+                <CustomDropDown iconName="feedback" uprLabel="Feedback Type *" value={type} setValue={setType} data={FEEDBACK_TYPES} placeholder="Select type" />
+                <CustomInput icon="edit" label="Subject *" value={subject} onChangeText={setSubject} placeholder="Short title" />
+                <CustomInput icon="description" label="Description *" value={message} onChangeText={setMessage} placeholder="Describe the issue or suggestion" multiline />
+
+                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <TouchableOpacity style={styles.attachBtn} onPress={pickAttachment}>
+                    <MaterialCommunityIcons name="paperclip" size={responsiveFontSize(2)} color={Colors.primary} />
+                    <Text style={styles.attachText}>{attachment ? '1 file attached' : 'Add Attachment'}</Text>
+                  </TouchableOpacity>
+                  {attachment && (
+                    <Image source={{ uri: attachment.uri }} style={styles.preview} />
+                  )}
+                </View>
+              </View>
+
+              <View style={styles.modalActions}>
+                <View style={{flex: 1}}>
+                  <CustomButton
+                    title="Cancel"
+                    onPress={() => setModalVisible(false)}
+                    bgColor={Colors.white}
+                    color={Colors.primary}
+                    borderC={Colors.primary}
+                  />
+                </View>
+                <View style={{flex: 1}}>
+                  <CustomButton
+                    title="Submit"
+                    onPress={onSubmit}
+                    isLoading={isSubmitting}
+                  />
+                </View>
+              </View>
+            </ScrollView>
+          </View>
         </View>
-      )}
+      </Modal>
     </View>
   )
 }
@@ -242,29 +343,112 @@ const styles = StyleSheet.create({
     paddingHorizontal: responsiveWidth(3),
   },
   back: { width: responsiveWidth(10), justifyContent: 'center' },
-  title: { flex: 1, textAlign: 'center', color: Colors.white, fontSize: responsiveFontSize(2), fontWeight: '700' },
+  title: {
+    flex: 1,
+    textAlign: 'center',
+    color: Colors.white,
+    fontSize: responsiveFontSize(2),
+    fontWeight: '700',
+  },
 
-  container: { padding: responsiveWidth(4), paddingBottom: responsiveHeight(6) },
+  container: {
+    flex: 1,
+    padding: responsiveWidth(4),
+    paddingBottom: responsiveHeight(6),
+  },
 
-  introCard: { backgroundColor: Colors.white, borderRadius: 12, padding: responsiveWidth(3), marginBottom: responsiveHeight(1), flexDirection: 'row', gap: responsiveWidth(3), alignItems: 'center' },
-  introText: { marginLeft: responsiveWidth(2), color: Colors.textPrimary, flex: 1 },
-
-  card: { backgroundColor: Colors.white, borderRadius: 12, padding: responsiveWidth(3), marginBottom: responsiveHeight(1.2), elevation: 1 },
-
-  sectionTitle: { fontSize: responsiveFontSize(1.2), fontWeight: '700', color: Colors.textPrimary, marginBottom: responsiveHeight(0.6) },
-
-  infoRow: { flexDirection: 'row', alignItems: 'center', paddingVertical: responsiveHeight(0.6) },
-  infoText: { marginLeft: responsiveWidth(2), color: Colors.textPrimary },
-
-  attachBtn: { flexDirection: 'row', alignItems: 'center' },
-  attachText: { marginLeft: responsiveWidth(2), color: Colors.textSecondary },
-
-  preview: { width: responsiveWidth(40), height: responsiveWidth(28), borderRadius: 8, marginTop: responsiveHeight(0.8) },
-
-  prevRow: { flexDirection: 'row', alignItems: 'center', paddingVertical: responsiveHeight(0.8), borderBottomWidth: 1, borderBottomColor: '#f2f2f2' },
+  prevRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: responsiveWidth(3),
+    backgroundColor: Colors.white,
+    borderRadius: responsiveWidth(2),
+    elevation: 1,
+  },
   prevType: { fontWeight: '700' },
   prevSub: { color: Colors.textSecondary },
-  prevStatus: { marginLeft: responsiveWidth(2), fontWeight: '700' },
+  prevStatus: {
+    marginLeft: responsiveWidth(2),
+    fontWeight: '700',
+  },
 
-  loadingOverlay: { position: 'absolute', left: 0, right: 0, top: 0, bottom: 0, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(255,255,255,0.6)' },
+  loadingOverlay: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255,255,255,0.6)',
+  },
+
+  fab: {
+    position: 'absolute',
+    right: responsiveWidth(6),
+    bottom: responsiveHeight(4),
+    backgroundColor: Colors.primary,
+    width: responsiveWidth(14),
+    height: responsiveWidth(14),
+    borderRadius: responsiveWidth(7),
+    alignItems: 'center',
+    justifyContent: 'center',
+    elevation: 6,
+  },
+
+  emptyState: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: -responsiveHeight(10),
+  },
+  emptyText: {
+    marginTop: responsiveHeight(2),
+    fontSize: responsiveFontSize(1.8),
+    color: Colors.textSecondary,
+    fontWeight: '600',
+  },
+  emptySub: {
+    marginTop: responsiveHeight(0.6),
+    color: Colors.textTertiary,
+    textAlign: 'center',
+    paddingHorizontal: responsiveWidth(10),
+  },
+
+  // Modal Styles
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: 'flex-end',
+  },
+  modalContent: {
+    backgroundColor: Colors.white,
+    borderTopLeftRadius: responsiveWidth(4),
+    borderTopRightRadius: responsiveWidth(4),
+    padding: responsiveWidth(4),
+    maxHeight: responsiveHeight(80),
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: responsiveHeight(2),
+  },
+  modalTitle: {
+    fontSize: responsiveFontSize(2),
+    fontWeight: '700',
+    color: Colors.textPrimary,
+  },
+  attachBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: responsiveWidth(2),
+  },
+  attachText: { color: Colors.primary, fontWeight: '600' },
+  preview: { width: responsiveWidth(12), height: responsiveWidth(12), borderRadius: 8 },
+  modalActions: {
+    flexDirection: 'row',
+    gap: responsiveWidth(2),
+    marginTop: responsiveHeight(3),
+  },
 })

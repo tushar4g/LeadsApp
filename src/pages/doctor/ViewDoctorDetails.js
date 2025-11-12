@@ -43,8 +43,9 @@ const ViewDoctorDetails = ({ route, navigation }) => {
     hospitalNumber: '0771-1234567',
     specializationDetails: 'Internal Medicine and Preventive Care',
     doctorCategory: 'A',
+    stage: 'new',
     notes: 'Available only on weekdays',
-    clinicPhoto: '',
+    clinicPhoto: 'https://images.pexels.com/photos/2631746/pexels-photo-2631746.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
     verified: true,
     avatar: 'https://i.pravatar.cc/150?img=12',
     referredPatients: [
@@ -60,11 +61,46 @@ const ViewDoctorDetails = ({ route, navigation }) => {
         notes: 'Patient to call after reports',
       },
     ],
+    activityHistory: [
+      {
+        id: 'act1',
+        title: 'Doctor Added',
+        description: 'Added by user John Doe.',
+        date: '01-10-2025',
+        time: '10:00 AM',
+        icon: 'person-add',
+      },
+      {
+        id: 'act2',
+        title: 'Stage Changed to Follow-Up',
+        description: 'Status updated after initial meeting.',
+        date: '05-10-2025',
+        time: '2:30 PM',
+        icon: 'timeline',
+      },
+    ],
   };
 
   const referred = Array.isArray(doctor.referredPatients)
     ? doctor.referredPatients
     : [];
+
+  const activity = Array.isArray(doctor.activityHistory)
+    ? doctor.activityHistory
+    : [ {
+        id: 'act1',
+        title: 'Doctor Visit',
+        description: 'Added by user John Doe.',
+        date: '01-10-2025',
+        time: '10:00 AM',
+      },
+      {
+        id: 'act2',
+        title: 'Stage Changed to Follow-Up',
+        description: 'Status updated after initial meeting.',
+        date: '05-10-2025',
+        time: '2:30 PM',
+      },];
 
   const handleEdit = () => {
     if (navigation) navigation.navigate('AddDoctor', { doctor });
@@ -123,6 +159,10 @@ const ViewDoctorDetails = ({ route, navigation }) => {
     if (s === 'converted') return Colors.success;
     if (s === 'follow up' || s === 'follow-up' || s === 'followup')
       return Colors.warning;
+    if (s === 'new')
+      return Colors.info;
+    if (s === 'lost')
+      return Colors.error;
     return Colors.secondary;
   };
 
@@ -181,6 +221,28 @@ const ViewDoctorDetails = ({ route, navigation }) => {
     </View>
   );
 
+  const renderActivityItem = ({ item, index }) => (
+    <View style={styles.activityItem}>
+      <View style={styles.activityIconContainer}>
+        <View style={styles.activityIcon}>
+          <MaterialIcons name={'timeline'} size={responsiveFontSize(2)} color={Colors.primary} />
+        </View>
+        {index < (doctor.activityHistory?.length || 0) - 1 && <View style={styles.timelineConnector} />}
+      </View>
+      <View style={styles.activityContent}>
+        <View style={{ flexDirection: 'row', alignItems: 'center' , justifyContent: 'space-between'}}>
+          <Text style={styles.activityTitle}>{item.title}</Text>
+          <Text style={styles.activityTitle}>{item.date}</Text>
+        </View>
+        <Text style={styles.activityDescription}>{item.description}</Text>
+        <Text style={styles.activityDate}>
+          {item.time}
+        </Text>
+      </View>
+    </View>
+  );
+
+  
   return (
     <View style={styles.safe}>
       {/* Header */}
@@ -252,7 +314,7 @@ const ViewDoctorDetails = ({ route, navigation }) => {
 
       {/* Custom Top Tabs */}
       <View style={styles.tabCard}>
-        {['All Information', 'Referred Patients'].map((tab) => (
+        {['All Information', 'Referred Patients', 'Activity'].map((tab) => (
           <TouchableOpacity
             key={tab}
             style={[
@@ -273,60 +335,16 @@ const ViewDoctorDetails = ({ route, navigation }) => {
         ))}
       </View>
 
-      {selectedTab === 'All Information' ? (
+      {selectedTab === 'All Information' && (
         <ScrollView
           contentContainerStyle={styles.container}
           showsVerticalScrollIndicator={false}
         >
-          {/* Profile */}
-          {/* <View style={styles.profileCard}>
-            <Image source={{ uri: doctor.avatar }} style={styles.avatar} />
-            <View style={styles.nameRow}>
-              <Text style={styles.name}>
-                {(doctor.title ? `${doctor.title} ` : '') + (doctor.name || '—')}
-              </Text>
-              {doctor?.verified && (
-                <View style={styles.verified}>
-                  <MaterialIcons
-                    name="verified"
-                    size={responsiveFontSize(1.3)}
-                    color={Colors.white}
-                  />
-                  <Text style={styles.verifiedText}>Verified</Text>
-                </View>
-              )}
-            </View>
-            <Text style={styles.specialty}>{doctor.specialization}</Text>
-            <Text style={styles.hospital}>{doctor.hospitalName}</Text>
-
-            <View style={styles.quickActions}>
-              <TouchableOpacity
-                style={styles.quickBtn}
-                onPress={() => handleCall(doctor.mobile)}
-              >
-                <MaterialIcons
-                  name="phone"
-                  size={responsiveFontSize(2)}
-                  color={Colors.white}
-                />
-                <Text style={styles.quickLabel}>Call</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[styles.quickBtn, { backgroundColor: Colors.info }]}
-              >
-                <MaterialIcons
-                  name="chat"
-                  size={responsiveFontSize(2)}
-                  color={Colors.white}
-                />
-                <Text style={styles.quickLabel}>Chat</Text>
-              </TouchableOpacity>
-            </View>
-          </View> */}
-
           {/* Info Cards */}
-          <View style={styles.card}>
+          {/* <View style={styles.card}>
             <Text style={styles.cardTitle}>Contact Information</Text>
+            <InfoRow icon="person" label="Gender" value={doctor.gender} />
+            <InfoRow icon="cake" label="Date of Birth" value={doctor.dob} />
             <InfoRow icon="phone" label="Mobile" value={doctor.mobile} />
             <InfoRow
               icon="phone"
@@ -341,14 +359,32 @@ const ViewDoctorDetails = ({ route, navigation }) => {
             />
             <InfoRow icon="public" label="State" value={doctor.state} />
             <InfoRow icon="location-city" label="City" value={doctor.city} />
+          </View> */}
+
+          <View style={styles.infoCard}>
+            <Text style={styles.cardTitle}>Contact Information</Text>
+            <View style={styles.infoRow}><MaterialIcons name="person" size={responsiveFontSize(1.8)} color={Colors.textSecondary} /><Text style={styles.infoLabel}>Gender</Text><Text style={styles.infoValue}>{doctor.gender}</Text></View>
+            <View style={styles.infoRow}><MaterialIcons name="cake" size={responsiveFontSize(1.8)} color={Colors.textSecondary} /><Text style={styles.infoLabel}>DOB</Text><Text style={styles.infoValue}>{doctor.dob}</Text></View>
+            <View style={styles.infoRow}><MaterialIcons name="phone" size={responsiveFontSize(1.8)} color={Colors.textSecondary} /><Text style={styles.infoLabel}>Mobile</Text><Text style={styles.infoValue}>{doctor.mobile}</Text></View>
+            <View style={styles.infoRow}><MaterialIcons name="phone" size={responsiveFontSize(1.8)} color={Colors.textSecondary} /><Text style={styles.infoLabel}>Alternate Mobile</Text><Text style={styles.infoValue}>{doctor.altMobile}</Text></View>
+            <View style={styles.infoRow}><MaterialIcons name="email" size={responsiveFontSize(1.8)} color={Colors.textSecondary} /><Text style={styles.infoLabel}>Email</Text><Text style={styles.infoValue}>{doctor.email}</Text></View>
+            <View style={styles.infoRow}><MaterialIcons name="location-on" size={responsiveFontSize(1.8)} color={Colors.textSecondary} /><Text style={styles.infoLabel}>Clinic</Text><Text style={styles.infoValue}>{doctor.clinicAddress || doctor.address}</Text></View>
+            <View style={styles.infoRow}><MaterialIcons name="location-city" size={responsiveFontSize(1.8)} color={Colors.textSecondary} /><Text style={styles.infoLabel}>City</Text><Text style={styles.infoValue}>{doctor.city}</Text></View>
+            <View style={styles.infoRow}><MaterialIcons name="public" size={responsiveFontSize(1.8)} color={Colors.textSecondary} /><Text style={styles.infoLabel}>State</Text><Text style={styles.infoValue}>{doctor.state}</Text></View>
           </View>
 
-          <View style={styles.card}>
+
+          {/* <View style={styles.card}>
             <Text style={styles.cardTitle}>Professional Details</Text>
             <InfoRow
               icon="local-hospital"
               label="Hospital"
               value={doctor.hospitalName}
+            />
+            <InfoRow
+              icon="work"
+              label="Designation"
+              value={doctor.designation}
             />
             <InfoRow
               icon="medical-services"
@@ -360,16 +396,49 @@ const ViewDoctorDetails = ({ route, navigation }) => {
               label="Specialization"
               value={doctor.specialization}
             />
+            <InfoRow icon="timeline" label="Stage" value={doctor.stage} />
+          </View> */}
+
+          <View style={styles.infoCard}>
+            <Text style={styles.cardTitle}>Professional</Text>
+            <View style={styles.infoRow}><MaterialIcons name="local-hospital" size={responsiveFontSize(1.8)} color={Colors.textSecondary} /><Text style={styles.infoLabel}>Hospital</Text><Text style={styles.infoValue}>{doctor.hospitalName}</Text></View>
+            <View style={styles.infoRow}><MaterialIcons name="work" size={responsiveFontSize(1.8)} color={Colors.textSecondary} /><Text style={styles.infoLabel}>Designation</Text><Text style={styles.infoValue}>{doctor.designation}</Text></View>
+            <View style={styles.infoRow}><MaterialIcons name="medical-services" size={responsiveFontSize(1.8)} color={Colors.textSecondary} /><Text style={styles.infoLabel}>Hospital Type</Text><Text style={styles.infoValue}>{doctor.hospitaltype}</Text></View>
+            <View style={styles.infoRow}><MaterialIcons name="description" size={responsiveFontSize(1.8)} color={Colors.textSecondary} /><Text style={styles.infoLabel}>Specialization</Text><Text style={styles.infoValue}>{doctor.specialization}</Text></View>
+            <View style={styles.infoRow}><MaterialIcons name="timeline" size={responsiveFontSize(1.8)} color={Colors.textSecondary} /><Text style={styles.infoLabel}>Stage</Text><Text style={styles.infoValue}>{doctor.stage}</Text></View>
           </View>
 
           <View style={styles.card}>
-            <Text style={styles.cardTitle}>Additional Information</Text>
+            <Text style={styles.cardTitle}>Clinic Photo</Text>
+            {true ? (
+              <View style={{ marginBottom: responsiveHeight(1.5) }}>
+                <Text style={styles.label}>Clinic Photo</Text>
+                <Image source={{ uri: 'https://images.pexels.com/photos/2631746/pexels-photo-2631746.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1' }} style={styles.clinicPhoto} />
+              </View>
+            ) : null}
+            {/* <InfoRow
+              icon="my-location"
+              label="Latitude"
+              value={doctor.latitude}
+            />
+            <InfoRow
+              icon="my-location"
+              label="Longitude"
+              value={doctor.longitude}
+            />
             <InfoRow icon="note" label="Notes" value={doctor.notes} />
             <InfoRow
               icon="description"
               label="Specialization Details"
               value={doctor.specializationDetails}
-            />
+            /> */}
+          </View>
+
+          <View style={styles.infoCard}>
+            <Text style={styles.cardTitle}>Additional Information</Text>
+            <View style={styles.infoRow}><MaterialIcons name="my-location" size={responsiveFontSize(1.8)} color={Colors.textSecondary} /><Text style={styles.infoLabel}>Latitude</Text><Text style={styles.infoValue}>{doctor.latitude}</Text></View>
+            <View style={styles.infoRow}><MaterialIcons name="my-location" size={responsiveFontSize(1.8)} color={Colors.textSecondary} /><Text style={styles.infoLabel}>Longitude</Text><Text style={styles.infoValue}>{doctor.longitude}</Text></View>
+            <View style={styles.infoRow}><MaterialIcons name="note" size={responsiveFontSize(1.8)} color={Colors.textSecondary} /><Text style={styles.infoLabel}>Notes</Text><Text style={styles.infoValue}>{doctor.notes || '—'}</Text></View>
           </View>
 
           <View style={styles.actions}>
@@ -381,7 +450,8 @@ const ViewDoctorDetails = ({ route, navigation }) => {
             />
           </View>
         </ScrollView>
-      ) : (
+      )}
+      {selectedTab === 'Referred Patients' &&  (
         <View style={[styles.container, { flex: 1 }]}>
           {referred.length === 0 ? (
             <Text style={{ color: Colors.textSecondary, textAlign: 'center', }}>
@@ -401,6 +471,21 @@ const ViewDoctorDetails = ({ route, navigation }) => {
               <MaterialCommunityIcons name="plus" size={responsiveFontSize(2.4)} color={Colors.white} />
               <Text style={styles.fabLabel}>Add Patient</Text>
             </TouchableOpacity>
+        </View>
+      )}
+      {selectedTab === 'Activity' && (
+        <View style={[styles.container, { flex: 1 }]}>
+          {activity.length === 0 ? (
+            <Text style={{ color: Colors.textSecondary, textAlign: 'center' }}>
+              No activity history found.
+            </Text>
+          ) : (
+            <FlatList
+              data={activity}
+              keyExtractor={(item) => item.id}
+              renderItem={renderActivityItem}
+            />
+          )}
         </View>
       )}
     </View>
@@ -454,6 +539,15 @@ const styles = StyleSheet.create({
     color: Colors.white,
     fontWeight: '700',
   },
+
+  infoCard: { backgroundColor: Colors.white, borderRadius: 12, padding: responsiveWidth(3.5), marginBottom: responsiveHeight(1.5), elevation: 1 },
+// cardTitle: { fontWeight: '800', color: Colors.textPrimary, fontSize: responsiveFontSize(1.4), marginBottom: responsiveHeight(1) },
+infoRow: { flexDirection: 'row', alignItems: 'center', marginBottom: responsiveHeight(1) },
+infoLabel: { flex: 1, marginLeft: responsiveWidth(3), color: Colors.textSecondary },
+infoValue: { color: Colors.textPrimary, fontWeight: '600' },
+actionRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: responsiveHeight(1) },
+small: { color: Colors.textSecondary, marginTop: responsiveHeight(0.3) },
+
   container: { padding: responsiveWidth(4), paddingBottom: responsiveHeight(8) },
    fab: {
       position: 'absolute',
@@ -554,6 +648,12 @@ const styles = StyleSheet.create({
     marginTop: responsiveHeight(0.2),
     fontWeight: '600',
   },
+  clinicPhoto: {
+    width: '100%',
+    height: responsiveHeight(20),
+    borderRadius: responsiveWidth(2),
+    marginTop: responsiveHeight(0.5),
+  },
   refItem: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -615,4 +715,41 @@ const styles = StyleSheet.create({
     marginTop: responsiveHeight(0.4),
   },
   linkText: { color: Colors.primary, fontWeight: '700' },
+  activityItem: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+  },
+  activityIconContainer: {
+    alignItems: 'center',
+    marginRight: responsiveWidth(3),
+  },
+  activityIcon: {
+    width: responsiveHeight(4),
+    height: responsiveHeight(4),
+    borderRadius: responsiveHeight(2),
+    backgroundColor: Colors.primaryWithExtraOpacity,
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 1,
+  },
+  timelineConnector: {
+    width: 2,
+    backgroundColor: Colors.primaryWithExtraOpacity,
+    flex: 1,
+    marginTop: -2,
+  },
+  activityContent: {
+    flex: 1,
+    paddingBottom: responsiveHeight(2.5),
+  },
+  activityTitle: {
+    fontSize: responsiveFontSize(1.5),
+    fontWeight: '700',
+    color: Colors.textPrimary,
+  },
+  activityDescription: {
+    fontSize: responsiveFontSize(1.3),
+    color: Colors.textSecondary,
+  },
+  activityDate: { fontSize: responsiveFontSize(1.2), color: Colors.textTertiary, marginTop: responsiveHeight(0.5) },
 });

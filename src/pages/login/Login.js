@@ -10,6 +10,7 @@ import {
   Platform,
   Alert,
   ActivityIndicator,
+  ToastAndroid,
 } from 'react-native'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import LinearGradient from 'react-native-linear-gradient';
@@ -18,6 +19,9 @@ import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-nat
 import Colors from '../../style/Colors'
 import CustomInput from '../../components/CustomInput'
 import CustomButton from '../../components/CustomButton'
+import DeviceInfo from 'react-native-device-info'
+import BaseURL from '../../assets/baseUrl/BaseURL'
+import { useFocusEffect } from '@react-navigation/native';
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 const MOBILE_RE = /^\d{10}$/
@@ -28,75 +32,111 @@ const Login = ({ navigation }) => {
   const [loading, setLoading] = useState(false)
   const [remember, setRemember] = useState(false)
   const [errors, setErrors] = useState({ username: '', password: '' })
+  const [deviceModel, setDeviceModel] = useState('')
+  const [osVersion, setOsVersion] = useState('')
+  const [appVersion, setAppVersion] = useState('')
 
-  useEffect(() => {
-    // try to prefill saved credentials (remember me)
-    ;(async () => {
-      try {
-        const saved = await AsyncStorage.getItem('@credentials')
-        if (saved) {
-          const { username: u, password: p } = JSON.parse(saved)
-          setUsername(u)
-          setPassword(p)
-          setRemember(true)
-        }
-      } catch (e) {
-        // ignore
-      }
-    })()
-  }, [])
+  // useEffect(() => {
+  //   // try to prefill saved credentials (remember me)
+  //   (async () => {
+  //     try {
+  //       const saved = await AsyncStorage.getItem('@credentials')
+  //       if (saved) {
+  //         const { username: u, password: p } = JSON.parse(saved)
+  //         setUsername(u)
+  //         setPassword(p)
+  //         setRemember(true)
+  //       }
+  //     } catch (e) {
+  //       // ignore
+  //     }
+  //     try {
+  //       setDeviceModel(DeviceInfo.getModel())
+  //       setOsVersion(DeviceInfo.getSystemVersion())
+  //       setAppVersion(DeviceInfo.getVersion())
+  //     } catch (e) {
+  //       // ignore errors during device info retrieval
+  //       console.warn("Failed to get device info:", e); // Optional: log the error for debugging
+  //     }
+  //   })()
+  // }, [])
 
-  const validate = () => {
-    const e = { username: '', password: '' }
-    const v = username?.trim()
-    if (!v) e.username = 'Email or mobile is required'
-    else if (!EMAIL_RE.test(v) && !MOBILE_RE.test(v)) e.username = 'Enter valid email or 10-digit mobile'
+  const validation = () => {
+     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    if (!password || password.length < 4) e.password = 'Password is required (min 4 chars)'
-    setErrors(e)
-    return !e.username && !e.password
+    if (!username || !password) {
+      showToast('Please fill all fields');
+      return false;
+    }
+     if (!emailRegex.test(username)) {
+    showToast('Please enter a valid email address');
+    return false;
+    }
+    if (password.length < 6) {
+      showToast('Password must be at least 6 characters');
+      return false;
+    }
+    return true;
   }
 
-  const handleLogin = async () => {
-    // if (!validate()) return
-    setLoading(true)
+  const checkForToken = async () => {
     try {
-      // replace with real API_BASE
-    //   const API_BASE = 'https://your-api.example.com'
-    //   const payload = { username: username.trim(), password }
-    //   const res = await fetch(`${API_BASE}/login`, {
-    //     method: 'POST',
-    //     headers: { 'Content-Type': 'application/json' },
-    //     body: JSON.stringify(payload),
-    //   })
-
-    //   if (!res.ok) {
-    //     const data = await res.json().catch(() => ({}))
-    //     throw new Error(data?.message || 'Invalid credentials')
-    //   }
-
-    //   const data = await res.json()
-    //   const token = data?.token || data?.accessToken
-    //   if (!token) throw new Error('Invalid response from server')
-
-    //   await AsyncStorage.setItem('@token', token)
-
-    //   if (remember) {
-    //     await AsyncStorage.setItem('@credentials', JSON.stringify({ username: username.trim(), password }))
-    //   } else {
-    //     await AsyncStorage.removeItem('@credentials')
-    //   }
-
-      // navigate to main/dashboard
-      navigation?.reset?.({
-        index: 0,
-        routes: [{ name: 'Main' /* or 'Home' depending on your navigator */ }],
-      })
-    } catch (err) {
-      Alert.alert('Login failed', err?.message || 'Invalid credentials')
+      // setLoading(true)
+      setAppVersion(DeviceInfo.getVersion())
+      const token = await AsyncStorage.getItem('@token')
+      if (token) {
+        navigation?.reset?.({
+          index: 0,
+          routes: [{ name: 'Main' }],
+        })
+      }
+    } catch (e) {
+      // ignore
+      setLoading(false)
     } finally {
       setLoading(false)
     }
+  }
+
+  useFocusEffect(
+    React.useCallback(() => {
+      checkForToken()
+    }, [checkForToken])
+  )
+
+  const handleLogin = async () => {
+    if (!validation()) return
+    try {
+      setLoading(true)
+      const baseUrl = await BaseURL.uri;
+      const formData = new FormData();
+      formData.append('email', username);
+      formData.append('password', password);
+      const response = await fetch(`${baseUrl}/login`, {
+        method: 'POST',
+        body: formData,
+      });
+      const result = await response.json();
+      if (response.ok) {
+        console.log(result);
+        await AsyncStorage.setItem('@token', result.data.token);
+        navigation?.reset?.({
+          index: 0,
+          routes: [{ name: 'Main' }],
+        })
+      } else {
+        console.log('else',result);
+        showToast(result.error || 'Something went wrong');
+      }
+    } catch (err) {
+      console.log('Error during login:', err);
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const showToast = (msg) => {
+    ToastAndroid.showWithGravity(msg, ToastAndroid.SHORT, ToastAndroid.CENTER);
   }
 
   return (
@@ -170,6 +210,11 @@ const Login = ({ navigation }) => {
             </View>
           </View>
 
+          <View style={styles.deviceInfo}>
+            {/* <Text style={styles.deviceInfoText}>Device: {deviceModel} (Android {osVersion})</Text> */}
+            <Text style={styles.deviceInfoText}>App Version: {appVersion}</Text>
+          </View>
+
           <View style={{ height: responsiveHeight(6) }} />
         </ScrollView>
         </LinearGradient>
@@ -235,4 +280,10 @@ const styles = StyleSheet.create({
   registerRow: { flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginTop: responsiveHeight(2) },
   regText: { color: Colors.textSecondary, fontSize: responsiveFontSize(1.5) },
   regLink: { color: Colors.primary, fontWeight: '800', fontSize: responsiveFontSize(1.5) },
+
+  deviceInfo: {
+    alignItems: 'center',
+    marginTop: responsiveHeight(3),
+  },
+  deviceInfoText: { fontSize: responsiveFontSize(1.2), color: Colors.textTertiary, marginBottom: responsiveHeight(0.5) },
 })

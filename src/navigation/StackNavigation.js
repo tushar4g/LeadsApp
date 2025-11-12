@@ -21,7 +21,9 @@ import ForgotPassword from '../pages/forgotPassword/ForgotPassword'
 import OTPVerification from '../pages/forgotPassword/OTPVerification'
 import ResetPassword from '../pages/forgotPassword/ResetPassword'
 import Splash from '../pages/splash/Splash'
-
+import PrivacyPolicy from '../pages/profile/pages/PrivacyPolicy'
+import TermsAndConditions from '../pages/profile/pages/TermsAndConditions'
+import HelpSupport from '../pages/profile/pages/HelpSupport'
 
 const StackNavigation = () => {
   const Stack = createNativeStackNavigator()
@@ -42,12 +44,15 @@ const StackNavigation = () => {
         <Stack.Screen name="AddLead" component={AddLead} />
         <Stack.Screen name="ViewLeadDetails" component={ViewLeadDetails} />
         <Stack.Screen name="AddActivity" component={AddActivity} />
-        <Stack.Screen name="ChangePassword" component={ChangePassword} />
-        <Stack.Screen name="Feedback" component={Feedback} />
-        <Stack.Screen name="Rewards" component={Rewards} />
         <Stack.Screen name="ScheduleVisit" component={ScheduleVisit} />
         <Stack.Screen name="AddVisit" component={AddVisit} />
         <Stack.Screen name="Task" component={Task} />
+        <Stack.Screen name="ChangePassword" component={ChangePassword} />
+        <Stack.Screen name="Feedback" component={Feedback} />
+        <Stack.Screen name="Rewards" component={Rewards} />
+        <Stack.Screen name="PrivacyPolicy" component={PrivacyPolicy} />
+        <Stack.Screen name="TermsAndConditions" component={TermsAndConditions} />
+        <Stack.Screen name="HelpSupport" component={HelpSupport} />
       </Stack.Navigator>
     </NavigationContainer>
   )

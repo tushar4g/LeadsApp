@@ -82,7 +82,7 @@ const mockLeads = [
   },
   {
     id: 'l3',
-    name: 'Dr. Neha Sharma',
+    name: 'Neha Sharma',
     source: 'Hospital',
     referredBy: 'Dr. Rakesh Gupta',
     mobile: '9987654321',
@@ -172,43 +172,50 @@ const Leads = ({ navigation }) => {
     </TouchableOpacity>
   )
 
-  const renderLead = ({ item }) => (
-    <View style={styles.leadCard}>
-      <View style={styles.leadRow}>
-        <Text style={styles.leadName}>{item.name}</Text>
-        <View style={[styles.statusBadge, { backgroundColor: statusColor(item.status) }]}>
-          <Text style={styles.statusText}>{item.status}</Text>
+  const renderLead = ({ item }) => {
+    return (
+      <TouchableOpacity onPress={() => navigation && navigation.navigate('ViewLeadDetails', { lead: item })} style={styles.leadCard}>
+        {/* Card Header */}
+        <View style={styles.leadHeader}>
+          <View>
+            <Text style={styles.leadName}>{item.name}</Text>
+            <Text style={styles.leadSource}>Source: {item.source}</Text>
+          </View>
+          <View style={[styles.statusBadge, { backgroundColor: statusColor(item.status) }]}>
+            <Text style={styles.statusText}>{item.status}</Text>
+          </View>
         </View>
-      </View>
 
-      <Text style={styles.leadSource}>{item.source}</Text>
+        {/* Meta Info Section */}
+        <View style={styles.metaContainer}>
+          <View style={styles.metaRow}>
+            <MaterialCommunityIcons name="account-check-outline" size={16} color={Colors.textSecondary} />
+            <Text style={styles.metaText}>Referred by: {item.referredBy || 'N/A'}</Text>
+          </View>
+          <View style={styles.metaRow}>
+            <MaterialCommunityIcons name="calendar-month-outline" size={16} color={Colors.textSecondary} />
+            <Text style={styles.metaText}>Date: {item.createdAt}</Text>
+          </View>
+          <View style={styles.metaRow}>
+            <MaterialCommunityIcons name="star-circle-outline" size={16} color={Colors.textSecondary} />
+            <Text style={styles.metaText}>Score: {item.score}%</Text>
+          </View>
+        </View>
 
-      <View style={styles.leadMetaRow}>
-        <Text style={styles.leadMeta}>📞 {item.mobile}</Text>
-        <Text style={styles.leadMeta}>⭐ {item.score}%</Text>
-      </View>
-
-      <View style={styles.leadMetaRow}>
-        <Text style={styles.leadMeta}>🗓️ {item.createdAt}</Text>
-        <Text style={styles.leadMetaSmall}>Assigned: {item.assignedTo || '—'}</Text>
-      </View>
-
-      <View style={styles.leadActions}>
-        <TouchableOpacity onPress={() => navigation && navigation.navigate('ViewLeadDetails', { lead: item })} style={styles.actionBtn}>
-          <MaterialCommunityIcons name="eye-outline" size={18} color={Colors.primary} />
-          <Text style={styles.actionLabel}>View</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation && navigation.navigate('AddLead', { lead: item })} style={styles.actionBtn}>
-          <MaterialCommunityIcons name="pencil" size={18} color={Colors.primary} />
-          <Text style={styles.actionLabel}>Edit</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => handleDelete(item.id)} style={styles.actionBtn}>
-          <MaterialCommunityIcons name="delete-outline" size={18} color={Colors.secondary} />
-          <Text style={[styles.actionLabel, { color: Colors.secondary }]}>Delete</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
-  )
+        {/* Action Buttons */}
+        <View style={styles.leadActions}>
+          <TouchableOpacity onPress={() => navigation && navigation.navigate('ViewLeadDetails', { lead: item })} style={[styles.actionBtn, ]}>
+            <MaterialCommunityIcons name="eye-outline" size={16} color={Colors.primary} />
+            <Text style={[styles.actionLabel, { color: Colors.primary }]}>View</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation && navigation.navigate('AddLead', { lead: item })} style={[styles.actionBtn, ]}>
+            <MaterialCommunityIcons name="pencil-outline" size={16} color={Colors.primary} />
+            <Text style={[styles.actionLabel, { color: Colors.primary }]}>Edit</Text>
+          </TouchableOpacity>
+        </View>
+      </TouchableOpacity>
+    );
+  };
 
   return (
     <View style={styles.safe}>
@@ -373,19 +380,43 @@ const styles = StyleSheet.create({
 
   sectionTitle: { marginTop: responsiveHeight(1), marginBottom: responsiveHeight(1), fontSize: responsiveFontSize(1.6), fontWeight: '700', color: Colors.textPrimary, paddingHorizontal: responsiveWidth(1) },
 
-  leadCard: { backgroundColor: Colors.white, borderRadius: 10, padding: responsiveWidth(3), marginBottom: responsiveHeight(1.2), elevation: 1 },
-  leadRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  leadName: { fontSize: responsiveFontSize(1.8), fontWeight: '700', color: Colors.textPrimary },
-  statusBadge: { paddingHorizontal: 8, paddingVertical: 4, borderRadius: 12 },
-  statusText: { color: Colors.white, fontWeight: '700' },
-  leadSource: { color: Colors.textSecondary, marginTop: responsiveHeight(0.6) },
-  leadMetaRow: { flexDirection: 'row', justifyContent: 'space-between', marginTop: responsiveHeight(0.8) },
-  leadMeta: { color: Colors.textSecondary },
-  leadMetaSmall: { color: Colors.textTertiary },
-
-  leadActions: { flexDirection: 'row', marginTop: responsiveHeight(1) },
-  actionBtn: { flexDirection: 'row', alignItems: 'center', marginRight: responsiveWidth(4) },
-  actionLabel: { marginLeft: responsiveWidth(1), color: Colors.textSecondary },
+  leadCard: {
+    backgroundColor: Colors.white,
+    borderRadius: 12,
+    padding: responsiveWidth(3.5),
+    marginBottom: responsiveHeight(1.5),
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+  },
+  leadHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    borderBottomWidth: 1,
+    borderBottomColor: '#f0f0f0',
+    paddingBottom: responsiveHeight(0.8),
+  },
+  leadName: { fontSize: responsiveFontSize(1.9), fontWeight: '700', color: Colors.textPrimary },
+  leadSource: { fontSize: responsiveFontSize(1.4), color: Colors.textSecondary, marginTop: 2 },
+  statusBadge: { paddingHorizontal: 10, paddingVertical: 5, borderRadius: 14 },
+  statusText: { color: Colors.white, fontWeight: '700', fontSize: responsiveFontSize(1.3) },
+  metaContainer: { marginTop: responsiveHeight(0.8), gap: responsiveHeight(0.8) },
+  metaRow: { flexDirection: 'row', alignItems: 'center' },
+  metaText: { marginLeft: responsiveWidth(2), color: Colors.textSecondary, fontSize: responsiveFontSize(1.4) },
+  leadActions: { flexDirection: 'row', justifyContent: 'flex-end', marginTop: responsiveHeight(0), gap: responsiveWidth(2) },
+  actionBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    // paddingVertical: responsiveHeight(0.8),
+    paddingHorizontal: responsiveWidth(1),
+    borderRadius: 8,
+  },
+  actionLabel: { marginLeft: responsiveWidth(1.5), fontWeight: '600', fontSize: responsiveFontSize(1.5) },
+  viewBtn: { backgroundColor: Colors.lightPrimary },
+  editBtn: { backgroundColor: Colors.primary },
 
   empty: { alignItems: 'center', marginTop: responsiveHeight(12) },
   emptyText: { marginTop: responsiveHeight(2), fontSize: responsiveFontSize(1.6), color: Colors.textSecondary },

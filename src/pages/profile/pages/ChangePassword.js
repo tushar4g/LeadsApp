@@ -205,8 +205,9 @@ const styles = StyleSheet.create({
     borderRadius: responsiveWidth(2),
     padding: responsiveWidth(4),
     elevation: 1,
+    gap: responsiveHeight(1),
   },
-  cardTitle: { fontSize: responsiveFontSize(1.6), fontWeight: '700', color: Colors.textPrimary, marginBottom: responsiveHeight(1) },
+  cardTitle: { fontSize: responsiveFontSize(1.6), fontWeight: '700', color: Colors.textPrimary, marginBottom: responsiveHeight(0) },
 
   errorText: { color: Colors.secondary, marginTop: responsiveHeight(0.4), marginBottom: responsiveHeight(0.4) },
 
