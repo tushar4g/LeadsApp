@@ -43,6 +43,7 @@ const ViewDoctorDetails = ({ route, navigation }) => {
     hospitalNumber: '0771-1234567',
     specializationDetails: 'Internal Medicine and Preventive Care',
     doctorCategory: 'A',
+    stage: 'new',
     notes: 'Available only on weekdays',
     clinicPhoto: '',
     verified: true,
@@ -60,11 +61,46 @@ const ViewDoctorDetails = ({ route, navigation }) => {
         notes: 'Patient to call after reports',
       },
     ],
+    activityHistory: [
+      {
+        id: 'act1',
+        title: 'Doctor Added',
+        description: 'Added by user John Doe.',
+        date: '01-10-2025',
+        time: '10:00 AM',
+        icon: 'person-add',
+      },
+      {
+        id: 'act2',
+        title: 'Stage Changed to Follow-Up',
+        description: 'Status updated after initial meeting.',
+        date: '05-10-2025',
+        time: '2:30 PM',
+        icon: 'timeline',
+      },
+    ],
   };
 
   const referred = Array.isArray(doctor.referredPatients)
     ? doctor.referredPatients
     : [];
+
+  const activity = Array.isArray(doctor.activityHistory)
+    ? doctor.activityHistory
+    : [ {
+        id: 'act1',
+        title: 'Doctor Visit',
+        description: 'Added by user John Doe.',
+        date: '01-10-2025',
+        time: '10:00 AM',
+      },
+      {
+        id: 'act2',
+        title: 'Stage Changed to Follow-Up',
+        description: 'Status updated after initial meeting.',
+        date: '05-10-2025',
+        time: '2:30 PM',
+      },];
 
   const handleEdit = () => {
     if (navigation) navigation.navigate('AddDoctor', { doctor });
@@ -123,6 +159,10 @@ const ViewDoctorDetails = ({ route, navigation }) => {
     if (s === 'converted') return Colors.success;
     if (s === 'follow up' || s === 'follow-up' || s === 'followup')
       return Colors.warning;
+    if (s === 'new')
+      return Colors.info;
+    if (s === 'lost')
+      return Colors.error;
     return Colors.secondary;
   };
 
@@ -181,6 +221,28 @@ const ViewDoctorDetails = ({ route, navigation }) => {
     </View>
   );
 
+  const renderActivityItem = ({ item, index }) => (
+    <View style={styles.activityItem}>
+      <View style={styles.activityIconContainer}>
+        <View style={styles.activityIcon}>
+          <MaterialIcons name={'timeline'} size={responsiveFontSize(2)} color={Colors.primary} />
+        </View>
+        {index < (doctor.activityHistory?.length || 0) - 1 && <View style={styles.timelineConnector} />}
+      </View>
+      <View style={styles.activityContent}>
+        <View style={{ flexDirection: 'row', alignItems: 'center' , justifyContent: 'space-between'}}>
+          <Text style={styles.activityTitle}>{item.title}</Text>
+          <Text style={styles.activityTitle}>{item.date}</Text>
+        </View>
+        <Text style={styles.activityDescription}>{item.description}</Text>
+        <Text style={styles.activityDate}>
+          {item.time}
+        </Text>
+      </View>
+    </View>
+  );
+
+  
   return (
     <View style={styles.safe}>
       {/* Header */}
@@ -252,7 +314,7 @@ const ViewDoctorDetails = ({ route, navigation }) => {
 
       {/* Custom Top Tabs */}
       <View style={styles.tabCard}>
-        {['All Information', 'Referred Patients'].map((tab) => (
+        {['All Information', 'Referred Patients', 'Activity'].map((tab) => (
           <TouchableOpacity
             key={tab}
             style={[
@@ -273,7 +335,7 @@ const ViewDoctorDetails = ({ route, navigation }) => {
         ))}
       </View>
 
-      {selectedTab === 'All Information' ? (
+      {selectedTab === 'All Information' && (
         <ScrollView
           contentContainerStyle={styles.container}
           showsVerticalScrollIndicator={false}
@@ -360,6 +422,7 @@ const ViewDoctorDetails = ({ route, navigation }) => {
               label="Specialization"
               value={doctor.specialization}
             />
+            <InfoRow icon="timeline" label="Stage" value={doctor.stage} />
           </View>
 
           <View style={styles.card}>
@@ -381,7 +444,8 @@ const ViewDoctorDetails = ({ route, navigation }) => {
             />
           </View>
         </ScrollView>
-      ) : (
+      )}
+      {selectedTab === 'Referred Patients' &&  (
         <View style={[styles.container, { flex: 1 }]}>
           {referred.length === 0 ? (
             <Text style={{ color: Colors.textSecondary, textAlign: 'center', }}>
@@ -401,6 +465,21 @@ const ViewDoctorDetails = ({ route, navigation }) => {
               <MaterialCommunityIcons name="plus" size={responsiveFontSize(2.4)} color={Colors.white} />
               <Text style={styles.fabLabel}>Add Patient</Text>
             </TouchableOpacity>
+        </View>
+      )}
+      {selectedTab === 'Activity' && (
+        <View style={[styles.container, { flex: 1 }]}>
+          {activity.length === 0 ? (
+            <Text style={{ color: Colors.textSecondary, textAlign: 'center' }}>
+              No activity history found.
+            </Text>
+          ) : (
+            <FlatList
+              data={activity}
+              keyExtractor={(item) => item.id}
+              renderItem={renderActivityItem}
+            />
+          )}
         </View>
       )}
     </View>
@@ -615,4 +694,41 @@ const styles = StyleSheet.create({
     marginTop: responsiveHeight(0.4),
   },
   linkText: { color: Colors.primary, fontWeight: '700' },
+  activityItem: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+  },
+  activityIconContainer: {
+    alignItems: 'center',
+    marginRight: responsiveWidth(3),
+  },
+  activityIcon: {
+    width: responsiveHeight(4),
+    height: responsiveHeight(4),
+    borderRadius: responsiveHeight(2),
+    backgroundColor: Colors.primaryWithExtraOpacity,
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 1,
+  },
+  timelineConnector: {
+    width: 2,
+    backgroundColor: Colors.primaryWithExtraOpacity,
+    flex: 1,
+    marginTop: -2,
+  },
+  activityContent: {
+    flex: 1,
+    paddingBottom: responsiveHeight(2.5),
+  },
+  activityTitle: {
+    fontSize: responsiveFontSize(1.5),
+    fontWeight: '700',
+    color: Colors.textPrimary,
+  },
+  activityDescription: {
+    fontSize: responsiveFontSize(1.3),
+    color: Colors.textSecondary,
+  },
+  activityDate: { fontSize: responsiveFontSize(1.2), color: Colors.textTertiary, marginTop: responsiveHeight(0.5) },
 });

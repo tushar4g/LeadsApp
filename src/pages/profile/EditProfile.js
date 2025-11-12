@@ -19,6 +19,7 @@ import {
   setUserName,
   updateEmail,
   updateAvatar,
+  updateDesignation,
   updatePhone,
 } from '../../redux/slices/userSlice'
 import Colors from '../../style/Colors'
@@ -33,6 +34,7 @@ const EditProfile = ({ navigation }) => {
   const [name, setNameState] = useState(user.name)
   const [email, setEmailState] = useState(user.email)
   const [phone, setPhoneState] = useState(user.phone)
+  const [designation, setDesignationState] = useState(user.designation)
   const [avatarUri, setAvatarUri] = useState(user.avatar)
 
   const handlePickImage = async () => {
@@ -50,6 +52,7 @@ const EditProfile = ({ navigation }) => {
     dispatch(setUserName(name))
     dispatch(updateEmail(email))
     dispatch(updatePhone(phone))
+    dispatch(updateDesignation(designation))
     dispatch(updateAvatar(avatarUri))
     if (navigation) navigation.goBack()
   }
@@ -97,6 +100,13 @@ const EditProfile = ({ navigation }) => {
             icon="person"
           />
           <CustomInput
+            label="Mobile Number"
+            value={phone}
+            onChangeText={setPhoneState}
+            keyboardType="phone-pad"
+            icon="phone"
+          />
+          <CustomInput
             label="Email"
             value={email}
             onChangeText={setEmailState}
@@ -104,12 +114,13 @@ const EditProfile = ({ navigation }) => {
             icon="email"
           />
           <CustomInput
-            label="Mobile Number"
-            value={phone}
-            onChangeText={setPhoneState}
-            keyboardType="phone-pad"
-            icon="phone"
+            label="Designation"
+            value={designation}
+            onChangeText={setDesignationState}
+            icon="badge"
+            editable={false}
           />
+        
         </View>
 
         <View style={styles.buttonContainer}>

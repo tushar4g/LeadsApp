@@ -40,6 +40,7 @@ const mockDoctors = [
     dateAdded: '10-09-2025',
     latitude: 21.2514,
     longitude: 81.6296,
+    stage: 'new',
   },
   {
     id: 'd2',
@@ -56,6 +57,7 @@ const mockDoctors = [
     dateAdded: '18-09-2025',
     latitude:  22.0797,
     longitude: 82.1391,
+    stage: 'follow-up',
   },
   {
     id: 'd3',
@@ -72,6 +74,7 @@ const mockDoctors = [
     dateAdded: '01-10-2025',
     latitude: 21.1910,
     longitude: 81.2844,
+    stage: 'new',
   },
   {
     id: 'd4',
@@ -88,6 +91,7 @@ const mockDoctors = [
     dateAdded: '25-10-2025',
     latitude: 21.1905,
     longitude: 81.2840,
+    stage: 'follow-up',
   },
   {
     id: 'd5',
@@ -104,6 +108,7 @@ const mockDoctors = [
     dateAdded: '01-10-2025',
     latitude: 21.1915,
     longitude: 81.2850,
+    stage: 'new',
   },
   {
     id: 'd6',
@@ -120,6 +125,8 @@ const mockDoctors = [
     dateAdded: '01-10-2025',
     latitude: 21.1920,
     longitude: 81.2860,
+    stage: 'new',
+  
   }
   // add more mock items as needed
 ]

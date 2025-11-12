@@ -148,7 +148,8 @@ const Profile = ({ navigation }) => {
 
         <View style={styles.userInfo}>
           <Text style={styles.name}>{profile?.name ?? 'User Name'}</Text>
-          <Text style={styles.role}>{profile?.role ?? 'Role'} • {profile?.organization ?? ''}</Text>
+          {/* <Text style={styles.role}>{profile?.role ?? 'Role'} • {profile?.organization ?? ''}</Text> */}
+           <Text style={styles.role}>{profile?.designation ? `${profile.designation} • ` : ''}{profile?.role ?? 'Role'} • {profile?.organization ?? ''}</Text>
           <Text style={styles.subText}>Healthcare CRM Account</Text>
         </View>
       </View>

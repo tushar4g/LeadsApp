@@ -17,6 +17,11 @@ const genderOptions = [
   { label: 'Other', value: 'other' },
 ]
 
+const stageOptions = [
+  { label: 'New', value: 'new' },
+  { label: 'Follow-Up', value: 'follow-up' },
+]
+
 const titleOptions = [
   { label: 'Dr.', value: 'Dr.' },
   { label: 'Mr.', value: 'Mr.' },
@@ -123,6 +128,7 @@ const AddDoctor = ({ navigation, route }) => {
 
   // Reference & Relationship Info
   const [doctorCategory, setDoctorCategory] = useState('')
+  const [stage, setStage] = useState('')
   const [remarks, setRemarks] = useState('')
 
   // Documents
@@ -468,6 +474,7 @@ const AddDoctor = ({ navigation, route }) => {
           <CustomInput label="Reference Name" value={referenceName} onChangeText={setReferenceName} icon="person" placeholder="Enter reference name" />
           <CustomDropDown uprLabel="Lead Source" value={leadSource} setValue={setLeadSource} data={leadSourceOptions} iconName="campaign" placeholder="Select lead source" /> */}
           <CustomDropDown uprLabel="Doctor Category" value={doctorCategory} setValue={setDoctorCategory} data={doctorCategoryOptions} iconName="category" placeholder="Select doctor category" />
+          <CustomDropDown uprLabel="Stage" value={stage} setValue={setStage} data={stageOptions} iconName="timeline" placeholder="Select stage" />
           <CustomInput label="Remarks / Notes" value={remarks} onChangeText={setRemarks} icon="notes" placeholder="Enter remarks" multiline />
         </View>
 
