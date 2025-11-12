@@ -18,6 +18,7 @@ import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-nat
 import Colors from '../../style/Colors'
 import CustomInput from '../../components/CustomInput'
 import CustomButton from '../../components/CustomButton'
+import DeviceInfo from 'react-native-device-info'
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 const MOBILE_RE = /^\d{10}$/
@@ -28,10 +29,13 @@ const Login = ({ navigation }) => {
   const [loading, setLoading] = useState(false)
   const [remember, setRemember] = useState(false)
   const [errors, setErrors] = useState({ username: '', password: '' })
+  const [deviceModel, setDeviceModel] = useState('')
+  const [osVersion, setOsVersion] = useState('')
+  const [appVersion, setAppVersion] = useState('')
 
   useEffect(() => {
     // try to prefill saved credentials (remember me)
-    ;(async () => {
+    (async () => {
       try {
         const saved = await AsyncStorage.getItem('@credentials')
         if (saved) {
@@ -42,6 +46,14 @@ const Login = ({ navigation }) => {
         }
       } catch (e) {
         // ignore
+      }
+      try {
+        setDeviceModel(DeviceInfo.getModel())
+        setOsVersion(DeviceInfo.getSystemVersion())
+        setAppVersion(DeviceInfo.getVersion())
+      } catch (e) {
+        // ignore errors during device info retrieval
+        console.warn("Failed to get device info:", e); // Optional: log the error for debugging
       }
     })()
   }, [])
@@ -170,6 +182,11 @@ const Login = ({ navigation }) => {
             </View>
           </View>
 
+          <View style={styles.deviceInfo}>
+            {/* <Text style={styles.deviceInfoText}>Device: {deviceModel} (Android {osVersion})</Text> */}
+            <Text style={styles.deviceInfoText}>App Version: {appVersion}</Text>
+          </View>
+
           <View style={{ height: responsiveHeight(6) }} />
         </ScrollView>
         </LinearGradient>
@@ -235,4 +252,10 @@ const styles = StyleSheet.create({
   registerRow: { flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginTop: responsiveHeight(2) },
   regText: { color: Colors.textSecondary, fontSize: responsiveFontSize(1.5) },
   regLink: { color: Colors.primary, fontWeight: '800', fontSize: responsiveFontSize(1.5) },
+
+  deviceInfo: {
+    alignItems: 'center',
+    marginTop: responsiveHeight(3),
+  },
+  deviceInfoText: { fontSize: responsiveFontSize(1.2), color: Colors.textTertiary, marginBottom: responsiveHeight(0.5) },
 })

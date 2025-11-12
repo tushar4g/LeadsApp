@@ -9,6 +9,7 @@ import {
   Alert,
   Switch,
   Share,
+  Platform,
 } from 'react-native'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { responsiveFontSize, responsiveWidth, responsiveHeight } from 'react-native-responsive-dimensions'
@@ -16,6 +17,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import CustomDropDown from '../../components/CustomDropDown'
 import CustomButton from '../../components/CustomButton'
 import Colors from '../../style/Colors'
+import DeviceInfo from 'react-native-device-info'
 
 // optional: replace with your real API service
 const getProfile = async () => {
@@ -45,6 +47,7 @@ const Profile = ({ navigation }) => {
   const [notificationsEnabled, setNotificationsEnabled] = useState(true)
   const [darkMode, setDarkMode] = useState(false)
   const [language, setLanguage] = useState('en')
+  const [appVersion, setAppVersion] = useState('1.0.0') // Default version
 
   useEffect(() => {
     let mounted = true
@@ -60,6 +63,7 @@ const Profile = ({ navigation }) => {
         if (n !== null) setNotificationsEnabled(n === '1')
         if (d !== null) setDarkMode(d === '1')
         if (l) setLanguage(l)
+        setAppVersion(DeviceInfo.getVersion())
       } catch (e) {
         // ignore
       }
@@ -221,7 +225,8 @@ const Profile = ({ navigation }) => {
       </View>
 
       <View style={styles.versionWrap}>
-        <Text style={styles.versionText}>App Version 1.0.0</Text>
+        <Text style={styles.versionText}>App Version {appVersion}</Text>
+        <Text style={styles.versionText}>© {new Date().getFullYear()} ItMingo. All Rights Reserved.</Text>
       </View>
 
       <View style={{ height: responsiveHeight(6) }} />
