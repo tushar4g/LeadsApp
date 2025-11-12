@@ -45,7 +45,7 @@ const ViewDoctorDetails = ({ route, navigation }) => {
     doctorCategory: 'A',
     stage: 'new',
     notes: 'Available only on weekdays',
-    clinicPhoto: '',
+    clinicPhoto: 'https://images.pexels.com/photos/2631746/pexels-photo-2631746.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
     verified: true,
     avatar: 'https://i.pravatar.cc/150?img=12',
     referredPatients: [
@@ -340,55 +340,11 @@ const ViewDoctorDetails = ({ route, navigation }) => {
           contentContainerStyle={styles.container}
           showsVerticalScrollIndicator={false}
         >
-          {/* Profile */}
-          {/* <View style={styles.profileCard}>
-            <Image source={{ uri: doctor.avatar }} style={styles.avatar} />
-            <View style={styles.nameRow}>
-              <Text style={styles.name}>
-                {(doctor.title ? `${doctor.title} ` : '') + (doctor.name || '—')}
-              </Text>
-              {doctor?.verified && (
-                <View style={styles.verified}>
-                  <MaterialIcons
-                    name="verified"
-                    size={responsiveFontSize(1.3)}
-                    color={Colors.white}
-                  />
-                  <Text style={styles.verifiedText}>Verified</Text>
-                </View>
-              )}
-            </View>
-            <Text style={styles.specialty}>{doctor.specialization}</Text>
-            <Text style={styles.hospital}>{doctor.hospitalName}</Text>
-
-            <View style={styles.quickActions}>
-              <TouchableOpacity
-                style={styles.quickBtn}
-                onPress={() => handleCall(doctor.mobile)}
-              >
-                <MaterialIcons
-                  name="phone"
-                  size={responsiveFontSize(2)}
-                  color={Colors.white}
-                />
-                <Text style={styles.quickLabel}>Call</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[styles.quickBtn, { backgroundColor: Colors.info }]}
-              >
-                <MaterialIcons
-                  name="chat"
-                  size={responsiveFontSize(2)}
-                  color={Colors.white}
-                />
-                <Text style={styles.quickLabel}>Chat</Text>
-              </TouchableOpacity>
-            </View>
-          </View> */}
-
           {/* Info Cards */}
-          <View style={styles.card}>
+          {/* <View style={styles.card}>
             <Text style={styles.cardTitle}>Contact Information</Text>
+            <InfoRow icon="person" label="Gender" value={doctor.gender} />
+            <InfoRow icon="cake" label="Date of Birth" value={doctor.dob} />
             <InfoRow icon="phone" label="Mobile" value={doctor.mobile} />
             <InfoRow
               icon="phone"
@@ -403,14 +359,32 @@ const ViewDoctorDetails = ({ route, navigation }) => {
             />
             <InfoRow icon="public" label="State" value={doctor.state} />
             <InfoRow icon="location-city" label="City" value={doctor.city} />
+          </View> */}
+
+          <View style={styles.infoCard}>
+            <Text style={styles.cardTitle}>Contact Information</Text>
+            <View style={styles.infoRow}><MaterialIcons name="person" size={responsiveFontSize(1.8)} color={Colors.textSecondary} /><Text style={styles.infoLabel}>Gender</Text><Text style={styles.infoValue}>{doctor.gender}</Text></View>
+            <View style={styles.infoRow}><MaterialIcons name="cake" size={responsiveFontSize(1.8)} color={Colors.textSecondary} /><Text style={styles.infoLabel}>DOB</Text><Text style={styles.infoValue}>{doctor.dob}</Text></View>
+            <View style={styles.infoRow}><MaterialIcons name="phone" size={responsiveFontSize(1.8)} color={Colors.textSecondary} /><Text style={styles.infoLabel}>Mobile</Text><Text style={styles.infoValue}>{doctor.mobile}</Text></View>
+            <View style={styles.infoRow}><MaterialIcons name="phone" size={responsiveFontSize(1.8)} color={Colors.textSecondary} /><Text style={styles.infoLabel}>Alternate Mobile</Text><Text style={styles.infoValue}>{doctor.altMobile}</Text></View>
+            <View style={styles.infoRow}><MaterialIcons name="email" size={responsiveFontSize(1.8)} color={Colors.textSecondary} /><Text style={styles.infoLabel}>Email</Text><Text style={styles.infoValue}>{doctor.email}</Text></View>
+            <View style={styles.infoRow}><MaterialIcons name="location-on" size={responsiveFontSize(1.8)} color={Colors.textSecondary} /><Text style={styles.infoLabel}>Clinic</Text><Text style={styles.infoValue}>{doctor.clinicAddress || doctor.address}</Text></View>
+            <View style={styles.infoRow}><MaterialIcons name="location-city" size={responsiveFontSize(1.8)} color={Colors.textSecondary} /><Text style={styles.infoLabel}>City</Text><Text style={styles.infoValue}>{doctor.city}</Text></View>
+            <View style={styles.infoRow}><MaterialIcons name="public" size={responsiveFontSize(1.8)} color={Colors.textSecondary} /><Text style={styles.infoLabel}>State</Text><Text style={styles.infoValue}>{doctor.state}</Text></View>
           </View>
 
-          <View style={styles.card}>
+
+          {/* <View style={styles.card}>
             <Text style={styles.cardTitle}>Professional Details</Text>
             <InfoRow
               icon="local-hospital"
               label="Hospital"
               value={doctor.hospitalName}
+            />
+            <InfoRow
+              icon="work"
+              label="Designation"
+              value={doctor.designation}
             />
             <InfoRow
               icon="medical-services"
@@ -423,16 +397,48 @@ const ViewDoctorDetails = ({ route, navigation }) => {
               value={doctor.specialization}
             />
             <InfoRow icon="timeline" label="Stage" value={doctor.stage} />
+          </View> */}
+
+          <View style={styles.infoCard}>
+            <Text style={styles.cardTitle}>Professional</Text>
+            <View style={styles.infoRow}><MaterialIcons name="local-hospital" size={responsiveFontSize(1.8)} color={Colors.textSecondary} /><Text style={styles.infoLabel}>Hospital</Text><Text style={styles.infoValue}>{doctor.hospitalName}</Text></View>
+            <View style={styles.infoRow}><MaterialIcons name="work" size={responsiveFontSize(1.8)} color={Colors.textSecondary} /><Text style={styles.infoLabel}>Designation</Text><Text style={styles.infoValue}>{doctor.designation}</Text></View>
+            <View style={styles.infoRow}><MaterialIcons name="medical-services" size={responsiveFontSize(1.8)} color={Colors.textSecondary} /><Text style={styles.infoLabel}>Hospital Type</Text><Text style={styles.infoValue}>{doctor.hospitaltype}</Text></View>
+            <View style={styles.infoRow}><MaterialIcons name="description" size={responsiveFontSize(1.8)} color={Colors.textSecondary} /><Text style={styles.infoLabel}>Specialization</Text><Text style={styles.infoValue}>{doctor.specialization}</Text></View>
+            <View style={styles.infoRow}><MaterialIcons name="timeline" size={responsiveFontSize(1.8)} color={Colors.textSecondary} /><Text style={styles.infoLabel}>Stage</Text><Text style={styles.infoValue}>{doctor.stage}</Text></View>
           </View>
 
           <View style={styles.card}>
-            <Text style={styles.cardTitle}>Additional Information</Text>
+            <Text style={styles.cardTitle}>Clinic Photo</Text>
+            {true ? (
+              <View style={{ marginBottom: responsiveHeight(1.5) }}>
+                <Text style={styles.label}>Clinic Photo</Text>
+                <Image source={{ uri: 'https://images.pexels.com/photos/2631746/pexels-photo-2631746.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1' }} style={styles.clinicPhoto} />
+              </View>
+            ) : null}
+            {/* <InfoRow
+              icon="my-location"
+              label="Latitude"
+              value={doctor.latitude}
+            />
+            <InfoRow
+              icon="my-location"
+              label="Longitude"
+              value={doctor.longitude}
+            />
             <InfoRow icon="note" label="Notes" value={doctor.notes} />
             <InfoRow
               icon="description"
               label="Specialization Details"
               value={doctor.specializationDetails}
-            />
+            /> */}
+          </View>
+
+          <View style={styles.infoCard}>
+            <Text style={styles.cardTitle}>Additional Information</Text>
+            <View style={styles.infoRow}><MaterialIcons name="my-location" size={responsiveFontSize(1.8)} color={Colors.textSecondary} /><Text style={styles.infoLabel}>Latitude</Text><Text style={styles.infoValue}>{doctor.latitude}</Text></View>
+            <View style={styles.infoRow}><MaterialIcons name="my-location" size={responsiveFontSize(1.8)} color={Colors.textSecondary} /><Text style={styles.infoLabel}>Longitude</Text><Text style={styles.infoValue}>{doctor.longitude}</Text></View>
+            <View style={styles.infoRow}><MaterialIcons name="note" size={responsiveFontSize(1.8)} color={Colors.textSecondary} /><Text style={styles.infoLabel}>Notes</Text><Text style={styles.infoValue}>{doctor.notes || '—'}</Text></View>
           </View>
 
           <View style={styles.actions}>
@@ -533,6 +539,15 @@ const styles = StyleSheet.create({
     color: Colors.white,
     fontWeight: '700',
   },
+
+  infoCard: { backgroundColor: Colors.white, borderRadius: 12, padding: responsiveWidth(3.5), marginBottom: responsiveHeight(1.5), elevation: 1 },
+// cardTitle: { fontWeight: '800', color: Colors.textPrimary, fontSize: responsiveFontSize(1.4), marginBottom: responsiveHeight(1) },
+infoRow: { flexDirection: 'row', alignItems: 'center', marginBottom: responsiveHeight(1) },
+infoLabel: { flex: 1, marginLeft: responsiveWidth(3), color: Colors.textSecondary },
+infoValue: { color: Colors.textPrimary, fontWeight: '600' },
+actionRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: responsiveHeight(1) },
+small: { color: Colors.textSecondary, marginTop: responsiveHeight(0.3) },
+
   container: { padding: responsiveWidth(4), paddingBottom: responsiveHeight(8) },
    fab: {
       position: 'absolute',
@@ -632,6 +647,12 @@ const styles = StyleSheet.create({
     color: Colors.textPrimary,
     marginTop: responsiveHeight(0.2),
     fontWeight: '600',
+  },
+  clinicPhoto: {
+    width: '100%',
+    height: responsiveHeight(20),
+    borderRadius: responsiveWidth(2),
+    marginTop: responsiveHeight(0.5),
   },
   refItem: {
     flexDirection: 'row',
