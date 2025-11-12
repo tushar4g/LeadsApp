@@ -207,7 +207,7 @@ const Profile = ({ navigation }) => {
         <Row icon="message-text" label="Feedback & Suggestions" onPress={() => navigation?.navigate('Feedback')} />
         <Row icon="help-circle" label="Help & Support" onPress={() => navigation?.navigate('Help')} />
         <Row icon="file-document" label="Privacy Policy" onPress={() => navigation?.navigate('PrivacyPolicy')} />
-        <Row icon="file-word" label="Terms & Conditions" onPress={() => navigation?.navigate('Terms')} />
+        <Row icon="file-word" label="Terms & Conditions" onPress={() => navigation?.navigate('TermsAndConditions')} />
       </View>
 
       {/* Other */}
