@@ -152,6 +152,7 @@ const AddVisit = ({ navigation, route }) => {
   const [status, setStatus] = useState('Planned')
 
   const [lead, setLead] = useState(null)
+  const [doctors, setDoctors] = useState([])
   const [specialty, setSpecialty] = useState('')
   const [mobile, setMobile] = useState('')
 
@@ -354,15 +355,15 @@ const AddVisit = ({ navigation, route }) => {
 
         {/* Lead / Doctor Details */}
         <View style={styles.card}>
-          <Text style={styles.cardTitle}>Lead / Doctor Details</Text>
+          <Text style={styles.cardTitle}>Doctor Details</Text>
           
           <CustomMultipleDropdown
-            uprLabel="Lead / Doctor *"
+            uprLabel="Doctor *"
             iconName="doctor"
-            value={lead}
-            setValue={onLeadChange}
+            value={doctors}
+            setValue={setDoctors}
             data={leads}
-            // placeholder="Search or select"
+            placeholder="Doctor's"
           />
 
           {errors.lead ? <Text style={styles.error}>{errors.lead}</Text> : null}

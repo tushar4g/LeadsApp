@@ -368,10 +368,10 @@ const Doctors = ({ navigation }) => {
                 <MaterialIcons name="edit" size={responsiveFontSize(1.8)} color={Colors.primary} />
                 <Text style={styles.actionLabel}>Edit</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.actionBtn} onPress={() => handleDelete(item.id)}>
+              {/* <TouchableOpacity style={styles.actionBtn} onPress={() => handleDelete(item.id)}>
                 <MaterialIcons name="delete" size={responsiveFontSize(1.8)} color={Colors.secondary} />
                 <Text style={[styles.actionLabel, { color: Colors.secondary }]}>Delete</Text>
-              </TouchableOpacity>
+              </TouchableOpacity> */}
               <TouchableOpacity style={styles.actionBtn} onPress={() => handleNavigateToAddress(item.address, item.latitude, item.longitude)}>
                 <MaterialIcons name="my-location" size={responsiveFontSize(1.8)} color={Colors.info} />
                 <Text style={styles.actionLabel}>Map</Text>
