@@ -205,7 +205,7 @@ const Profile = ({ navigation }) => {
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Support</Text>
         <Row icon="message-text" label="Feedback & Suggestions" onPress={() => navigation?.navigate('Feedback')} />
-        <Row icon="help-circle" label="Help & Support" onPress={() => navigation?.navigate('Help')} />
+        <Row icon="help-circle" label="Help & Support" onPress={() => navigation?.navigate('HelpSupport')} />
         <Row icon="file-document" label="Privacy Policy" onPress={() => navigation?.navigate('PrivacyPolicy')} />
         <Row icon="file-word" label="Terms & Conditions" onPress={() => navigation?.navigate('TermsAndConditions')} />
       </View>

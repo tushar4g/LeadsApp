@@ -23,8 +23,7 @@ import ResetPassword from '../pages/forgotPassword/ResetPassword'
 import Splash from '../pages/splash/Splash'
 import PrivacyPolicy from '../pages/profile/pages/PrivacyPolicy'
 import TermsAndConditions from '../pages/profile/pages/TermsAndConditions'
-
-
+import HelpSupport from '../pages/profile/pages/HelpSupport'
 
 const StackNavigation = () => {
   const Stack = createNativeStackNavigator()
@@ -53,6 +52,7 @@ const StackNavigation = () => {
         <Stack.Screen name="Rewards" component={Rewards} />
         <Stack.Screen name="PrivacyPolicy" component={PrivacyPolicy} />
         <Stack.Screen name="TermsAndConditions" component={TermsAndConditions} />
+        <Stack.Screen name="HelpSupport" component={HelpSupport} />
       </Stack.Navigator>
     </NavigationContainer>
   )
