@@ -20,10 +20,6 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import Colors from '../../../style/Colors'
 import CustomInput from '../../../components/CustomInput'
 
-if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
-  UIManager.setLayoutAnimationEnabledExperimental(true)
-}
-
 const FAQ_DATA = [
   {
     question: 'How do I reset my password?',
@@ -47,7 +43,6 @@ const CollapsibleItem = ({ question, answer }) => {
   const [expanded, setExpanded] = useState(false)
 
   const toggleExpand = () => {
-    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
     setExpanded(!expanded)
   }
 
