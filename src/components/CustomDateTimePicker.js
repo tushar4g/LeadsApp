@@ -20,7 +20,7 @@ const formatValue = (date, mode) => {
   }
 };
 
-const CustomDateTimePicker = ({ title, placeholder, value, setDate, maximumDate, minimumDate, flex=0, iconName, mode='date'  }) => {
+const CustomDateTimePicker = ({ title, placeholder, editable= false, value, setDate, maximumDate, minimumDate, flex=0, iconName, mode='date'  }) => {
     const [show, setShow] = useState(false);
 
     const handleDateChange = (event, selectedDate) => {
@@ -36,7 +36,7 @@ const CustomDateTimePicker = ({ title, placeholder, value, setDate, maximumDate,
             <View style={[styles.icon]}>
                 <MaterialIcons name={iconName} size={responsiveFontSize(2.5)} color={Colors.blackWithOpacity} />
             </View>
-            <Pressable onPress={() => setShow(true)} style={styles.calendar}>
+            <Pressable disabled={editable} onPress={() => setShow(true)} style={styles.calendar}>
                 <Text style={[styles.inputBox, {color: value? Colors.textPrimary : Colors.textSecondary}]}>
                    {/* {value ? formatDate(value) : placeholder} */}
                    {value ? formatValue(value, mode) : placeholder}

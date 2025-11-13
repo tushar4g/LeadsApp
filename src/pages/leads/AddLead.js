@@ -98,18 +98,19 @@ const AddLead = ({ navigation, route }) => {
   const [age, setAge] = useState('')
   const [mobile, setMobile] = useState('')
   const [email, setEmail] = useState('')
-  const [source, setSource] = useState('')
   const [leadType, setLeadType] = useState('')
   const [city, setCity] = useState('')
-  const [state, setState] = useState('')
+  const [date, setDate] = useState(new Date())
+  // const [state, setState] = useState('')
   // const [address, setAddress] = useState('')
-
-  const [status, setStatus] = useState('')
-  const [score, setScore] = useState('')
+  
+  const [source, setSource] = useState('')
   const [refferedBy, setRefferedBy] = useState('')
-  const [followUpDate, setFollowUpDate] = useState(null)
   const [category, setCategory] = useState('')
   const [specialization, setSpecialization] = useState('')
+  const [status, setStatus] = useState('')
+  const [score, setScore] = useState('')
+  const [followUpDate, setFollowUpDate] = useState(null)
   const [prescriptionImage, setPrescriptionImage] = useState(null)
 
   const [notes, setNotes] = useState('')
@@ -125,7 +126,7 @@ const AddLead = ({ navigation, route }) => {
       setSource(lead.source || '');
       setLeadType(lead.leadType || '');
       setCity(lead.city || '');
-      setState(lead.state || '');
+      // setState(lead.state || '');
       // setAddress(lead.address || '');
       setStatus(lead.status || '');
       setScore(lead.score || '');
@@ -194,7 +195,7 @@ const AddLead = ({ navigation, route }) => {
       source,
       leadType,
       city,
-      state,
+      // state,
       // address,
       status,
       score,
@@ -259,6 +260,14 @@ const AddLead = ({ navigation, route }) => {
             keyboardType="numeric"
             maxLength={10}
             icon="phone"
+          />
+          <CustomDateTimePicker
+            placeholder="Date"
+            value={date}
+            setDate={setDate}
+            iconName="calendar-today"
+            mode="date"
+            editable={true}
           />
           <View style={styles.row}>
             <View style={{ flex: 1, marginRight: responsiveWidth(2) }}>
