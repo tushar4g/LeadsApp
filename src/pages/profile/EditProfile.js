@@ -20,12 +20,41 @@ import {
   updateEmail,
   updateAvatar,
   updateDesignation,
+  updateHospitalName,
   updatePhone,
 } from '../../redux/slices/userSlice'
 import Colors from '../../style/Colors'
 import CustomInput from '../../components/CustomInput'
 import CustomButton from '../../components/CustomButton'
 import PickImageComponent from '../../components/PickImageComponent'
+import CustomDropDown from '../../components/CustomDropDown'
+
+const hospitalListOptions = [
+  // 🏥 Raipur
+  { label: 'DKS Hospital Raipur', value: 'dks' },
+  { label: 'Ramkrishna CARE Hospitals', value: 'ramkrishna_care' },
+  { label: 'Balco Medical Centre', value: 'balco' },
+  { label: 'AIIMS Raipur', value: 'aiims_raipur' },
+  { label: 'MMI Narayana Multispeciality Hospital', value: 'mmi_narayana' },
+  // 🏥 Bhilai
+  { label: 'JLN Hospital & Research Centre', value: 'jln_bhilai' },
+  { label: 'Sai Baba Hospital Bhilai', value: 'sai_baba_bhilai' },
+  // 🏥 Durg
+  { label: 'Anand Hospital Durg', value: 'anand_durg' },
+  { label: 'Suyash Hospital Durg', value: 'suyash_durg' },
+  // 🏥 Bilaspur
+  { label: 'Apollo Hospitals Bilaspur', value: 'apollo_bilaspur' },
+  { label: 'CIMS Hospital Bilaspur', value: 'cims_bilaspur' },
+  // 🏥 Korba
+  { label: 'Balco Hospital Korba', value: 'balco_korba' },
+  { label: 'Chirayu Hospital Korba', value: 'chirayu_korba' },
+  // 🏥 Jagdalpur
+  { label: 'Maharani Hospital Jagdalpur', value: 'maharani_jagdalpur' },
+  { label: 'District Hospital Jagdalpur', value: 'district_jagdalpur' },
+  // 🏥 Rajnandgaon
+  { label: 'District Hospital Rajnandgaon', value: 'district_rajnandgaon' },
+  { label: 'Nirmal Hospital Rajnandgaon', value: 'nirmal_rajnandgaon' },
+];
 
 const EditProfile = ({ navigation }) => {
   const user = useSelector(state => state.user)
@@ -35,6 +64,7 @@ const EditProfile = ({ navigation }) => {
   const [email, setEmailState] = useState(user.email)
   const [phone, setPhoneState] = useState(user.phone)
   const [designation, setDesignationState] = useState(user.designation)
+  const [hospitalName, setHospitalNameState] = useState(user.hospitalName)
   const [avatarUri, setAvatarUri] = useState(user.avatar)
 
   const handlePickImage = async () => {
@@ -53,6 +83,7 @@ const EditProfile = ({ navigation }) => {
     dispatch(updateEmail(email))
     dispatch(updatePhone(phone))
     dispatch(updateDesignation(designation))
+    dispatch(updateHospitalName(hospitalName))
     dispatch(updateAvatar(avatarUri))
     if (navigation) navigation.goBack()
   }
@@ -119,6 +150,13 @@ const EditProfile = ({ navigation }) => {
             onChangeText={setDesignationState}
             icon="badge"
             editable={false}
+          />
+          <CustomDropDown
+            uprLabel="Hospital Name"
+            value={hospitalName}
+            setValue={setHospitalNameState}
+            data={hospitalListOptions}
+            iconName="local-hospital"
           />
         
         </View>
