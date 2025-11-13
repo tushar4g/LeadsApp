@@ -23,8 +23,8 @@ import Colors from '../../../style/Colors'
 
 const TABS = [
   { key: 'earned', label: 'Earned Details', icon: 'cash' },
-  { key: 'redeemed', label: 'Redeemed Details', icon: 'ticket-percent' },
-  { key: 'history', label: 'History', icon: 'history' },
+  // { key: 'redeemed', label: 'Redeemed Details', icon: 'ticket-percent' },
+  // { key: 'history', label: 'History', icon: 'history' },
 ]
 
 // API helpers (replace endpoints with real ones)
@@ -195,7 +195,7 @@ const Rewards = ({ navigation }) => {
             <>
             <View style={styles.summaryCard}>
                 <View style={styles.summaryLeft}>
-                <MaterialCommunityIcons name="gift" size={36} color={Colors.white} />
+                <MaterialCommunityIcons name="gift" size={responsiveFontSize(4.5)} color={Colors.primary} />
                 </View>
                 <View style={styles.summaryBody}>
                 <Text style={styles.summaryLabel}>Available Points</Text>
@@ -203,8 +203,11 @@ const Rewards = ({ navigation }) => {
                 <Text style={styles.summarySub}>Earn more by referring doctors or patients.</Text>
 
                 <View style={styles.summaryActions}>
-                    <CustomButton title="Redeem Now" onPress={() => setRedeemModalVisible(true)} bgColor={Colors.white} color={Colors.primary} borderC={Colors.white} />
-                    <CustomButton title="Refer & Earn" onPress={onRefer} bgColor={Colors.primary} color={Colors.white} style={{ marginLeft: responsiveWidth(2) }} />
+                    {/* <CustomButton title="Redeem Now" onPress={() => setRedeemModalVisible(true)} bgColor={Colors.white} color={Colors.primary} borderC={Colors.white} /> */}
+                    {/* <CustomButton title="Refer & Earn" onPress={onRefer} bgColor={Colors.primary} color={Colors.white}/> */}
+                    <TouchableOpacity onPress={onRefer} style={{backgroundColor: Colors.primary,paddingHorizontal: responsiveWidth(2.5), paddingVertical: responsiveHeight(0.8), alignItems:'center', justifyContent:'center', borderRadius: responsiveWidth(4)}}>
+                      <Text style={{color: Colors.white}}>Refer & Earn</Text>
+                    </TouchableOpacity>
                 </View>
                 </View>
             </View>
@@ -283,18 +286,18 @@ const styles = StyleSheet.create({
 
   loadingWrap: { paddingVertical: responsiveHeight(20), alignItems: 'center' },
 
-  summaryCard: { flexDirection: 'row', backgroundColor: Colors.primary, borderRadius: 12, padding: responsiveWidth(3), marginBottom: responsiveHeight(1.2), elevation: 2 },
+  summaryCard: { flexDirection: 'row', backgroundColor: Colors.white, borderRadius: 12, padding: responsiveWidth(3), marginBottom: responsiveHeight(1.2), elevation: 2 },
   summaryLeft: { width: responsiveWidth(16), alignItems: 'center', justifyContent: 'center' },
   summaryBody: { flex: 1, paddingLeft: responsiveWidth(2) },
-  summaryLabel: { color: Colors.white, fontSize: responsiveFontSize(1.1) },
-  summaryPoints: { color: Colors.white, fontSize: responsiveFontSize(3.2), fontWeight: '900', marginTop: responsiveHeight(0.4) },
-  summarySub: { color: Colors.white, marginTop: responsiveHeight(0.6), fontSize: responsiveFontSize(1) },
-  summaryActions: { flexDirection: 'row', marginTop: responsiveHeight(1) },
+  summaryLabel: { color: Colors.primary, fontSize: responsiveFontSize(1.4) },
+  summaryPoints: { color: Colors.primary, fontSize: responsiveFontSize(3.2), fontWeight: '700', marginTop: responsiveHeight(0.4) },
+  summarySub: { color: Colors.primary, marginTop: responsiveHeight(0.6), fontSize: responsiveFontSize(1.4) },
+  summaryActions: { flexDirection: 'row', marginTop: responsiveHeight(1), },
 
   tabRow: { flexDirection: 'row', alignItems: 'center', marginBottom: responsiveHeight(1), gap: responsiveWidth(2) },
   tabItem: { flexDirection: 'row', alignItems: 'center', paddingVertical: responsiveHeight(0.8), paddingHorizontal: responsiveWidth(3), borderRadius: 10, backgroundColor: Colors.white, marginRight: responsiveWidth(1), elevation: 0.5 },
   tabItemActive: { backgroundColor: Colors.lightPrimary, borderWidth: 1, borderColor: Colors.primary },
-  tabLabel: { marginLeft: responsiveWidth(1), color: Colors.textSecondary, fontSize: responsiveFontSize(1) },
+  tabLabel: { marginLeft: responsiveWidth(1), color: Colors.textSecondary, fontSize: responsiveFontSize(1.6) },
 
   section: { backgroundColor: Colors.white, borderRadius: 12, padding: responsiveWidth(3), elevation: 1 },
 

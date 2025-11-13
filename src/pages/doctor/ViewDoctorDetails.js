@@ -58,6 +58,7 @@ const ViewDoctorDetails = ({ route, navigation }) => {
         leadStatus: 'follow up',
         leadScore: 65,
         nextFollowup: '2025-11-10',
+        address: '123 Patient St, Raipur',
         notes: 'Patient to call after reports',
       },
     ],
@@ -83,7 +84,18 @@ const ViewDoctorDetails = ({ route, navigation }) => {
 
   const referred = Array.isArray(doctor.referredPatients)
     ? doctor.referredPatients
-    : [];
+    : [{
+        id: 'r1',
+        name: 'Mr. Ajay Kumar',
+        mobile: '9876501234',
+        email: 'ajay@example.com',
+        leadSource: 'Hospital',
+        leadStatus: 'follow up',
+        leadScore: 65,
+        nextFollowup: '2025-11-10',
+        address: '123 Patient St, Raipur',
+        notes: 'Patient to call after reports',
+      },];
 
   const activity = Array.isArray(doctor.activityHistory)
     ? doctor.activityHistory
@@ -692,22 +704,22 @@ small: { color: Colors.textSecondary, marginTop: responsiveHeight(0.3) },
   refName: {
     fontWeight: '700',
     color: Colors.textPrimary,
-    fontSize: responsiveFontSize(1.1),
+    fontSize: responsiveFontSize(1.6),
   },
   refBadge: {
     paddingHorizontal: responsiveWidth(2),
     paddingVertical: responsiveHeight(0.25),
-    borderRadius: 12,
+    borderRadius: responsiveWidth(2),
   },
   refBadgeText: {
     color: Colors.white,
     fontWeight: '700',
-    fontSize: responsiveFontSize(0.9),
+    fontSize: responsiveFontSize(1.2),
   },
   smallText: {
     color: Colors.textSecondary,
     marginTop: responsiveHeight(0.4),
-    fontSize: responsiveFontSize(0.95),
+    fontSize: responsiveFontSize(1.4),
   },
   rowSmall: {
     flexDirection: 'row',
