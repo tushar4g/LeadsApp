@@ -24,6 +24,8 @@ import Splash from '../pages/splash/Splash'
 import PrivacyPolicy from '../pages/profile/pages/PrivacyPolicy'
 import TermsAndConditions from '../pages/profile/pages/TermsAndConditions'
 import HelpSupport from '../pages/profile/pages/HelpSupport'
+import Notification from '../pages/notification/Notification'
+
 
 const StackNavigation = () => {
   const Stack = createNativeStackNavigator()
@@ -53,6 +55,7 @@ const StackNavigation = () => {
         <Stack.Screen name="PrivacyPolicy" component={PrivacyPolicy} />
         <Stack.Screen name="TermsAndConditions" component={TermsAndConditions} />
         <Stack.Screen name="HelpSupport" component={HelpSupport} />
+        <Stack.Screen name='Notification' component={Notification} />
       </Stack.Navigator>
     </NavigationContainer>
   )

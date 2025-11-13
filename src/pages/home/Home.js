@@ -114,7 +114,7 @@ const Home = ({ navigation, userRole = 'Manager' }) => {
         <Image source={{ uri: LOGO }} style={styles.logo} />
         <Text style={styles.appTitle}>Healthcare CRM</Text>
         <View style={styles.headerIcons}>
-          <TouchableOpacity onPress={() => navigation && navigation.navigate('Notifications')}>
+          <TouchableOpacity onPress={() => navigation && navigation.navigate('Notification')}>
             <MaterialIcons name="notifications-none" size={26} color={Colors.primary || '#4e8cff'} style={{ marginRight: 10 }} />
           </TouchableOpacity>
           <TouchableOpacity onPress={() => navigation && navigation.navigate('Profile')}>
@@ -305,7 +305,7 @@ const styles = StyleSheet.create({
     marginLeft: responsiveWidth(4),
     marginBottom: responsiveHeight(1),
   },
-  kpiScroll: { marginVertical: responsiveHeight(1),},
+  kpiScroll: { marginVertical: responsiveHeight(1), padding: responsiveWidth(0.4)},
   kpiCard: {
     width: responsiveWidth(28),
     marginRight: responsiveWidth(3),
