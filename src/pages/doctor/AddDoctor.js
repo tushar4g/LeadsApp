@@ -566,8 +566,8 @@ const AddDoctor = ({ navigation, route }) => {
                   </TouchableOpacity>
               }
           </View>
+          <CustomInput label="Clinic Number" value={contactNumber} onChangeText={setContactNumber} icon="phone" keyboardType="phone-pad" maxLength={10} placeholder="Enter contact number" />
           {/* <CustomInput label="Contact Person" value={contactPerson} onChangeText={setContactPerson} icon="person" placeholder="Enter contact person" /> */}
-          {/* <CustomInput label="Contact Number" value={contactNumber} onChangeText={setContactNumber} icon="phone" keyboardType="phone-pad" maxLength={10} placeholder="Enter contact number" /> */}
           {/* <CustomInput label="Clinic Email" value={clinicEmail} onChangeText={setClinicEmail} icon="email" keyboardType="email-address" placeholder="Enter clinic email" /> */}
         </View>
 

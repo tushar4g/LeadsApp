@@ -8,15 +8,18 @@ import {
   TouchableOpacity,
   Alert,
   ActivityIndicator,
+  Image,
   KeyboardAvoidingView,
   Platform,
 } from 'react-native'
 import { responsiveFontSize, responsiveWidth, responsiveHeight } from 'react-native-responsive-dimensions'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import CustomInput from '../../components/CustomInput'
 import CustomDropDown from '../../components/CustomDropDown'
 import CustomDateTimePicker from '../../components/CustomDateTimePicker'
 import CustomButton from '../../components/CustomButton'
+import PickImageComponent from '../../components/PickImageComponent'
 import Colors from '../../style/Colors'
 
 const SOURCE_OPTIONS = [
@@ -69,27 +72,45 @@ const REFFERED_BY_OPTIONS = [
   { label: 'Dr. Rajiv Patel', value: 'Dr. Rajiv Patel' },
 ]
 
+const CATEGORY_OPTIONS = [
+  { label: 'IPD', value: 'IPD' },
+  { label: 'OPD', value: 'OPD' },
+]
+
+const SPECIALIZATION_OPTIONS = [
+  { label: 'Cardiologist', value: 'cardiologist' },
+  { label: 'Dermatologist', value: 'dermatologist' },
+  { label: 'Neurologist', value: 'neurologist' },
+  { label: 'Pediatrician', value: 'pediatrician' },
+  { label: 'General Physician', value: 'general' },
+]
+
 const AddLead = ({ navigation, route }) => {
   const lead = route?.params?.lead ?? {}
-  const prefill = route?.params?.prefill ?? {};
   const isEditMode = !!route.params?.lead;
-  console.log('Lead:', lead, isEditMode)
-  console.log('Prefill:', prefill)
+  const prefill = route?.params?.prefill ?? {}
+  const isReferMode = !!route.params?.prefill;
+  console.log('Lead:', lead, 'editmode',isEditMode)
+  console.log('Prefill:', prefill, 'referMode', isReferMode)
 
 
   const [name, setName] = useState('')
+  const [age, setAge] = useState('')
   const [mobile, setMobile] = useState('')
   const [email, setEmail] = useState('')
   const [source, setSource] = useState('')
   const [leadType, setLeadType] = useState('')
   const [city, setCity] = useState('')
   const [state, setState] = useState('')
-  const [address, setAddress] = useState('')
+  // const [address, setAddress] = useState('')
 
   const [status, setStatus] = useState('')
   const [score, setScore] = useState('')
   const [refferedBy, setRefferedBy] = useState('')
   const [followUpDate, setFollowUpDate] = useState(null)
+  const [category, setCategory] = useState('')
+  const [specialization, setSpecialization] = useState('')
+  const [prescriptionImage, setPrescriptionImage] = useState(null)
 
   const [notes, setNotes] = useState('')
   const [loading, setLoading] = useState(false)
@@ -98,23 +119,27 @@ const AddLead = ({ navigation, route }) => {
     if (isEditMode && lead) {
       // existing edit logic
       setName(lead.name || '');
+      setAge(lead.age || '');
       setMobile(lead.mobile || '');
       setEmail(lead.email || '');
       setSource(lead.source || '');
       setLeadType(lead.leadType || '');
       setCity(lead.city || '');
       setState(lead.state || '');
-      setAddress(lead.address || '');
+      // setAddress(lead.address || '');
       setStatus(lead.status || '');
       setScore(lead.score || '');
       setRefferedBy(lead.referredBy || '');
       setFollowUpDate(lead.followUpDate || null);
+      setCategory(lead.category || '');
+      setSpecialization(lead.specialization || '');
+      setPrescriptionImage(lead.prescriptionImage || null);
       setNotes(lead.notes || '');
-    } else if (prefill) {
+    } else if (isReferMode && prefill) {
       // prefill from Refer Patient
       setSource(prefill.source || '');
       setLeadType(prefill.leadType || '');
-      setRefferedBy(prefill.referredBy || '');
+      setRefferedBy(prefill.referredBy || ''); // This will now be searchable
     }
   }, [lead, isEditMode, prefill]);
 
@@ -163,17 +188,21 @@ const AddLead = ({ navigation, route }) => {
     setLoading(true)
     const leadData = {
       name,
+      age,
       mobile,
       email,
       source,
       leadType,
       city,
       state,
-      address,
+      // address,
       status,
       score,
       refferedBy,
       followUpDate,
+      category,
+      specialization,
+      prescriptionImage,
       notes,
       createdAt: new Date().toISOString(),
     }
@@ -185,6 +214,14 @@ const AddLead = ({ navigation, route }) => {
       Alert.alert('Success', 'Lead added successfully!')
       if (navigation) navigation.goBack()
     }, 900)
+  }
+
+  const handlePrescriptionImage = async () => {
+    const img = await PickImageComponent()
+    console.log('Prescription Image:', img)
+    if (img) {
+      setPrescriptionImage(img.uri)
+    }
   }
 
   return (
@@ -214,7 +251,7 @@ const AddLead = ({ navigation, route }) => {
             placeholder="Enter patient name"
             icon="person"
           />
-          {/* <CustomInput
+          <CustomInput
             label="Mobile Number"
             value={mobile}
             onChangeText={(t) => setMobile(t.replace(/[^0-9]/g, ''))}
@@ -223,28 +260,40 @@ const AddLead = ({ navigation, route }) => {
             maxLength={10}
             icon="phone"
           />
-          <CustomInput
-            label="Email"
-            value={email}
-            onChangeText={setEmail}
-            placeholder="Enter email"
-            keyboardType="email-address"
-            icon="email"
-          /> */}
-
-
-          <CustomDropDown iconName="location-city" uprLabel="City" value={city} setValue={setCity} data={CITY_OPTIONS} />
-          <CustomInput  icon="place" label="Address" value={address} onChangeText={setAddress} placeholder="Enter full address" />
+          <View style={styles.row}>
+            <View style={{ flex: 1, marginRight: responsiveWidth(2) }}>
+               <CustomInput
+                  label="Age"
+                  value={age}
+                  onChangeText={(t) => setAge(t.replace(/[^0-9]/g, ''))}
+                  placeholder="Enter age"
+                  keyboardType="numeric"
+                  maxLength={3}
+                  icon="cake"
+                />
+            </View>
+            <View style={{ flex: 1, marginLeft: responsiveWidth(2) }}>
+              <CustomDropDown iconName="location-city" uprLabel="City" value={city} setValue={setCity} data={CITY_OPTIONS} />
+            </View>
+          </View>
 
           {/* Lead Details */}
           <Text style={styles.sectionTitle}>Lead Details</Text>
           <View style={styles.row}>
             <View style={{ flex: 1, marginRight: responsiveWidth(2) }}>
-              {/* <CustomDropDown iconName="supervisor-account" uprLabel="Assigned To" value={assignedTo} setValue={setAssignedTo} data={ASSIGN_OPTIONS} /> */}
               <CustomDropDown iconName="source" uprLabel="Lead Source" value={source} setValue={setSource} data={SOURCE_OPTIONS} />
             </View>
             <View style={{ flex: 1, marginLeft: responsiveWidth(2) }}>
               <CustomDropDown iconName="supervisor-account" search={true} uprLabel="Reffered by" value={refferedBy} setValue={setRefferedBy} data={REFFERED_BY_OPTIONS} />
+            </View>
+          </View>
+
+          <View style={styles.row}>
+            <View style={{ flex: 1, marginRight: responsiveWidth(2) }}>
+              <CustomDropDown iconName="category" uprLabel="Category" value={category} setValue={setCategory} data={CATEGORY_OPTIONS} />
+            </View>
+            <View style={{ flex: 1, marginLeft: responsiveWidth(2) }}>
+              <CustomDropDown iconName="medical-services" uprLabel="Specialization" value={specialization} setValue={setSpecialization} data={SPECIALIZATION_OPTIONS} />
             </View>
           </View>
 
@@ -264,6 +313,28 @@ const AddLead = ({ navigation, route }) => {
             iconName="calendar-today"
             mode="date"
           />
+
+          {/* Prescription Image */}
+          <Text style={styles.sectionTitle}>Prescription</Text>
+          <TouchableOpacity style={styles.uploadBox} onPress={handlePrescriptionImage}>
+            {prescriptionImage ? (
+              <>
+                <Image source={{ uri: prescriptionImage }} style={styles.previewImage} resizeMode='cover' />
+                <TouchableOpacity
+                  style={styles.removeImageButton}
+                  onPress={() => setPrescriptionImage(null)}
+                >
+                  <MaterialIcons name="close" size={responsiveFontSize(2)} color={Colors.deleteButton} />
+                  <Text style={styles.removeImageText}>Remove</Text>
+                </TouchableOpacity>
+              </>
+            ) : (
+              <View style={styles.uploadPlaceholder}>
+                <MaterialIcons name="file-upload" size={responsiveFontSize(3)} color={Colors.primary} />
+                <Text style={styles.uploadText}>Tap to Upload Prescription</Text>
+              </View>
+            )}
+          </TouchableOpacity>
 
           {/* Notes */}
           <Text style={styles.sectionTitle}>Notes / Comments</Text>
@@ -297,7 +368,7 @@ const styles = StyleSheet.create({
   headerRight: { padding: 8 },
   headerTitle: { flex: 1, textAlign: 'center', color: Colors.white, fontSize: responsiveFontSize(2), fontWeight: '700' },
 
-  container: { padding: responsiveWidth(4), paddingBottom: responsiveHeight(6), gap: responsiveHeight(2) },
+  container: { padding: responsiveWidth(4), paddingBottom: responsiveHeight(6), gap: responsiveHeight(1.5) },
 
   sectionTitle: { fontSize: responsiveFontSize(1.6), fontWeight: '700', color: Colors.textPrimary, marginTop: responsiveHeight(1), },
 
@@ -306,4 +377,46 @@ const styles = StyleSheet.create({
   buttonRow: { marginTop: responsiveHeight(2), gap: responsiveWidth(2) },
   cancelBtn: { marginLeft: responsiveWidth(3), paddingVertical: responsiveHeight(1.4), paddingHorizontal: responsiveWidth(4), borderRadius: responsiveWidth(6), borderWidth: 1, borderColor: Colors.primary },
   cancelText: { color: Colors.primary, fontWeight: '700', fontSize: responsiveFontSize(1.6) },
+
+  uploadBox: {
+    borderWidth: 1,
+    borderColor: Colors.primaryWithExtraOpacity,
+    borderRadius: responsiveWidth(2),
+    overflow: 'hidden',
+    minHeight: responsiveHeight(10),
+    borderStyle: 'dashed',
+    backgroundColor: Colors.primaryWithExtraOpacity,
+  },
+  previewImage: {
+    width: '100%',
+    height: responsiveHeight(18),
+  },
+  removeImageButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: Colors.white,
+    paddingVertical: responsiveHeight(0.8),
+    borderTopWidth: 1,
+    borderTopColor: Colors.primaryWithExtraOpacity,
+    borderStyle: 'dashed'
+  },
+  removeImageText: {
+    fontSize: responsiveFontSize(1.4),
+    color: Colors.error,
+    marginLeft: responsiveWidth(1),
+    fontWeight: '500',
+  },
+  uploadPlaceholder: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: responsiveHeight(4),
+  },
+  uploadText: {
+    fontSize: responsiveFontSize(1.6),
+    color: Colors.primary,
+    marginTop: responsiveHeight(1),
+    fontWeight: '600',
+  },
 })

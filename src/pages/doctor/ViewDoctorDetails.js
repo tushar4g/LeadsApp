@@ -139,7 +139,7 @@ const ViewDoctorDetails = ({ route, navigation }) => {
           leadType: 'Patient',
           referredBy: doctor.name,
           doctorId: doctor.id,
-        },
+        }, 
       })
   }
 
