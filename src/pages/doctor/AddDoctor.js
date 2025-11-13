@@ -51,6 +51,69 @@ const specializationOptions = [
   { label: 'General Physician', value: 'general' },
 ]
 
+const hospitalListOptions = [
+  // 🏥 Raipur
+  { label: 'DKS Hospital Raipur', value: 'dks' },
+  { label: 'Ramkrishna CARE Hospitals', value: 'ramkrishna_care' },
+  { label: 'Balco Medical Centre', value: 'balco' },
+  { label: 'AIIMS Raipur', value: 'aiims_raipur' },
+  { label: 'MMI Narayana Multispeciality Hospital', value: 'mmi_narayana' },
+  { label: 'Sanjeevani Hospital', value: 'sanjeevani' },
+  { label: 'City Hospital Raipur', value: 'city_hospital' },
+  { label: 'Dr. Bhimrao Ambedkar Memorial Hospital', value: 'ambedkar_memorial' },
+  { label: 'Suyash Hospital', value: 'suyash' },
+  { label: 'Helios Hospital', value: 'helios' },
+  { label: 'Life Worth Super Speciality Hospital', value: 'lifeworth' },
+  { label: 'Shri Narayana Hospital', value: 'shri_narayana' },
+  { label: 'Apollo Spectra Hospital Raipur', value: 'apollo_spectra' },
+  { label: 'Ayushman Hospital', value: 'ayushman' },
+  { label: 'Medishine Hospital', value: 'medishine' },
+  { label: 'Kalda Hospital', value: 'kalda' },
+  { label: 'Mahamaya Hospital', value: 'mahamaya' },
+  { label: 'Sparsh Multispeciality Hospital', value: 'sparsh' },
+  { label: 'Fortis Escorts Heart Centre Raipur', value: 'fortis_escorts' },
+
+  // 🏥 Bhilai
+  { label: 'JLN Hospital & Research Centre', value: 'jln_bhilai' },
+  { label: 'Sai Baba Hospital Bhilai', value: 'sai_baba_bhilai' },
+  { label: 'SS Hospital Bhilai', value: 'ss_bhilai' },
+  { label: 'Apollo BSR Hospitals Bhilai', value: 'apollo_bsr' },
+  { label: 'Chandrakar Memorial Hospital', value: 'chandrakar' },
+  { label: 'Sparsh Hospital Bhilai', value: 'sparsh_bhilai' },
+  { label: 'Aastha Hospital Bhilai', value: 'aastha_bhilai' },
+
+  // 🏥 Durg
+  { label: 'Anand Hospital Durg', value: 'anand_durg' },
+  { label: 'Suyash Hospital Durg', value: 'suyash_durg' },
+  { label: 'Maheshwari Hospital Durg', value: 'maheshwari_durg' },
+  { label: 'Shri Sankalp Hospital Durg', value: 'sankalp_durg' },
+
+  // 🏥 Bilaspur
+  { label: 'Apollo Hospitals Bilaspur', value: 'apollo_bilaspur' },
+  { label: 'CIMS Hospital Bilaspur', value: 'cims_bilaspur' },
+  { label: 'KIMS Hospital Bilaspur', value: 'kims_bilaspur' },
+  { label: 'Rama Magnet Hospital Bilaspur', value: 'rama_magnet' },
+  { label: 'Sparsh Multispeciality Bilaspur', value: 'sparsh_bilaspur' },
+  { label: 'Mangla Hospital Bilaspur', value: 'mangla' },
+  { label: 'Aurobindo Hospital Bilaspur', value: 'aurobindo_bilaspur' },
+
+  // 🏥 Korba
+  { label: 'Balco Hospital Korba', value: 'balco_korba' },
+  { label: 'Chirayu Hospital Korba', value: 'chirayu_korba' },
+  { label: 'Sparsh Hospital Korba', value: 'sparsh_korba' },
+
+  // 🏥 Jagdalpur
+  { label: 'Maharani Hospital Jagdalpur', value: 'maharani_jagdalpur' },
+  { label: 'District Hospital Jagdalpur', value: 'district_jagdalpur' },
+  { label: 'Sparsh Hospital Jagdalpur', value: 'sparsh_jagdalpur' },
+
+  // 🏥 Rajnandgaon
+  { label: 'District Hospital Rajnandgaon', value: 'district_rajnandgaon' },
+  { label: 'Nirmal Hospital Rajnandgaon', value: 'nirmal_rajnandgaon' },
+  { label: 'Aarogya Hospital Rajnandgaon', value: 'aarogya_rajnandgaon' },
+];
+
+
 const hospitalTypeOptions = [
   { label: 'Private', value: 'private' },
   { label: 'Govt', value: 'govt' },
@@ -194,28 +257,68 @@ const AddDoctor = ({ navigation, route }) => {
 
   // Validation
   const validate = () => {
+    if (!title) {
+      showToast('Please select a title')
+      return false
+    }
     if (!fullName.trim()) {
-      Alert.alert('Validation', 'Full Name is required')
+      showToast('Please enter a full name')
       return false
     }
     if (!gender) {
-      Alert.alert('Validation', 'Gender is required')
+      showToast('Please select a gender')
+      return false
+    }
+    if (!dob) {
+      showToast('Please select a date of birth')
       return false
     }
     if (!mobile || !/^\d{10}$/.test(mobile)) {
-      Alert.alert('Validation', 'Valid Mobile Number is required')
-      return false
-    }
-    if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      Alert.alert('Validation', 'Enter a valid email address')
+      showToast('Please enter a valid mobile number')
       return false
     }
     if (!specialization) {
-      Alert.alert('Validation', 'Specialization is required')
+      showToast('Please select a specialization')
+      return false
+    }
+    if (!state) {
+      showToast('Please select a state')
+      return false
+    }
+    if (!city) {
+      showToast('Please select a city')
+      return false
+    }
+    if (!pincode || !/^\d{6}$/.test(pincode)) {
+      showToast('Please enter a valid pincode')
       return false
     }
     if (!hospitalName.trim()) {
-      Alert.alert('Validation', 'Hospital/Clinic Name is required')
+      showToast('Please select a hospital name')
+      return false
+    }
+    if (!hospitalType) {
+      showToast('Please select a hospital type')
+      return false
+    }
+    if (!clinicAddress.trim()) {
+      showToast('Please enter a clinic address')
+      return false
+    }
+    if (!location) {
+      showToast('Please select a location')
+      return false
+    }
+    if (!doctorCategory) {
+      showToast('Please select a doctor category')
+      return false
+    }
+    if (!stage) {
+      showToast('Please select a stage')
+      return false
+    }
+    if (!hospitalPhoto) {
+      showToast('Please upload a hospital photo')
       return false
     }
     return true
@@ -359,7 +462,7 @@ const AddDoctor = ({ navigation, route }) => {
     
     
     const showToast = (msg) => {
-        ToastAndroid.showWithGravity(msg, ToastAndroid.TOP, ToastAndroid.SHORT)
+      ToastAndroid.showWithGravity(msg, ToastAndroid.TOP, ToastAndroid.SHORT)
     }
 
   return (
@@ -370,7 +473,7 @@ const AddDoctor = ({ navigation, route }) => {
         <Text style={styles.sectionHeaderText}>Basic Information</Text>
         <View style={styles.section}>
           {/* Profile Image Picker */}
-          <TouchableOpacity onPress={handleProfileImage} style={styles.imageProfile}>
+          {/* <TouchableOpacity onPress={handleProfileImage} style={styles.imageProfile}>
             {profileImage ? 
               <Image source={{uri: profileImage}} style={styles.profileImage}/>
             : 
@@ -385,7 +488,7 @@ const AddDoctor = ({ navigation, route }) => {
             <View style={styles.imageOverlay}>
               <MaterialIcons name="camera" color={Colors.white} size={responsiveFontSize(2.5)} />
             </View>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
           <View style={styles.fieldCmn}>
             <View style={[styles.fieldLeft, {flex: 1}]}>
               <CustomDropDown uprLabel="Title" value={title} setValue={setTitle} data={titleOptions} iconName="badge" placeholder="Select title" />
@@ -411,7 +514,8 @@ const AddDoctor = ({ navigation, route }) => {
             </View>
           </View>
           <CustomInput label="Email ID" value={email} onChangeText={setEmail} icon="email" keyboardType="email-address" placeholder="Enter email" />
-          <CustomInput label="Address" value={address} onChangeText={setAddress} icon="location-on" placeholder="Enter address" multiline />
+          <CustomDropDown uprLabel="Specialization *" value={specialization} setValue={setSpecialization} data={specializationOptions} iconName="medical-services" placeholder="Select specialization" />
+          {/* <CustomInput label="Address" value={address} onChangeText={setAddress} icon="location-on" placeholder="Enter address" multiline /> */}
           <View style={styles.fieldCmn}>
             <View style={styles.fieldLeft}>
               <CustomDropDown uprLabel="State" value={state} setValue={setState} data={stateOptions} iconName="location-city" placeholder="Select state" />
@@ -426,16 +530,16 @@ const AddDoctor = ({ navigation, route }) => {
         {/* Professional Details */}
         <Text style={styles.sectionHeaderText}>Professional Details</Text>
         <View style={styles.section}>
-          {/* <CustomInput label="Qualification" value={qualification} onChangeText={setQualification} icon="school" placeholder="Enter qualification" /> */}
-          <CustomInput label="Hospital/Clinic Name *" value={hospitalName} onChangeText={setHospitalName} icon="local-hospital" placeholder="Enter hospital/clinic name" />
-          <View style={styles.fieldCmn}>
+          <CustomDropDown uprLabel="Hospital/Clinic *" search={true} value={hospitalName} setValue={setHospitalName} data={hospitalListOptions} iconName="local-hospital" placeholder="Select hospital/clinic" />
+          {/* <View style={styles.fieldCmn}>
             <View style={styles.fieldLeft}>
-              <CustomDropDown uprLabel="Specialization *" value={specialization} setValue={setSpecialization} data={specializationOptions} iconName="medical-services" placeholder="Select specialization" />
+              <CustomInput label="Qualification" value={qualification} onChangeText={setQualification} icon="school" placeholder="Enter qualification" />
             </View>
             <View style={styles.fieldRight}>
-              <CustomDropDown uprLabel="Hospital Type" value={hospitalType} setValue={setHospitalType} data={hospitalTypeOptions} iconName="business" placeholder="Select hospital type" />
+               <CustomInput label="Hospital/Clinic Name *" value={hospitalName} onChangeText={setHospitalName} icon="local-hospital" placeholder="Enter hospital/clinic name" />
             </View>
-          </View>
+          </View> */}
+          <CustomDropDown uprLabel="Hospital Type" value={hospitalType} setValue={setHospitalType} data={hospitalTypeOptions} iconName="business" placeholder="Select hospital type" />
           {/* <CustomInput label="Registration No" value={registrationNo} onChangeText={setRegistrationNo} icon="confirmation-number" placeholder="Enter registration no" />
           <CustomInput label="Years of Experience" value={experience} onChangeText={setExperience} icon="history" keyboardType="number-pad" placeholder="Enter years of experience" />
           <CustomInput label="Designation" value={designation} onChangeText={setDesignation} icon="work" placeholder="Enter designation" /> */}
@@ -463,7 +567,7 @@ const AddDoctor = ({ navigation, route }) => {
               }
           </View>
           {/* <CustomInput label="Contact Person" value={contactPerson} onChangeText={setContactPerson} icon="person" placeholder="Enter contact person" /> */}
-          <CustomInput label="Contact Number" value={contactNumber} onChangeText={setContactNumber} icon="phone" keyboardType="phone-pad" maxLength={10} placeholder="Enter contact number" />
+          {/* <CustomInput label="Contact Number" value={contactNumber} onChangeText={setContactNumber} icon="phone" keyboardType="phone-pad" maxLength={10} placeholder="Enter contact number" /> */}
           {/* <CustomInput label="Clinic Email" value={clinicEmail} onChangeText={setClinicEmail} icon="email" keyboardType="email-address" placeholder="Enter clinic email" /> */}
         </View>
 
@@ -479,7 +583,7 @@ const AddDoctor = ({ navigation, route }) => {
         </View>
 
         {/* Documents */}
-        <Text style={styles.sectionHeaderText}>Clinic Photo</Text>
+        <Text style={styles.sectionHeaderText}>Hospital / Clinic Photo</Text>
         <View style={[styles.section, {gap: responsiveHeight(2),}]}>
           <View style={{}}>
             <TouchableOpacity style={styles.uploadBox1} onPress={handleHospitalPhoto}>
@@ -497,7 +601,7 @@ const AddDoctor = ({ navigation, route }) => {
               ) : (
                   <View style={styles.uploadPlaceholder}>
                     <MaterialIcons name="file-upload" size={responsiveFontSize(2.5)} color={Colors.primary} />
-                    <Text style={styles.uploadText}>Tap to Upload Clinic Photo</Text>
+                    <Text style={styles.uploadText}>Tap to Upload Hospital Photo</Text>
                   </View>
               )}
             </TouchableOpacity>
