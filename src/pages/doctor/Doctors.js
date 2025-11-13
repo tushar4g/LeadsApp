@@ -402,9 +402,9 @@ const Doctors = ({ navigation }) => {
       <View style={styles.header}>
         <Text style={{color: Colors.white, fontSize: responsiveFontSize(2.2), fontWeight: '700'}}>Doctors</Text>
         <View style={{flexDirection: 'row', alignItems: 'center' }}>
-          <TouchableOpacity onPress={() => {setShowSearch(true); setTimeout(() => searchRef.current?.focus(), 100);}} style={[{padding: responsiveWidth(2)}]}>
+          {/* <TouchableOpacity onPress={() => {setShowSearch(true); setTimeout(() => searchRef.current?.focus(), 100);}} style={[{padding: responsiveWidth(2)}]}>
             <MaterialCommunityIcons name="magnify" size={responsiveFontSize(2.5)} color={Colors.white} />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
           <TouchableOpacity onPress={() => setFilterModalVisible(true)} style={[{ marginLeft: responsiveWidth(1), padding: responsiveWidth(2) }]}>
             <MaterialCommunityIcons name="filter-variant" size={responsiveFontSize(2.5)} color={Colors.white} />
           </TouchableOpacity>
@@ -412,7 +412,6 @@ const Doctors = ({ navigation }) => {
       </View>
       <View style={styles.content}>
         {/* Search & Filters */}
-        {showSearch && (
           <View style={styles.searchRow}>
             <Searchbar
               ref={searchRef}
@@ -427,7 +426,6 @@ const Doctors = ({ navigation }) => {
               clearIcon={searchText ? () => <MaterialIcons name="close" size={responsiveFontSize(2.2)} color={Colors.textSecondary} /> : null}
             />
           </View>
-        )}
 
         {/* Active filters summary */}
         <View style={[styles.activeFiltersRow, { paddingRight: responsiveWidth(4), marginBottom: responsiveHeight(1) }]}>

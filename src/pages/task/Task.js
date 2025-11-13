@@ -612,7 +612,7 @@ const Task = ({ navigation }) => {
       </Modal>
 
       {/* FAB */}
-      <TouchableOpacity style={styles.fab} onPress={() => navigation?.navigate('AddTask')}>
+      <TouchableOpacity style={styles.fab} onPress={() => navigation?.navigate('AddVisit')}>
         <MaterialIcons name="add" size={responsiveFontSize(2.8)} color={Colors.white} />
       </TouchableOpacity>
     </View>

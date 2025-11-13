@@ -63,10 +63,10 @@ const CustomMultipleDropdown = ({title, uprLabel, value, setValue, gap, iconName
                 )}
                 renderLeftIcon={
                     iconName ? () => (
-                    <MaterialCommunityIcons name={iconName} size={responsiveFontSize(2.5)} color={Colors.primaryDropDownOpacity} style={styles.icon} />
+                    <MaterialCommunityIcons name={iconName} size={responsiveFontSize(2.5)} color={Colors.textPrimary} style={styles.icon} />
                     ) : renderLeftIcon 
                     ? () => (
-                    <MaterialCommunityIcons name="Safety" size={responsiveFontSize(2.5)} color={Colors.primaryDropDownOpacity} style={styles.icon} />
+                    <MaterialCommunityIcons name="Safety" size={responsiveFontSize(2.5)} color={Colors.textPrimary} style={styles.icon} />
                     ) : undefined
                 }
             />
@@ -79,7 +79,6 @@ export default CustomMultipleDropdown
 
 const styles = StyleSheet.create({
     main: {
-        marginBottom: responsiveHeight(1.5),
     },
     label: {
         fontSize: responsiveFontSize(1.8),
@@ -178,7 +177,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: responsiveWidth(2),
         paddingVertical: responsiveHeight(0.5),
         borderRadius: responsiveWidth(5),
-        margin: 3,
+        margin: responsiveWidth(0.5),
     },
     tagText: {
         fontSize: responsiveFontSize(1.5),

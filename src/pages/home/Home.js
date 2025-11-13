@@ -10,6 +10,7 @@ import {
 } from 'react-native'
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions'
 import MaterialIcons from '@react-native-vector-icons/material-icons'
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import Colors from '../../style/Colors'
 
 // Placeholder avatar and logo
@@ -111,14 +112,18 @@ const Home = ({ navigation, userRole = 'Manager' }) => {
     <View style={{ flex: 1, backgroundColor: Colors.background }}>
       {/* Header / App Bar */}
       <View style={styles.headerBar}>
-        <Image source={{ uri: LOGO }} style={styles.logo} />
+        {/* <Image source={{ uri: LOGO }} resizeMode='stretch' style={styles.logo} /> */}
         <Text style={styles.appTitle}>Healthcare CRM</Text>
         <View style={styles.headerIcons}>
           <TouchableOpacity onPress={() => navigation && navigation.navigate('Notification')}>
-            <MaterialIcons name="notifications-none" size={26} color={Colors.primary || '#4e8cff'} style={{ marginRight: 10 }} />
+            <MaterialIcons name="notifications-none" size={responsiveFontSize(3)} color={Colors.white || '#4e8cff'} style={{ marginRight: 10 }} />
           </TouchableOpacity>
           <TouchableOpacity onPress={() => navigation && navigation.navigate('Profile')}>
-            <Image source={{ uri: AVATAR }} style={styles.avatar} />
+            {AVATAR ? 
+            <Image source={{ uri: AVATAR }} resizeMode='contain' style={styles.avatar} />
+            :
+            <MaterialCommunityIcons name="account-circle" size={responsiveFontSize(3)} color={Colors.white || '#4e8cff'}  />
+            }
           </TouchableOpacity>
         </View>
       </View>
@@ -284,19 +289,19 @@ const styles = StyleSheet.create({
     paddingHorizontal: responsiveWidth(4),
     paddingTop: responsiveHeight(2),
     paddingBottom: responsiveHeight(1),
-    backgroundColor: Colors.white || '#fff',
+    backgroundColor: Colors.primary || '#fff',
     borderBottomWidth: 1,
     borderBottomColor: '#eee',
   },
-  logo: { width: responsiveWidth(8), height: responsiveWidth(8), marginRight: responsiveWidth(2) },
+  logo: { width: responsiveWidth(8), height: responsiveWidth(8), marginRight: responsiveWidth(2), borderRadius: responsiveWidth(4)},
   logo1: {
     height: responsiveHeight(20),
     width: '100%',
     alignSelf: 'center',
   },
-  appTitle: { fontSize: responsiveFontSize(2.2), fontWeight: 'bold', color: Colors.black || '#4e8cff', flex: 1 },
+  appTitle: { fontSize: responsiveFontSize(2.2), fontWeight: 'bold', color: Colors.white || '#4e8cff', flex: 1 },
   headerIcons: { flexDirection: 'row', alignItems: 'center' },
-  avatar: { width: 34, height: 34, borderRadius: 17, borderWidth: 1, borderColor: '#eee' },
+  avatar: { width: responsiveWidth(7), height: responsiveWidth(7), borderRadius: responsiveWidth(5), borderWidth: 1, borderColor: '#eee' },
   greeting: {
     fontSize: responsiveFontSize(2),
     fontWeight: '600',

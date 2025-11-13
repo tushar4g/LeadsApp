@@ -160,6 +160,7 @@ const AddVisit = ({ navigation, route }) => {
   const [address, setAddress] = useState('')
   const [latitude, setLatitude] = useState(null)
   const [longitude, setLongitude] = useState(null)
+  const [locationLoader, setLocationLoader] =  useState(false)
 
   const [notes, setNotes] = useState('')
   const [assignedTo, setAssignedTo] = useState('')
@@ -207,6 +208,7 @@ const AddVisit = ({ navigation, route }) => {
   }
 
   const onUseCurrentLocation = () => {
+    setLocationLoader(true)
     getCurrentLocation(
       (loc) => {
         setLatitude(loc.latitude)
@@ -215,6 +217,7 @@ const AddVisit = ({ navigation, route }) => {
         Alert.alert('Location captured', 'Current coordinates have been set.')
       },
       (err) => Alert.alert('Location error', err?.message || 'Unable to fetch location')
+      ).finally(() => setLocationLoader(false)
     )
   }
 
@@ -293,7 +296,6 @@ const AddVisit = ({ navigation, route }) => {
         {/* Visit Information */}
         <View style={styles.card}>
           <Text style={styles.cardTitle}>Visit Information</Text>
-
             <View>
                 <CustomDropDown
                     uprLabel="Visit Type *"
@@ -379,11 +381,11 @@ const AddVisit = ({ navigation, route }) => {
 
           <CustomDropDown iconName='place' uprLabel="Location Type" value={locationType} setValue={(v) => setLocationType(v)} data={LOCATION_TYPES} placeholder="Select type" />
 
-          <CustomInput icon='my-location' label="Address" value={address} onChangeText={(t) => setAddress(t)} placeholder="Address / Clinic" multiline />
+          <CustomInput icon='my-location' label="Location" value={address} onChangeText={(t) => setAddress(t)} placeholder="Address / Clinic" multiline />
 
           <View style={{ flexDirection: 'row', marginTop: responsiveHeight(1) }}>
             <View style={{ flex: 1 }}>
-              <CustomButton title="Use My Current Location" onPress={onUseCurrentLocation} bgColor={Colors.white} color={Colors.primary} borderC={Colors.primary} />
+              <CustomButton title="Use My Current Location" onPress={onUseCurrentLocation} bgColor={Colors.white} color={Colors.primary} borderC={Colors.primary} isLoading={locationLoader} />
             </View>
           </View>
 
@@ -440,7 +442,7 @@ const styles = StyleSheet.create({
     padding: responsiveWidth(3),
     marginBottom: responsiveHeight(1.4),
     elevation: 2,
-    gap: responsiveHeight(1),
+    gap: responsiveHeight(1.5),
   },
   cardTitle: { fontSize: responsiveFontSize(1.6), fontWeight: '600', color: Colors.textPrimary, marginBottom: responsiveHeight(0) },
 
