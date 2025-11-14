@@ -145,7 +145,6 @@ const Feedback = ({ navigation }) => {
       type,
       subject,
       message,
-      attachment,
       user,
       createdAt: new Date().toISOString(),
       status: 'Submitted', // Default status
@@ -294,7 +293,7 @@ const Feedback = ({ navigation }) => {
                 <CustomInput icon="edit" label="Subject *" value={subject} onChangeText={setSubject} placeholder="Short title" />
                 <CustomInput icon="description" label="Description *" value={message} onChangeText={setMessage} placeholder="Describe the issue or suggestion" multiline />
 
-                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                {/* <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
                   <TouchableOpacity style={styles.attachBtn} onPress={pickAttachment}>
                     <MaterialCommunityIcons name="paperclip" size={responsiveFontSize(2)} color={Colors.primary} />
                     <Text style={styles.attachText}>{attachment ? '1 file attached' : 'Add Attachment'}</Text>
@@ -302,7 +301,7 @@ const Feedback = ({ navigation }) => {
                   {attachment && (
                     <Image source={{ uri: attachment.uri }} style={styles.preview} />
                   )}
-                </View>
+                </View> */}
               </View>
 
               <View style={styles.modalActions}>

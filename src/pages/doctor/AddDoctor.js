@@ -51,6 +51,69 @@ const specializationOptions = [
   { label: 'General Physician', value: 'general' },
 ]
 
+const hospitalListOptions = [
+  // 🏥 Raipur
+  { label: 'DKS Hospital Raipur', value: 'dks' },
+  { label: 'Ramkrishna CARE Hospitals', value: 'ramkrishna_care' },
+  { label: 'Balco Medical Centre', value: 'balco' },
+  { label: 'AIIMS Raipur', value: 'aiims_raipur' },
+  { label: 'MMI Narayana Multispeciality Hospital', value: 'mmi_narayana' },
+  { label: 'Sanjeevani Hospital', value: 'sanjeevani' },
+  { label: 'City Hospital Raipur', value: 'city_hospital' },
+  { label: 'Dr. Bhimrao Ambedkar Memorial Hospital', value: 'ambedkar_memorial' },
+  { label: 'Suyash Hospital', value: 'suyash' },
+  { label: 'Helios Hospital', value: 'helios' },
+  { label: 'Life Worth Super Speciality Hospital', value: 'lifeworth' },
+  { label: 'Shri Narayana Hospital', value: 'shri_narayana' },
+  { label: 'Apollo Spectra Hospital Raipur', value: 'apollo_spectra' },
+  { label: 'Ayushman Hospital', value: 'ayushman' },
+  { label: 'Medishine Hospital', value: 'medishine' },
+  { label: 'Kalda Hospital', value: 'kalda' },
+  { label: 'Mahamaya Hospital', value: 'mahamaya' },
+  { label: 'Sparsh Multispeciality Hospital', value: 'sparsh' },
+  { label: 'Fortis Escorts Heart Centre Raipur', value: 'fortis_escorts' },
+
+  // 🏥 Bhilai
+  { label: 'JLN Hospital & Research Centre', value: 'jln_bhilai' },
+  { label: 'Sai Baba Hospital Bhilai', value: 'sai_baba_bhilai' },
+  { label: 'SS Hospital Bhilai', value: 'ss_bhilai' },
+  { label: 'Apollo BSR Hospitals Bhilai', value: 'apollo_bsr' },
+  { label: 'Chandrakar Memorial Hospital', value: 'chandrakar' },
+  { label: 'Sparsh Hospital Bhilai', value: 'sparsh_bhilai' },
+  { label: 'Aastha Hospital Bhilai', value: 'aastha_bhilai' },
+
+  // 🏥 Durg
+  { label: 'Anand Hospital Durg', value: 'anand_durg' },
+  { label: 'Suyash Hospital Durg', value: 'suyash_durg' },
+  { label: 'Maheshwari Hospital Durg', value: 'maheshwari_durg' },
+  { label: 'Shri Sankalp Hospital Durg', value: 'sankalp_durg' },
+
+  // 🏥 Bilaspur
+  { label: 'Apollo Hospitals Bilaspur', value: 'apollo_bilaspur' },
+  { label: 'CIMS Hospital Bilaspur', value: 'cims_bilaspur' },
+  { label: 'KIMS Hospital Bilaspur', value: 'kims_bilaspur' },
+  { label: 'Rama Magnet Hospital Bilaspur', value: 'rama_magnet' },
+  { label: 'Sparsh Multispeciality Bilaspur', value: 'sparsh_bilaspur' },
+  { label: 'Mangla Hospital Bilaspur', value: 'mangla' },
+  { label: 'Aurobindo Hospital Bilaspur', value: 'aurobindo_bilaspur' },
+
+  // 🏥 Korba
+  { label: 'Balco Hospital Korba', value: 'balco_korba' },
+  { label: 'Chirayu Hospital Korba', value: 'chirayu_korba' },
+  { label: 'Sparsh Hospital Korba', value: 'sparsh_korba' },
+
+  // 🏥 Jagdalpur
+  { label: 'Maharani Hospital Jagdalpur', value: 'maharani_jagdalpur' },
+  { label: 'District Hospital Jagdalpur', value: 'district_jagdalpur' },
+  { label: 'Sparsh Hospital Jagdalpur', value: 'sparsh_jagdalpur' },
+
+  // 🏥 Rajnandgaon
+  { label: 'District Hospital Rajnandgaon', value: 'district_rajnandgaon' },
+  { label: 'Nirmal Hospital Rajnandgaon', value: 'nirmal_rajnandgaon' },
+  { label: 'Aarogya Hospital Rajnandgaon', value: 'aarogya_rajnandgaon' },
+];
+
+
 const hospitalTypeOptions = [
   { label: 'Private', value: 'private' },
   { label: 'Govt', value: 'govt' },
@@ -194,28 +257,68 @@ const AddDoctor = ({ navigation, route }) => {
 
   // Validation
   const validate = () => {
+    if (!title) {
+      showToast('Please select a title')
+      return false
+    }
     if (!fullName.trim()) {
-      Alert.alert('Validation', 'Full Name is required')
+      showToast('Please enter a full name')
       return false
     }
     if (!gender) {
-      Alert.alert('Validation', 'Gender is required')
+      showToast('Please select a gender')
+      return false
+    }
+    if (!dob) {
+      showToast('Please select a date of birth')
       return false
     }
     if (!mobile || !/^\d{10}$/.test(mobile)) {
-      Alert.alert('Validation', 'Valid Mobile Number is required')
-      return false
-    }
-    if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      Alert.alert('Validation', 'Enter a valid email address')
+      showToast('Please enter a valid mobile number')
       return false
     }
     if (!specialization) {
-      Alert.alert('Validation', 'Specialization is required')
+      showToast('Please select a specialization')
+      return false
+    }
+    if (!state) {
+      showToast('Please select a state')
+      return false
+    }
+    if (!city) {
+      showToast('Please select a city')
+      return false
+    }
+    if (!pincode || !/^\d{6}$/.test(pincode)) {
+      showToast('Please enter a valid pincode')
       return false
     }
     if (!hospitalName.trim()) {
-      Alert.alert('Validation', 'Hospital/Clinic Name is required')
+      showToast('Please select a hospital name')
+      return false
+    }
+    if (!hospitalType) {
+      showToast('Please select a hospital type')
+      return false
+    }
+    if (!clinicAddress.trim()) {
+      showToast('Please enter a clinic address')
+      return false
+    }
+    if (!location) {
+      showToast('Please select a location')
+      return false
+    }
+    if (!doctorCategory) {
+      showToast('Please select a doctor category')
+      return false
+    }
+    if (!stage) {
+      showToast('Please select a stage')
+      return false
+    }
+    if (!hospitalPhoto) {
+      showToast('Please upload a hospital photo')
       return false
     }
     return true
@@ -249,117 +352,223 @@ const AddDoctor = ({ navigation, route }) => {
       Alert.alert('Error', 'Failed to save doctor details.');
     }
   }
-  // Location permission
-    const requestLocationPermission = async () => {
-        console.log('Requesting location permission...');
-        try {
-        // Ask both fine and coarse location
-        const granted = await PermissionsAndroid.requestMultiple([
+
+  const requestLocationPermission = async () => {
+    if (Platform.OS === 'android') {
+        const granted = await PermissionsAndroid.request(
             PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-            PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION,
-            PermissionsAndroid.PERMISSIONS.ACCESS_BACKGROUND_LOCATION,
-        ]);
-
-        const fine = granted[PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION] === PermissionsAndroid.RESULTS.GRANTED;
-        const coarse = granted[PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION] === PermissionsAndroid.RESULTS.GRANTED;
-
-        if (!fine && !coarse) {
-            setLoadLocation(false);
-            Alert.alert(
-            'Location Permission Needed',
-            'To access your location, please allow location permissions.',
-            [
-                { text: 'Cancel', style: 'cancel' },
-                {
-                text: 'Open Settings',
-                onPress: () => Linking.openSettings().catch(() => {
-                    Alert.alert('Error', 'Unable to open settings');
-                }),
-                },
-            ],
-            { cancelable: true }
-            );
-            return null;
-        } else {
-            getCurrentPosition();
-        }
-
-        } catch (err) {
-        console.warn(err);
-        showToast('Permission error');
-        setLoadLocation(false)
-        }
-    }
-
-    const getCurrentPosition = () => {
-        console.log('Fetching current location...');
-        setLoadLocation(true);
-
-        Geolocation.getCurrentPosition(
-        (position) => {
-            console.log('Location:', position.coords);
-            setLocation(position.coords);
-            setLoadLocation(false);
-        },
-        (error) => {
-            console.log('GetCurrentPosition Error:', error);
-            console.log(`❌ GetCurrentPosition Error [code ${error.code}]:`, error.message);
-
-            if (error.code === 1) {
-            showToast('Permission denied.');
-            setLoadLocation(false);
-            } else if (error.code === 2) {
-            Alert.alert(
-                'GPS Needed',
-                'Your GPS seems to be turned off. Please enable it to get location.',
-            )
-            setLoadLocation(false);
-            } else if (error.code === 3) {
-            showToast('Location timeout. Try again.');
-            } else {
-            setLoading(false);
-            showToast('Unknown location error');
+            {
+                title: 'Location permission',
+                message: 'App needs location to attach visit coordinates',
+                buttonPositive: 'OK',
             }
-            useWatchPositionFallback()
-            // setLoading(false);
-        },
-        {
-            enableHighAccuracy: false,
-            timeout: 20000,
-            maximumAge: 10000,
-            forceRequestLocation: true,
-            showLocationDialog: true,
+        )
+        console.log(granted)
+        if (granted === PermissionsAndroid.RESULTS.NEVER_ASK_AGAIN) {
+            Linking.openSettings()
         }
-        );
-    };
+        return granted === PermissionsAndroid.RESULTS.GRANTED
+    }
+    return true
+  }
 
-    // fallback using watchPosition
-    const useWatchPositionFallback = () => {
-        const watchId = Geolocation.watchPosition(
-        (position) => {
-            console.log('✅ Fallback position:', position.coords);
-            setLocation(position.coords);
-            Geolocation.clearWatch(watchId);
-            // navigation.reset({ index: 0, routes: [{ name: 'Dashboard' }] })
-            setLoadLocation(false);
-        },
-        (error) => {
-            console.log('❌ Fallback error:', error);
-            showToast('Unable to fetch location');
-            setLoadLocation(false);
-        },
-        {
-            enableHighAccuracy: true,
-            distanceFilter: 0,
-            interval: 5000,
-            fastestInterval: 2000,
-        }
-        );
-    };
+  const fetchLocation = async () => {
+      const ok = await requestLocationPermission()
+      if (!ok) {
+          Alert.alert('Permission denied', 'Location permission is required to fetch coordinates.')
+          return
+      }
+      setLoadLocation(true)
+      Geolocation.getCurrentPosition(
+          (pos) => {
+              console.log('Location:', pos.coords);
+              const { latitude, longitude } = pos.coords;
+              setLocation(pos.coords)
+              // NEW: Auto fetch address
+              getAddressFromCoordinates(latitude, longitude);
+              setLoadLocation(false)
+          },
+          (err) => {
+              console.warn('location error', err)
+              Alert.alert('Location error', 'Unable to fetch location.')
+              setLoadLocation(false)
+          },
+          { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
+      )
+  }
+
+  const getAddressFromCoordinates = async (lat, lng) => {
+      try {
+          const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`;
+
+          // const response = await fetch(url);
+          const response = await fetch(url, {
+              headers: {
+                  'User-Agent': 'YourAppName/1.0',   // REQUIRED
+                  'Accept-Language': 'en',
+              },
+          });
+          const data = await response.json();
+          console.log("OSM Response:", data);
+
+          if (data.display_name) {
+              setClinicAddress(data.display_name);
+              setPincode(data.address?.postcode || '');  
+          } else {
+              showToast("Unable to fetch address");
+          }
+      } catch (e) {
+          console.log("OSM Reverse Error:", e);
+      }
+  };
+
+
+
+  // Location permission
+    // const requestLocationPermission = async () => {
+    //     console.log('Requesting location permission...');
+    //     try {
+    //     // Ask both fine and coarse location
+    //     const granted = await PermissionsAndroid.requestMultiple([
+    //         PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+    //         PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION,
+    //         PermissionsAndroid.PERMISSIONS.ACCESS_BACKGROUND_LOCATION,
+    //     ]);
+
+    //     const fine = granted[PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION] === PermissionsAndroid.RESULTS.GRANTED;
+    //     const coarse = granted[PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION] === PermissionsAndroid.RESULTS.GRANTED;
+
+    //     if (!fine && !coarse) {
+    //         setLoadLocation(false);
+    //         Alert.alert(
+    //         'Location Permission Needed',
+    //         'To access your location, please allow location permissions.',
+    //         [
+    //             { text: 'Cancel', style: 'cancel' },
+    //             {
+    //             text: 'Open Settings',
+    //             onPress: () => Linking.openSettings().catch(() => {
+    //                 Alert.alert('Error', 'Unable to open settings');
+    //             }),
+    //             },
+    //         ],
+    //         { cancelable: true }
+    //         );
+    //         return null;
+    //     } else {
+    //         getCurrentPosition();
+    //     }
+
+    //     } catch (err) {
+    //     console.warn(err);
+    //     showToast('Permission error');
+    //     setLoadLocation(false)
+    //     }
+    // }
+
+  //   const getAddressFromCoordinates = async (lat, lng) => {
+  //     try {
+  //         const apiKey = "YOUR_GOOGLE_MAPS_API_KEY"; // replace
+  //         const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${apiKey}`;
+
+  //         const response = await fetch(url);
+  //         const data = await response.json();
+
+  //         if (data.status === "OK" && data.results.length > 0) {
+  //             console.log("Geocoding response:", data);
+  //             const formattedAddress = data.results[0].formatted_address;
+  //             setClinicAddress(formattedAddress);
+  //         } else {
+  //             showToast("Unable to fetch address");
+  //         }
+  //     } catch (error) {
+  //         console.log("Geocoding error:", error);
+  //         showToast("Error fetching address");
+  //     }
+  // };
+
+
+    // const getCurrentPosition = () => {
+    //     console.log('Fetching current location...');
+    //     setLoadLocation(true);
+
+    //     Geolocation.getCurrentPosition(
+    //     (position) => {
+    //         console.log('Location:', position.coords);
+    //         setLocation(position.coords);
+
+    //         // NEW: Auto fetch address
+    //         getAddressFromCoordinates(
+    //             position.coords.latitude,
+    //             position.coords.longitude
+    //         );
+
+    //         setLoadLocation(false);
+    //     },
+    //     (error) => {
+    //         console.log('GetCurrentPosition Error:', error);
+    //         console.log(`❌ GetCurrentPosition Error [code ${error.code}]:`, error.message);
+
+    //         if (error.code === 1) {
+    //         showToast('Permission denied.');
+    //         setLoadLocation(false);
+    //         } else if (error.code === 2) {
+    //         Alert.alert(
+    //             'GPS Needed',
+    //             'Your GPS seems to be turned off. Please enable it to get location.',
+    //         )
+    //         setLoadLocation(false);
+    //         } else if (error.code === 3) {
+    //         showToast('Location timeout. Try again.');
+    //         } else {
+    //         setLoading(false);
+    //         showToast('Unknown location error');
+    //         }
+    //         useWatchPositionFallback()
+    //         // setLoading(false);
+    //     },
+    //     {
+    //         enableHighAccuracy: false,
+    //         timeout: 20000,
+    //         maximumAge: 10000,
+    //         forceRequestLocation: true,
+    //         showLocationDialog: true,
+    //     }
+    //     );
+    // };
+
+    // // fallback using watchPosition
+    // const useWatchPositionFallback = () => {
+    //     const watchId = Geolocation.watchPosition(
+    //     (position) => {
+    //         console.log('✅ Fallback position:', position.coords);
+    //         setLocation(position.coords);
+
+    //         getAddressFromCoordinates(
+    //             position.coords.latitude,
+    //             position.coords.longitude
+    //         );
+
+    //         Geolocation.clearWatch(watchId);
+    //         setLoadLocation(false);
+    //     },
+    //     (error) => {
+    //         console.log('❌ Fallback error:', error);
+    //         showToast('Unable to fetch location');
+    //         setLoadLocation(false);
+    //     },
+    //     {
+    //         enableHighAccuracy: true,
+    //         distanceFilter: 0,
+    //         interval: 5000,
+    //         fastestInterval: 2000,
+    //     }
+    //     );
+    // };
     
     
     const showToast = (msg) => {
-        ToastAndroid.showWithGravity(msg, ToastAndroid.TOP, ToastAndroid.SHORT)
+      ToastAndroid.showWithGravity(msg, ToastAndroid.TOP, ToastAndroid.SHORT)
     }
 
   return (
@@ -370,7 +579,7 @@ const AddDoctor = ({ navigation, route }) => {
         <Text style={styles.sectionHeaderText}>Basic Information</Text>
         <View style={styles.section}>
           {/* Profile Image Picker */}
-          <TouchableOpacity onPress={handleProfileImage} style={styles.imageProfile}>
+          {/* <TouchableOpacity onPress={handleProfileImage} style={styles.imageProfile}>
             {profileImage ? 
               <Image source={{uri: profileImage}} style={styles.profileImage}/>
             : 
@@ -385,7 +594,7 @@ const AddDoctor = ({ navigation, route }) => {
             <View style={styles.imageOverlay}>
               <MaterialIcons name="camera" color={Colors.white} size={responsiveFontSize(2.5)} />
             </View>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
           <View style={styles.fieldCmn}>
             <View style={[styles.fieldLeft, {flex: 1}]}>
               <CustomDropDown uprLabel="Title" value={title} setValue={setTitle} data={titleOptions} iconName="badge" placeholder="Select title" />
@@ -411,7 +620,8 @@ const AddDoctor = ({ navigation, route }) => {
             </View>
           </View>
           <CustomInput label="Email ID" value={email} onChangeText={setEmail} icon="email" keyboardType="email-address" placeholder="Enter email" />
-          <CustomInput label="Address" value={address} onChangeText={setAddress} icon="location-on" placeholder="Enter address" multiline />
+          <CustomDropDown uprLabel="Specialization *" value={specialization} setValue={setSpecialization} data={specializationOptions} iconName="medical-services" placeholder="Select specialization" />
+          {/* <CustomInput label="Address" value={address} onChangeText={setAddress} icon="location-on" placeholder="Enter address" multiline /> */}
           <View style={styles.fieldCmn}>
             <View style={styles.fieldLeft}>
               <CustomDropDown uprLabel="State" value={state} setValue={setState} data={stateOptions} iconName="location-city" placeholder="Select state" />
@@ -420,22 +630,22 @@ const AddDoctor = ({ navigation, route }) => {
               <CustomDropDown uprLabel="City" value={city} setValue={setCity} data={cityOptions} iconName="location-city" placeholder="Select city" />
             </View>
           </View>
-          <CustomInput label="Pincode" value={pincode} onChangeText={setPincode} icon="pin" keyboardType="number-pad" maxLength={6} placeholder="Enter pincode" />
+          
         </View>
 
         {/* Professional Details */}
         <Text style={styles.sectionHeaderText}>Professional Details</Text>
         <View style={styles.section}>
-          {/* <CustomInput label="Qualification" value={qualification} onChangeText={setQualification} icon="school" placeholder="Enter qualification" /> */}
-          <CustomInput label="Hospital/Clinic Name *" value={hospitalName} onChangeText={setHospitalName} icon="local-hospital" placeholder="Enter hospital/clinic name" />
-          <View style={styles.fieldCmn}>
+          <CustomDropDown uprLabel="Hospital/Clinic *" search={true} value={hospitalName} setValue={setHospitalName} data={hospitalListOptions} iconName="local-hospital" placeholder="Select hospital/clinic" />
+          {/* <View style={styles.fieldCmn}>
             <View style={styles.fieldLeft}>
-              <CustomDropDown uprLabel="Specialization *" value={specialization} setValue={setSpecialization} data={specializationOptions} iconName="medical-services" placeholder="Select specialization" />
+              <CustomInput label="Qualification" value={qualification} onChangeText={setQualification} icon="school" placeholder="Enter qualification" />
             </View>
             <View style={styles.fieldRight}>
-              <CustomDropDown uprLabel="Hospital Type" value={hospitalType} setValue={setHospitalType} data={hospitalTypeOptions} iconName="business" placeholder="Select hospital type" />
+               <CustomInput label="Hospital/Clinic Name *" value={hospitalName} onChangeText={setHospitalName} icon="local-hospital" placeholder="Enter hospital/clinic name" />
             </View>
-          </View>
+          </View> */}
+          <CustomDropDown uprLabel="Hospital Type" value={hospitalType} setValue={setHospitalType} data={hospitalTypeOptions} iconName="business" placeholder="Select hospital type" />
           {/* <CustomInput label="Registration No" value={registrationNo} onChangeText={setRegistrationNo} icon="confirmation-number" placeholder="Enter registration no" />
           <CustomInput label="Years of Experience" value={experience} onChangeText={setExperience} icon="history" keyboardType="number-pad" placeholder="Enter years of experience" />
           <CustomInput label="Designation" value={designation} onChangeText={setDesignation} icon="work" placeholder="Enter designation" /> */}
@@ -446,7 +656,6 @@ const AddDoctor = ({ navigation, route }) => {
         {/* Clinic / Hospital Details */}
         <Text style={styles.sectionHeaderText}>Clinic / Hospital Details</Text>
         <View style={styles.section}>
-          <CustomInput label="Clinic Address" value={clinicAddress} onChangeText={setClinicAddress} icon="location-on" placeholder="Enter clinic address" />
           <View style={styles.fieldCmn}>
               <View style={styles.fieldLeft}>
                   <CustomInput label="Location" icon="location-on" keyboardType={'number-pad'} editable={false}  value={location ? `${location.latitude}, ${location.longitude}` : ''}  onChangeText={(text) => console.log(text)} />
@@ -456,14 +665,23 @@ const AddDoctor = ({ navigation, route }) => {
                       <ActivityIndicator size={responsiveFontSize(2.2)} color={Colors.primary} />
                   </View>
               ) :
-                  <TouchableOpacity onPress={() => requestLocationPermission()} style={{ flexDirection: 'row', alignItems: 'center', gap: responsiveWidth(2), }}>
+                  <TouchableOpacity onPress={() => fetchLocation()} style={{ flexDirection: 'row', alignItems: 'center', gap: responsiveWidth(2), }}>
                       <MaterialIcons name="my-location" size={responsiveFontSize(2.2)} color={Colors.primary} />
                       <Text style={{ fontSize: responsiveFontSize(1.6), color: Colors.primary }}>Get Location</Text>
                   </TouchableOpacity>
               }
           </View>
+          <CustomInput label="Clinic Address" value={clinicAddress} onChangeText={setClinicAddress} icon="location-on" placeholder="Enter clinic address" />
+           <View style={styles.fieldCmn}>
+            <View style={styles.fieldLeft}>
+              <CustomInput label="Pincode" value={pincode} onChangeText={setPincode} icon="pin" keyboardType="number-pad" maxLength={6} placeholder="Enter pincode" />
+            </View>
+            <View style={styles.fieldRight}>
+              <CustomInput label="Clinic Number" value={contactNumber} onChangeText={setContactNumber} icon="phone" keyboardType="phone-pad" maxLength={10} placeholder="Enter contact number" />
+            </View>
+          </View>
+          
           {/* <CustomInput label="Contact Person" value={contactPerson} onChangeText={setContactPerson} icon="person" placeholder="Enter contact person" /> */}
-          <CustomInput label="Contact Number" value={contactNumber} onChangeText={setContactNumber} icon="phone" keyboardType="phone-pad" maxLength={10} placeholder="Enter contact number" />
           {/* <CustomInput label="Clinic Email" value={clinicEmail} onChangeText={setClinicEmail} icon="email" keyboardType="email-address" placeholder="Enter clinic email" /> */}
         </View>
 
@@ -479,7 +697,7 @@ const AddDoctor = ({ navigation, route }) => {
         </View>
 
         {/* Documents */}
-        <Text style={styles.sectionHeaderText}>Clinic Photo</Text>
+        <Text style={styles.sectionHeaderText}>Hospital / Clinic Photo</Text>
         <View style={[styles.section, {gap: responsiveHeight(2),}]}>
           <View style={{}}>
             <TouchableOpacity style={styles.uploadBox1} onPress={handleHospitalPhoto}>
@@ -497,7 +715,7 @@ const AddDoctor = ({ navigation, route }) => {
               ) : (
                   <View style={styles.uploadPlaceholder}>
                     <MaterialIcons name="file-upload" size={responsiveFontSize(2.5)} color={Colors.primary} />
-                    <Text style={styles.uploadText}>Tap to Upload Clinic Photo</Text>
+                    <Text style={styles.uploadText}>Tap to Upload Hospital Photo</Text>
                   </View>
               )}
             </TouchableOpacity>

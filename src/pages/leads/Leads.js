@@ -327,7 +327,7 @@ export default Leads
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: Colors.background },
   header: {
-    height: responsiveHeight(8),
+    height: responsiveHeight(7),
     backgroundColor: Colors.primary,
     flexDirection: 'row',
     alignItems: 'center',

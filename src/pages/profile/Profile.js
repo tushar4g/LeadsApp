@@ -119,12 +119,12 @@ const Profile = ({ navigation }) => {
   const Row = ({ icon, label, onPress, rightComponent }) => (
     <TouchableOpacity activeOpacity={onPress ? 0.7 : 1} onPress={onPress} style={styles.row}>
       <View style={styles.rowLeft}>
-        <MaterialCommunityIcons name={icon} size={20} color={Colors.primary} />
+        <MaterialCommunityIcons name={icon} size={responsiveFontSize(2.2)} color={Colors.textPrimary} />
       </View>
       <View style={styles.rowBody}>
         <Text style={styles.rowLabel}>{label}</Text>
       </View>
-      {rightComponent ? rightComponent : <MaterialCommunityIcons name="chevron-right" size={20} color={Colors.textSecondary} />}
+      {rightComponent ? rightComponent : <MaterialCommunityIcons name="chevron-right" size={responsiveFontSize(2.2)} color={Colors.textSecondary} />}
     </TouchableOpacity>
   )
 
@@ -165,7 +165,7 @@ const Profile = ({ navigation }) => {
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Organization</Text>
         <Row icon="file-document-multiple" label="My Leads" onPress={() => navigation?.navigate('Leads')} />
-        <Row icon="calendar" label="My Appointments" onPress={() => navigation?.navigate('Appointments')} />
+        {/* <Row icon="calendar" label="My Appointments" onPress={() => navigation?.navigate('Appointments')} /> */}
         <Row icon="gift" label="My Rewards" onPress={() => navigation?.navigate('Rewards')} />
       </View>
 
@@ -173,17 +173,17 @@ const Profile = ({ navigation }) => {
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Preferences</Text>
 
-        <View style={styles.row}>
+        <TouchableOpacity activeOpacity={0.7} onPress={() => navigation?.navigate('Notification')} style={styles.row}>
           <View style={styles.rowLeft}>
-            <MaterialCommunityIcons name="bell" size={20} color={Colors.primary} />
+            <MaterialCommunityIcons name="bell" size={responsiveFontSize(2.2)} color={Colors.textPrimary} />
           </View>
           <View style={styles.rowBody}>
             <Text style={styles.rowLabel}>Notifications</Text>
           </View>
           {/* <Switch value={notificationsEnabled} onValueChange={onToggleNotifications} thumbColor={notificationsEnabled ? Colors.primary : Colors.white} /> */}
-        </View>
+        </TouchableOpacity>
 
-        <View style={styles.row}>
+        {/* <View style={styles.row}>
           <View style={styles.rowLeft}>
             <MaterialCommunityIcons name="translate" size={20} color={Colors.primary} />
           </View>
@@ -193,7 +193,7 @@ const Profile = ({ navigation }) => {
           <View style={{ width: responsiveWidth(38) }}>
             <CustomDropDown iconName="language" value={language} setValue={onChangeLanguage} data={LANG_OPTIONS} dropdownPosition="bottom" placeholder="Language" />
           </View>
-        </View>
+        </View> */}
 
         {/* <View style={styles.row}>
           <View style={styles.rowLeft}>
@@ -230,7 +230,7 @@ const Profile = ({ navigation }) => {
         <Text style={styles.versionText}>© {new Date().getFullYear()} ItMingo. All Rights Reserved.</Text>
       </View>
 
-      <View style={{ height: responsiveHeight(6) }} />
+      <View style={{ height: responsiveHeight(3) }} />
     </ScrollView>
   )
 }
@@ -246,11 +246,11 @@ const styles = StyleSheet.create({
     right: 0,
     height: responsiveHeight(22),
     backgroundColor: Colors.primary,
-    borderBottomLeftRadius: 28,
-    borderBottomRightRadius: 28,
+    borderBottomLeftRadius: responsiveWidth(5),
+    borderBottomRightRadius: responsiveWidth(5),
     zIndex: -1,
   },
-  top: { flexDirection: 'row', paddingHorizontal: responsiveWidth(4), paddingTop: responsiveHeight(4), alignItems: 'center' },
+  top: { flexDirection: 'row', paddingHorizontal: responsiveWidth(4), paddingTop: responsiveHeight(4), alignItems: 'center', paddingBottom: responsiveHeight(1)},
   avatarWrap: { marginRight: responsiveWidth(4) },
   avatar: { width: responsiveWidth(22), height: responsiveWidth(22), borderRadius: responsiveWidth(11) },
   avatarPlaceholder: { width: responsiveWidth(22), height: responsiveWidth(22), borderRadius: responsiveWidth(11), backgroundColor: Colors.white, alignItems: 'center', justifyContent: 'center' },
@@ -258,8 +258,8 @@ const styles = StyleSheet.create({
 
   userInfo: { flex: 1 },
   name: { fontSize: responsiveFontSize(2.2), fontWeight: '800', color: Colors.white, marginBottom: 2 },
-  role: { fontSize: responsiveFontSize(1.1), color: Colors.white, opacity: 0.95 },
-  subText: { fontSize: responsiveFontSize(1), color: Colors.white, opacity: 0.9, marginTop: 6 },
+  role: { fontSize: responsiveFontSize(1.6), color: Colors.white, opacity: 0.95, fontWeight: '400'},
+  subText: { fontSize: responsiveFontSize(1.6), color: Colors.white, opacity: 0.9, marginTop: responsiveHeight(0.2), fontWeight: '400' },
 
   section: { marginTop: responsiveHeight(2), marginHorizontal: responsiveWidth(3), backgroundColor: Colors.white, borderRadius: 12, paddingVertical: responsiveHeight(0.8), paddingHorizontal: responsiveWidth(2), elevation: 1 },
   sectionTitle: { fontWeight: '700', fontSize: responsiveFontSize(1.2), color: Colors.textPrimary, marginBottom: responsiveHeight(0.6) },
@@ -267,8 +267,8 @@ const styles = StyleSheet.create({
   row: { flexDirection: 'row', alignItems: 'center', paddingVertical: responsiveHeight(1.1) },
   rowLeft: { width: responsiveWidth(10), alignItems: 'center' },
   rowBody: { flex: 1 },
-  rowLabel: { fontSize: responsiveFontSize(1.4), color: Colors.textPrimary },
+  rowLabel: { fontSize: responsiveFontSize(1.4), color: Colors.textPrimary, fontWeight: '500'},
 
-  versionWrap: { alignItems: 'center', marginTop: responsiveHeight(2) },
+  versionWrap: { alignItems: 'center', marginTop: responsiveHeight(2), gap: responsiveHeight(0.5)},
   versionText: { color: Colors.textSecondary, fontSize: responsiveFontSize(1) },
 })

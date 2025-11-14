@@ -139,7 +139,6 @@ const cityOptions = [
 ]
 
 const SPECIALIZATION_OPTIONS = [
-  { label: 'All', value: '' },
   { label: 'Cardiologist', value: 'Cardiologist' },
   { label: 'Dermatologist', value: 'Dermatologist' },
   { label: 'Neurologist', value: 'Neurologist' },
@@ -147,14 +146,12 @@ const SPECIALIZATION_OPTIONS = [
 ]
 
 const HOSPITAL_TYPE_OPTIONS = [
-  { label: 'All', value: '' },
   { label: 'Private', value: 'private' },
   { label: 'Govt', value: 'govt' },
   { label: 'Corporate', value: 'corporate' },
 ]
 
 const CITY_OPTIONS = [
-  { label: 'All', value: '' },
   { label: 'Raipur', value: 'Raipur' },
   { label: 'Bilaspur', value: 'Bilaspur' },
   { label: 'Durg', value: 'Durg' },
@@ -169,7 +166,7 @@ const specializationOptions = [
 ]
 
 const categoryOptions = [
-  { label: 'All', value: '' },
+  // { label: 'All', value: '' },
   { label: 'A', value: 'A' },
   { label: 'B', value: 'B' },
   { label: 'C', value: 'C' },
@@ -402,9 +399,9 @@ const Doctors = ({ navigation }) => {
       <View style={styles.header}>
         <Text style={{color: Colors.white, fontSize: responsiveFontSize(2.2), fontWeight: '700'}}>Doctors</Text>
         <View style={{flexDirection: 'row', alignItems: 'center' }}>
-          <TouchableOpacity onPress={() => {setShowSearch(true); setTimeout(() => searchRef.current?.focus(), 100);}} style={[{padding: responsiveWidth(2)}]}>
+          {/* <TouchableOpacity onPress={() => {setShowSearch(true); setTimeout(() => searchRef.current?.focus(), 100);}} style={[{padding: responsiveWidth(2)}]}>
             <MaterialCommunityIcons name="magnify" size={responsiveFontSize(2.5)} color={Colors.white} />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
           <TouchableOpacity onPress={() => setFilterModalVisible(true)} style={[{ marginLeft: responsiveWidth(1), padding: responsiveWidth(2) }]}>
             <MaterialCommunityIcons name="filter-variant" size={responsiveFontSize(2.5)} color={Colors.white} />
           </TouchableOpacity>
@@ -412,7 +409,6 @@ const Doctors = ({ navigation }) => {
       </View>
       <View style={styles.content}>
         {/* Search & Filters */}
-        {showSearch && (
           <View style={styles.searchRow}>
             <Searchbar
               ref={searchRef}
@@ -427,15 +423,16 @@ const Doctors = ({ navigation }) => {
               clearIcon={searchText ? () => <MaterialIcons name="close" size={responsiveFontSize(2.2)} color={Colors.textSecondary} /> : null}
             />
           </View>
-        )}
 
         {/* Active filters summary */}
-        <View style={[styles.activeFiltersRow, { paddingRight: responsiveWidth(4), marginBottom: responsiveHeight(1) }]}>
-          <Text style={styles.activeText}>{activeFiltersLabel()}</Text>
-          <TouchableOpacity onPress={clearAllFilters}>
-            <Text style={styles.clearText}>Clear</Text>
-          </TouchableOpacity>
-        </View>
+        {(filterSpec || filterHospitalType || filterCity || filterCategory) && (
+          <View style={[styles.activeFiltersRow, { paddingRight: responsiveWidth(4), marginBottom: responsiveHeight(1) }]}>
+            <Text style={styles.activeText}>{activeFiltersLabel()}</Text>
+            <TouchableOpacity onPress={clearAllFilters}>
+              <Text style={styles.clearText}>Clear</Text>
+            </TouchableOpacity>
+          </View>
+        )}
 
         {/* Doctor List */}
         {filteredDoctors.length === 0 ? (
@@ -474,12 +471,13 @@ const Doctors = ({ navigation }) => {
             <View style={{gap: responsiveHeight(1.5)}}>
               <CustomDropDown iconName="medical-services"  uprLabel="Specialization" value={filterSpec} setValue={setFilterSpec} data={SPECIALIZATION_OPTIONS} />
               <CustomDropDown iconName="business"  uprLabel="Hospital Type" value={filterHospitalType} setValue={setFilterHospitalType} data={HOSPITAL_TYPE_OPTIONS} />
-              <CustomDropDown iconName="location-city"  uprLabel="City" value={filterCity} setValue={setFilterCity} data={CITY_OPTIONS} />
+              <CustomDropDown dropdownPosition='top' iconName="location-city"  uprLabel="City" value={filterCity} setValue={setFilterCity} data={CITY_OPTIONS} />
+              <CustomDropDown dropdownPosition='top' iconName="category"  uprLabel="Doctor Category" value={filterCategory} setValue={setFilterCategory} data={categoryOptions} />
             </View>
             
             <View style={[styles.modalActions, {gap: responsiveWidth(2)}]}>
               <View style={{flex:1}}>
-                <CustomButton title="Clear" onPress={() => { setFilterSpec(''); setFilterHospitalType(''); setFilterCity('') }} bgColor={Colors.white} color={Colors.primary} borderC={Colors.primary} />
+                <CustomButton title="Clear" onPress={() => { setFilterSpec(''); setFilterHospitalType(''); setFilterCity(''); setFilterCategory(''); }} bgColor={Colors.white} color={Colors.primary} borderC={Colors.primary} />
               </View>
               <View style={{flex:1}}>
                 <CustomButton title="Apply" onPress={() => setFilterModalVisible(false)} bgColor={Colors.primary} color={Colors.white} />
@@ -502,7 +500,7 @@ export default Doctors
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: Colors.background },
   header: {
-    height: responsiveHeight(8),
+    height: responsiveHeight(7),
     backgroundColor: Colors.primary,
     flexDirection: 'row',
     alignItems: 'center',

@@ -13,13 +13,13 @@ const MyHeader = ({ title, onBackPress, onFabPress, fabTitle, rightComponent, re
         {/* {onBackPress && <Appbar.BackAction onPress={onBackPress} color={Colors.primary} />} */}
         {onBackPress && 
         <TouchableOpacity onPress={onBackPress} style={{ paddingHorizontal: responsiveWidth(2), paddingVertical: responsiveHeight(1),marginRight: responsiveWidth(2) }}>
-          <MaterialIcons name="arrow-back" size={responsiveFontSize(2.4)} color={Colors.black} />
+          <MaterialIcons name="arrow-back" size={responsiveFontSize(2.4)} color={Colors.white} />
         </TouchableOpacity>
         }
         <Appbar.Content title={title} titleStyle={[styles.title,{paddingLeft: onBackPress ? responsiveWidth(0) : responsiveWidth(1)}]} />
         {onFabPress && (
           <TouchableOpacity onPress={onFabPress} style={styles.fabButton}>
-            <MaterialIcons name="add" size={responsiveFontSize(2.4)} color={Colors.white} />
+            <MaterialIcons name="add" size={responsiveFontSize(2.4)} color={Colors.black} />
             <Text style={styles.fabText}>{fabTitle}</Text>
           </TouchableOpacity>
         )}
@@ -38,7 +38,7 @@ export default MyHeader
 
 const styles = StyleSheet.create({
   header: {
-    backgroundColor: Colors.white,
+    backgroundColor: Colors.primary,
     // height: responsiveHeight(10), // Reduced height
     elevation: 0,
     borderBottomWidth: 1,
@@ -46,14 +46,14 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: responsiveFontSize(2),
-    color: Colors.black,
+    color: Colors.white,
     fontWeight: 'bold',
   },
   fabButton: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: Colors.primary,
+    backgroundColor: Colors.white,
     paddingHorizontal: responsiveWidth(2.5),
     paddingVertical: responsiveHeight(0.6),
     borderRadius: responsiveWidth(12),
