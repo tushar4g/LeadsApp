@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   View,
   Text,
@@ -7,11 +7,17 @@ import {
   TouchableOpacity,
   Image,
   ImageBackground,
+  PermissionsAndroid, Platform, 
+  ToastAndroid
 } from 'react-native'
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions'
 import MaterialIcons from '@react-native-vector-icons/material-icons'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import Colors from '../../style/Colors'
+// import Geolocation from 'react-native-geolocation-service'
+import Geolocation from '@react-native-community/geolocation';
+import haversine from 'haversine'
+
 
 // Placeholder avatar and logo
 const AVATAR = 'https://i.pravatar.cc/100?img=12'
@@ -67,33 +73,110 @@ const CHART_IMG = 'https://img.icons8.com/fluency/48/combo-chart.png'
 const Home = ({ navigation, userRole = 'Manager' }) => {
   // Example: userRole could be 'Admin', 'Manager', 'Field Executive'
   const [kpiCards, setKpiCards] = useState(KPI_CARDS)
-  const [selectedTab, setSelectedTab] = useState('Yesterday');
 
+  const [totalDistance, setTotalDistance] = useState(0)
+  const [prevLocation, setPrevLocation] = useState(null)
+
+  const [selectedTab, setSelectedTab] = useState('Yesterday');
   const statsTabs = ['Yesterday', 'This Week', 'This Month'];
   // 👇 Data that changes with tab
   const statsData = {
     Yesterday: {
-      distance: '311.17 km',
+      // distance: '311.17 km',
+      distance: `${totalDistance.toFixed(2)} km`,
       desc: 'Every distance counts towards sealing the deal',
       icon: 'two-wheeler', // ✅ closest to motorbike
       color: '#6366F1',
     },
     'This Week': {
-      distance: '1,245.52 km',
+      // distance: '1,245.52 km',
+      distance: `${totalDistance.toFixed(2)} km`,
       desc: 'Consistency brings results — keep going!',
       icon: 'directions-car', // ✅ replaces 'car'
       color: '#10B981',
     },
     'This Month': {
-      distance: '4,872.85 km',
+      // distance: '4,872.85 km',
+      distance: `${totalDistance.toFixed(2)} km`,
       desc: 'A journey of success measured in kilometers!',
       icon: 'alt-route', // ✅ replaces 'road-variant'
       color: '#F59E0B',
     },
   };
 
-
   const currentData = statsData[selectedTab];
+
+  const requestLocationPermission = async () => {
+    if (Platform.OS === 'android') {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+        {
+          title: 'Location Permission',
+          message: 'This app needs access to your location to track distance.',
+          buttonNeutral: 'Ask Me Later',
+          buttonNegative: 'Cancel',
+          buttonPositive: 'OK',
+        }
+      )
+      console.log("🔐 Permission Status:", granted);
+      return granted === PermissionsAndroid.RESULTS.GRANTED
+    }
+
+    return true
+  }
+
+  useEffect(() => {
+    let watchId = null
+
+    const startTracking = async () => {
+      const hasPermission = await requestLocationPermission()
+      if (!hasPermission) return
+
+      watchId = Geolocation.watchPosition(
+        (position) => {
+          console.log("📍 NEW POSITION RECEIVED:", position);
+          const { latitude, longitude } = position.coords
+          const newLocation = { latitude, longitude }
+
+          console.log("👉 New Location:", newLocation);
+          console.log("👉 Previous Location:", prevLocation);          
+
+          if (prevLocation) {
+            const distance = haversine(prevLocation, newLocation, { unit: 'km' })
+            console.log("🧮 Distance Added:", distance, "km");
+
+            // setTotalDistance((prev) => prev + distance)
+            setTotalDistance((prev) => {
+              console.log("📊 Total Before:", prev);
+              console.log("📊 Total After:", prev + distance);
+              return prev + distance;
+            });
+          }
+          
+          setPrevLocation(newLocation)
+        },
+        (error) => console.log(error),
+        {
+          enableHighAccuracy: true,
+          distanceFilter: 10, // update every 10 meters
+          interval: 5000, // every 5 seconds
+        }
+      )
+    }
+
+    startTracking()
+
+    return () => {
+      if (watchId !== null) Geolocation.clearWatch(watchId)
+    }
+  }, [])
+
+
+  const showToast = (msg) => {
+    ToastAndroid.showWithGravity(msg, ToastAndroid.TOP, ToastAndroid.SHORT)
+  }
+  
+
 
   // Handler for quick actions
   const handleQuickAction = (screen) => {
@@ -160,7 +243,8 @@ const Home = ({ navigation, userRole = 'Manager' }) => {
             ))}
           </View>
           <View style={styles.distanceRow}>
-            <Text style={styles.distanceValue}>{currentData.distance}</Text>
+            {/* <Text style={styles.distanceValue}>{currentData.distance}</Text> */}
+            <Text style={styles.distanceValue}>{totalDistance.toFixed(2)} km</Text>
             <Text style={styles.distanceDesc}>{currentData.desc}</Text>
             <MaterialIcons
               name={currentData.icon}

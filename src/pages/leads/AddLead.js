@@ -86,9 +86,9 @@ const SPECIALIZATION_OPTIONS = [
 ]
 
 const AddLead = ({ navigation, route }) => {
-  const lead = route?.params?.lead ?? {}
+  const lead = route?.params?.lead ?? {}   // from lead page
   const isEditMode = !!route.params?.lead;
-  const prefill = route?.params?.prefill ?? {}
+  const prefill = route?.params?.prefill ?? {} // from doctor details refer patient 
   const isReferMode = !!route.params?.prefill;
   console.log('Lead:', lead, 'editmode',isEditMode)
   console.log('Prefill:', prefill, 'referMode', isReferMode)

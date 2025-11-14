@@ -145,7 +145,6 @@ const Feedback = ({ navigation }) => {
       type,
       subject,
       message,
-      attachment,
       user,
       createdAt: new Date().toISOString(),
       status: 'Submitted', // Default status
