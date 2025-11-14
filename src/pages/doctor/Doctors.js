@@ -500,7 +500,7 @@ export default Doctors
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: Colors.background },
   header: {
-    height: responsiveHeight(8),
+    height: responsiveHeight(7),
     backgroundColor: Colors.primary,
     flexDirection: 'row',
     alignItems: 'center',

@@ -173,7 +173,7 @@ const Profile = ({ navigation }) => {
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Preferences</Text>
 
-        <View style={styles.row}>
+        <TouchableOpacity activeOpacity={0.7} onPress={() => navigation?.navigate('Notification')} style={styles.row}>
           <View style={styles.rowLeft}>
             <MaterialCommunityIcons name="bell" size={responsiveFontSize(2.2)} color={Colors.textPrimary} />
           </View>
@@ -181,7 +181,7 @@ const Profile = ({ navigation }) => {
             <Text style={styles.rowLabel}>Notifications</Text>
           </View>
           {/* <Switch value={notificationsEnabled} onValueChange={onToggleNotifications} thumbColor={notificationsEnabled ? Colors.primary : Colors.white} /> */}
-        </View>
+        </TouchableOpacity>
 
         {/* <View style={styles.row}>
           <View style={styles.rowLeft}>

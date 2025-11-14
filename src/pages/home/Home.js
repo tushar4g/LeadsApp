@@ -292,6 +292,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.primary || '#fff',
     borderBottomWidth: 1,
     borderBottomColor: '#eee',
+    height: responsiveHeight(7),
   },
   logo: { width: responsiveWidth(8), height: responsiveWidth(8), marginRight: responsiveWidth(2), borderRadius: responsiveWidth(4)},
   logo1: {
