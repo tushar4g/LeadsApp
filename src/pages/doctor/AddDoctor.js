@@ -352,113 +352,219 @@ const AddDoctor = ({ navigation, route }) => {
       Alert.alert('Error', 'Failed to save doctor details.');
     }
   }
-  // Location permission
-    const requestLocationPermission = async () => {
-        console.log('Requesting location permission...');
-        try {
-        // Ask both fine and coarse location
-        const granted = await PermissionsAndroid.requestMultiple([
+
+  const requestLocationPermission = async () => {
+    if (Platform.OS === 'android') {
+        const granted = await PermissionsAndroid.request(
             PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-            PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION,
-            PermissionsAndroid.PERMISSIONS.ACCESS_BACKGROUND_LOCATION,
-        ]);
-
-        const fine = granted[PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION] === PermissionsAndroid.RESULTS.GRANTED;
-        const coarse = granted[PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION] === PermissionsAndroid.RESULTS.GRANTED;
-
-        if (!fine && !coarse) {
-            setLoadLocation(false);
-            Alert.alert(
-            'Location Permission Needed',
-            'To access your location, please allow location permissions.',
-            [
-                { text: 'Cancel', style: 'cancel' },
-                {
-                text: 'Open Settings',
-                onPress: () => Linking.openSettings().catch(() => {
-                    Alert.alert('Error', 'Unable to open settings');
-                }),
-                },
-            ],
-            { cancelable: true }
-            );
-            return null;
-        } else {
-            getCurrentPosition();
-        }
-
-        } catch (err) {
-        console.warn(err);
-        showToast('Permission error');
-        setLoadLocation(false)
-        }
-    }
-
-    const getCurrentPosition = () => {
-        console.log('Fetching current location...');
-        setLoadLocation(true);
-
-        Geolocation.getCurrentPosition(
-        (position) => {
-            console.log('Location:', position.coords);
-            setLocation(position.coords);
-            setLoadLocation(false);
-        },
-        (error) => {
-            console.log('GetCurrentPosition Error:', error);
-            console.log(`❌ GetCurrentPosition Error [code ${error.code}]:`, error.message);
-
-            if (error.code === 1) {
-            showToast('Permission denied.');
-            setLoadLocation(false);
-            } else if (error.code === 2) {
-            Alert.alert(
-                'GPS Needed',
-                'Your GPS seems to be turned off. Please enable it to get location.',
-            )
-            setLoadLocation(false);
-            } else if (error.code === 3) {
-            showToast('Location timeout. Try again.');
-            } else {
-            setLoading(false);
-            showToast('Unknown location error');
+            {
+                title: 'Location permission',
+                message: 'App needs location to attach visit coordinates',
+                buttonPositive: 'OK',
             }
-            useWatchPositionFallback()
-            // setLoading(false);
-        },
-        {
-            enableHighAccuracy: false,
-            timeout: 20000,
-            maximumAge: 10000,
-            forceRequestLocation: true,
-            showLocationDialog: true,
+        )
+        console.log(granted)
+        if (granted === PermissionsAndroid.RESULTS.NEVER_ASK_AGAIN) {
+            Linking.openSettings()
         }
-        );
-    };
+        return granted === PermissionsAndroid.RESULTS.GRANTED
+    }
+    return true
+  }
 
-    // fallback using watchPosition
-    const useWatchPositionFallback = () => {
-        const watchId = Geolocation.watchPosition(
-        (position) => {
-            console.log('✅ Fallback position:', position.coords);
-            setLocation(position.coords);
-            Geolocation.clearWatch(watchId);
-            // navigation.reset({ index: 0, routes: [{ name: 'Dashboard' }] })
-            setLoadLocation(false);
-        },
-        (error) => {
-            console.log('❌ Fallback error:', error);
-            showToast('Unable to fetch location');
-            setLoadLocation(false);
-        },
-        {
-            enableHighAccuracy: true,
-            distanceFilter: 0,
-            interval: 5000,
-            fastestInterval: 2000,
-        }
-        );
-    };
+  const fetchLocation = async () => {
+      const ok = await requestLocationPermission()
+      if (!ok) {
+          Alert.alert('Permission denied', 'Location permission is required to fetch coordinates.')
+          return
+      }
+      setLoadLocation(true)
+      Geolocation.getCurrentPosition(
+          (pos) => {
+              console.log('Location:', pos.coords);
+              const { latitude, longitude } = pos.coords;
+              setLocation(pos.coords)
+              // NEW: Auto fetch address
+              getAddressFromCoordinates(latitude, longitude);
+              setLoadLocation(false)
+          },
+          (err) => {
+              console.warn('location error', err)
+              Alert.alert('Location error', 'Unable to fetch location.')
+              setLoadLocation(false)
+          },
+          { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
+      )
+  }
+
+  const getAddressFromCoordinates = async (lat, lng) => {
+      try {
+          const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`;
+
+          // const response = await fetch(url);
+          const response = await fetch(url, {
+              headers: {
+                  'User-Agent': 'YourAppName/1.0',   // REQUIRED
+                  'Accept-Language': 'en',
+              },
+          });
+          const data = await response.json();
+          console.log("OSM Response:", data);
+
+          if (data.display_name) {
+              setClinicAddress(data.display_name);
+              setPincode(data.address?.postcode || '');  
+          } else {
+              showToast("Unable to fetch address");
+          }
+      } catch (e) {
+          console.log("OSM Reverse Error:", e);
+      }
+  };
+
+
+
+  // Location permission
+    // const requestLocationPermission = async () => {
+    //     console.log('Requesting location permission...');
+    //     try {
+    //     // Ask both fine and coarse location
+    //     const granted = await PermissionsAndroid.requestMultiple([
+    //         PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+    //         PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION,
+    //         PermissionsAndroid.PERMISSIONS.ACCESS_BACKGROUND_LOCATION,
+    //     ]);
+
+    //     const fine = granted[PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION] === PermissionsAndroid.RESULTS.GRANTED;
+    //     const coarse = granted[PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION] === PermissionsAndroid.RESULTS.GRANTED;
+
+    //     if (!fine && !coarse) {
+    //         setLoadLocation(false);
+    //         Alert.alert(
+    //         'Location Permission Needed',
+    //         'To access your location, please allow location permissions.',
+    //         [
+    //             { text: 'Cancel', style: 'cancel' },
+    //             {
+    //             text: 'Open Settings',
+    //             onPress: () => Linking.openSettings().catch(() => {
+    //                 Alert.alert('Error', 'Unable to open settings');
+    //             }),
+    //             },
+    //         ],
+    //         { cancelable: true }
+    //         );
+    //         return null;
+    //     } else {
+    //         getCurrentPosition();
+    //     }
+
+    //     } catch (err) {
+    //     console.warn(err);
+    //     showToast('Permission error');
+    //     setLoadLocation(false)
+    //     }
+    // }
+
+  //   const getAddressFromCoordinates = async (lat, lng) => {
+  //     try {
+  //         const apiKey = "YOUR_GOOGLE_MAPS_API_KEY"; // replace
+  //         const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${apiKey}`;
+
+  //         const response = await fetch(url);
+  //         const data = await response.json();
+
+  //         if (data.status === "OK" && data.results.length > 0) {
+  //             console.log("Geocoding response:", data);
+  //             const formattedAddress = data.results[0].formatted_address;
+  //             setClinicAddress(formattedAddress);
+  //         } else {
+  //             showToast("Unable to fetch address");
+  //         }
+  //     } catch (error) {
+  //         console.log("Geocoding error:", error);
+  //         showToast("Error fetching address");
+  //     }
+  // };
+
+
+    // const getCurrentPosition = () => {
+    //     console.log('Fetching current location...');
+    //     setLoadLocation(true);
+
+    //     Geolocation.getCurrentPosition(
+    //     (position) => {
+    //         console.log('Location:', position.coords);
+    //         setLocation(position.coords);
+
+    //         // NEW: Auto fetch address
+    //         getAddressFromCoordinates(
+    //             position.coords.latitude,
+    //             position.coords.longitude
+    //         );
+
+    //         setLoadLocation(false);
+    //     },
+    //     (error) => {
+    //         console.log('GetCurrentPosition Error:', error);
+    //         console.log(`❌ GetCurrentPosition Error [code ${error.code}]:`, error.message);
+
+    //         if (error.code === 1) {
+    //         showToast('Permission denied.');
+    //         setLoadLocation(false);
+    //         } else if (error.code === 2) {
+    //         Alert.alert(
+    //             'GPS Needed',
+    //             'Your GPS seems to be turned off. Please enable it to get location.',
+    //         )
+    //         setLoadLocation(false);
+    //         } else if (error.code === 3) {
+    //         showToast('Location timeout. Try again.');
+    //         } else {
+    //         setLoading(false);
+    //         showToast('Unknown location error');
+    //         }
+    //         useWatchPositionFallback()
+    //         // setLoading(false);
+    //     },
+    //     {
+    //         enableHighAccuracy: false,
+    //         timeout: 20000,
+    //         maximumAge: 10000,
+    //         forceRequestLocation: true,
+    //         showLocationDialog: true,
+    //     }
+    //     );
+    // };
+
+    // // fallback using watchPosition
+    // const useWatchPositionFallback = () => {
+    //     const watchId = Geolocation.watchPosition(
+    //     (position) => {
+    //         console.log('✅ Fallback position:', position.coords);
+    //         setLocation(position.coords);
+
+    //         getAddressFromCoordinates(
+    //             position.coords.latitude,
+    //             position.coords.longitude
+    //         );
+
+    //         Geolocation.clearWatch(watchId);
+    //         setLoadLocation(false);
+    //     },
+    //     (error) => {
+    //         console.log('❌ Fallback error:', error);
+    //         showToast('Unable to fetch location');
+    //         setLoadLocation(false);
+    //     },
+    //     {
+    //         enableHighAccuracy: true,
+    //         distanceFilter: 0,
+    //         interval: 5000,
+    //         fastestInterval: 2000,
+    //     }
+    //     );
+    // };
     
     
     const showToast = (msg) => {
@@ -524,7 +630,7 @@ const AddDoctor = ({ navigation, route }) => {
               <CustomDropDown uprLabel="City" value={city} setValue={setCity} data={cityOptions} iconName="location-city" placeholder="Select city" />
             </View>
           </View>
-          <CustomInput label="Pincode" value={pincode} onChangeText={setPincode} icon="pin" keyboardType="number-pad" maxLength={6} placeholder="Enter pincode" />
+          
         </View>
 
         {/* Professional Details */}
@@ -550,7 +656,6 @@ const AddDoctor = ({ navigation, route }) => {
         {/* Clinic / Hospital Details */}
         <Text style={styles.sectionHeaderText}>Clinic / Hospital Details</Text>
         <View style={styles.section}>
-          <CustomInput label="Clinic Address" value={clinicAddress} onChangeText={setClinicAddress} icon="location-on" placeholder="Enter clinic address" />
           <View style={styles.fieldCmn}>
               <View style={styles.fieldLeft}>
                   <CustomInput label="Location" icon="location-on" keyboardType={'number-pad'} editable={false}  value={location ? `${location.latitude}, ${location.longitude}` : ''}  onChangeText={(text) => console.log(text)} />
@@ -560,13 +665,22 @@ const AddDoctor = ({ navigation, route }) => {
                       <ActivityIndicator size={responsiveFontSize(2.2)} color={Colors.primary} />
                   </View>
               ) :
-                  <TouchableOpacity onPress={() => requestLocationPermission()} style={{ flexDirection: 'row', alignItems: 'center', gap: responsiveWidth(2), }}>
+                  <TouchableOpacity onPress={() => fetchLocation()} style={{ flexDirection: 'row', alignItems: 'center', gap: responsiveWidth(2), }}>
                       <MaterialIcons name="my-location" size={responsiveFontSize(2.2)} color={Colors.primary} />
                       <Text style={{ fontSize: responsiveFontSize(1.6), color: Colors.primary }}>Get Location</Text>
                   </TouchableOpacity>
               }
           </View>
-          <CustomInput label="Clinic Number" value={contactNumber} onChangeText={setContactNumber} icon="phone" keyboardType="phone-pad" maxLength={10} placeholder="Enter contact number" />
+          <CustomInput label="Clinic Address" value={clinicAddress} onChangeText={setClinicAddress} icon="location-on" placeholder="Enter clinic address" />
+           <View style={styles.fieldCmn}>
+            <View style={styles.fieldLeft}>
+              <CustomInput label="Pincode" value={pincode} onChangeText={setPincode} icon="pin" keyboardType="number-pad" maxLength={6} placeholder="Enter pincode" />
+            </View>
+            <View style={styles.fieldRight}>
+              <CustomInput label="Clinic Number" value={contactNumber} onChangeText={setContactNumber} icon="phone" keyboardType="phone-pad" maxLength={10} placeholder="Enter contact number" />
+            </View>
+          </View>
+          
           {/* <CustomInput label="Contact Person" value={contactPerson} onChangeText={setContactPerson} icon="person" placeholder="Enter contact person" /> */}
           {/* <CustomInput label="Clinic Email" value={clinicEmail} onChangeText={setClinicEmail} icon="email" keyboardType="email-address" placeholder="Enter clinic email" /> */}
         </View>

@@ -202,12 +202,12 @@ const Login = ({ navigation }) => {
               <CustomButton title="Login" onPress={handleLogin} isLoading={loading} />
             </View>
 
-            <View style={styles.registerRow}>
+            {/* <View style={styles.registerRow}>
               <Text style={styles.regText}>Don't have an account?</Text>
               <TouchableOpacity onPress={() => navigation?.navigate('Register')}>
                 <Text style={styles.regLink}> Register</Text>
               </TouchableOpacity>
-            </View>
+            </View> */}
           </View>
 
           <View style={styles.deviceInfo}>
